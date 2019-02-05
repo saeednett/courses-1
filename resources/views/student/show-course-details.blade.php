@@ -28,13 +28,16 @@
                         <h2>{{ $course[0]->title }}</h2>
                         <div class="main-info">
                             <div class="course-logo rounded-top" style="height: 300px; width: 100%; overflow: hidden">
-                                <img src="/storage/courses-images/{{ $course[0]->image[1]->url }}" alt="" style="width: 100%; height: 100%; display: block; margin: auto;">
+                                <img src="/storage/courses-images/{{ $course[0]->image[1]->url }}" alt=""
+                                     style="width: 100%; height: 100%; display: block; margin: auto;">
                             </div>
                             <div class="block rounded-bottom mt-0">
                                 <div class="row">
                                     <div class="col-lg-9">
-                                        <h5 class="text-right rtl"> <span>اسم المنظم:</span> <a href="#">{{ $course[0]->center->user->name }}</a></h5>
-                                        <div class="mt-4" style="position: absolute; bottom: 0; width: 92%; height: 40px; margin: auto; overflow: hidden;">
+                                        <h5 class="text-right rtl"><span>اسم المنظم:</span> <a
+                                                    href="#">{{ $course[0]->center->user->name }}</a></h5>
+                                        <div class="mt-4"
+                                             style="position: absolute; bottom: 0; width: 92%; height: 40px; margin: auto; overflow: hidden;">
                                             <div class="row justify-content-end">
                                                 <div class="col-lg-8 text-center h-100">
                                                     <div class="row justify-content-center">
@@ -59,7 +62,10 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-3" style="overflow: hidden; padding: 0;">
-                                        <img class="border" src="https://lammt.com/resource/user/profile/pic_ce8ae867a0accc0b7577fcc340bb99f4.jpg" alt="" style="width: 90px; height: 90px; display: block; margin: auto; padding: 10px;">
+                                        <img class="border"
+                                             src="https://lammt.com/resource/user/profile/pic_ce8ae867a0accc0b7577fcc340bb99f4.jpg"
+                                             alt=""
+                                             style="width: 90px; height: 90px; display: block; margin: auto; padding: 10px;">
                                     </div>
                                 </div>
                             </div>
@@ -125,7 +131,8 @@
 
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <p class="" style="text-align: right; overflow-wrap: break-word;">{{ $course[0]->description }}</p>
+                                        <p class=""
+                                           style="text-align: right; overflow-wrap: break-word;">{{ $course[0]->description }}</p>
                                         <hr>
                                     </div>
                                 </div>
@@ -155,7 +162,7 @@
                                         </div>
 
                                         <div class="col-lg-3">
-                                            <i class="fa fa-calendar fa-3x"></i>
+                                            <i class="fa fa-calendar fa-3x text-custom"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -163,16 +170,27 @@
                         </div>
 
                         <div class="block rounded">
+                            <?php $counter = 1; $class = "mt-4";?>
                             @foreach($course as $cou)
                                 @foreach($cou->appointment as $appointment)
-                                    <div class="row justify-content-end">
+                                    @if( $counter == 1 )
+                                        <?php $class = "mt-0";?>
+                                    @else
+                                        <?php $class = "mt-4";?>
+                                    @endif
+                                    <div class="row justify-content-end {{ $class }}">
                                         <div class="col-lg-10">
                                             @if( date('a', strtotime($appointment->time)) == 'pm' )
-                                                <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->time)).' مساء' }} (  للرجال فقط )</p>
+                                                <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->time)).' مساء' }}
+                                                    ( للرجال فقط )</p>
                                                 <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
-                                                <p class="text-right text-muted rtl mt-1 mb-0"><b>{{ $appointment->price }} ريال </b></p>
+                                                <p class="text-right text-muted rtl mt-1 mb-0">
+                                                    <b>{{ $appointment->price }} ريال </b></p>
                                             @else
-                                                <p class="text-right rtl">{{ date('h:i', strtotime($appointment->time)).' صباحا' }}</p>
+                                                <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->time)).' صباحا' }}</p>
+                                                <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
+                                                <p class="text-right text-muted rtl mt-1 mb-0">
+                                                    <b>{{ $appointment->price }} ريال </b></p>
                                             @endif
                                         </div>
                                         <div class="col-lg-2 order-first">
@@ -182,6 +200,10 @@
                                             </label>
                                         </div>
                                     </div>
+                                    @if($counter < count($cou->appointment))
+                                        <hr>
+                                    @endif
+                                    <?php $counter++; ?>
                                 @endforeach
                             @endforeach
                         </div>
@@ -201,7 +223,8 @@
                                 <div class="block rounded">
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <ul class="rtl text-right" style="list-style-type: none; margin-right: 0; width: 100%; padding-right: 0px;">
+                                            <ul class="rtl text-right"
+                                                style="list-style-type: none; margin-right: 0; width: 100%; padding-right: 0px;">
                                                 <li>
                                                     <span class="fas fa-arrow-alt-circle-left"></span>
                                                     <span>16 سنة أو أكبر</span>
@@ -247,7 +270,8 @@
                             <div class="col-lg-12">
                                 <div class="map-location">
                                     <div class="map rounded-top" style="height: 250px; width: 100%; overflow: hidden">
-                                        <img src="https://snazzy-maps-cdn.azureedge.net/assets/1243-xxxxxxxxxxx.png?v=20170626083204" style="width: 100%; height: 100%; display: block; margin: auto;">
+                                        <img src="https://snazzy-maps-cdn.azureedge.net/assets/1243-xxxxxxxxxxx.png?v=20170626083204"
+                                             style="width: 100%; height: 100%; display: block; margin: auto;">
                                     </div>
                                     <div class="block rounded-bottom mt-0 rtl">
                                         <p class="text-right">{{ $course[0]->city->name.' - '.$course[0]->location }}</p>

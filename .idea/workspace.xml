@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a191d43f-2373-4b36-91cf-be5b4fd6662e" name="Default Changelist" comment="" />
+    <list default="true" id="a191d43f-2373-4b36-91cf-be5b4fd6662e" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/public/css/student/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/student/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/student/show-course-details.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/student/show-course-details.blade.php" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,8 +69,8 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key=".env file" value="11" />
-          <entry key="Blade" value="36215" />
-          <entry key="CSS" value="2155" />
+          <entry key="Blade" value="36414" />
+          <entry key="CSS" value="2181" />
           <entry key="HTML" value="8" />
           <entry key="PHP" value="15974" />
           <entry key="SCSS" value="45" />
@@ -86,11 +89,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/resources/views/student/show-course-details.blade.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="246">
-              <caret line="179" column="70" selection-start-line="179" selection-start-column="70" selection-end-line="179" selection-end-column="70" />
+            <state relative-caret-position="196">
+              <caret line="164" column="86" selection-start-line="164" selection-start-column="86" selection-end-line="164" selection-end-column="86" />
               <folding>
                 <element signature="e#892#944#0#HTML" expanded="true" />
                 <element signature="e#1052#1116#0#HTML" expanded="true" />
@@ -133,11 +136,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/css/student/index.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="519">
-              <caret line="289" column="17" selection-start-line="289" selection-start-column="17" selection-end-line="289" selection-end-column="17" />
+            <state relative-caret-position="264">
+              <caret line="224" column="1" selection-start-line="224" selection-start-column="1" selection-end-line="224" selection-end-column="12" />
             </state>
           </provider>
         </entry>
@@ -198,8 +201,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>+</find>
-      <find>remove-tr</find>
       <find>التاريخ</find>
       <find>التالي</find>
       <find>وقت</find>
@@ -228,6 +229,8 @@
       <find>rounded</find>
       <find>block</find>
       <find>.checkmark</find>
+      <find>bg-</find>
+      <find>bg-custom</find>
     </findStrings>
     <replaceStrings>
       <replace>img/chosen-sprite.png</replace>
@@ -239,6 +242,9 @@
       <replace>المسؤولين</replace>
       <replace />
     </replaceStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -292,8 +298,8 @@
         <option value="$PROJECT_DIR$/routes/web.php" />
         <option value="$PROJECT_DIR$/resources/views/student/master-v-1-1.blade.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/StudentController.php" />
-        <option value="$PROJECT_DIR$/resources/views/student/show-course-details.blade.php" />
         <option value="$PROJECT_DIR$/public/css/student/index.css" />
+        <option value="$PROJECT_DIR$/resources/views/student/show-course-details.blade.php" />
       </list>
     </option>
   </component>
@@ -409,6 +415,7 @@
     <option name="width" value="1440" />
     <option name="height" value="877" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -565,12 +572,12 @@
       <workItem from="1548239460797" duration="103729000" />
       <workItem from="1548861122363" duration="34105000" />
       <workItem from="1549287998161" duration="17168000" />
-      <workItem from="1549381532248" duration="3602000" />
+      <workItem from="1549381532248" duration="4576000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="288239000" />
+    <option name="totallyTimeSpent" value="289213000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="877" extended-state="0" />
@@ -903,10 +910,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/public/css/student/index.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="224" column="1" selection-start-line="224" selection-start-column="1" selection-end-line="224" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/resources/views/student/show-course-details.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="246">
-          <caret line="179" column="70" selection-start-line="179" selection-start-column="70" selection-end-line="179" selection-end-column="70" />
+        <state relative-caret-position="196">
+          <caret line="164" column="86" selection-start-line="164" selection-start-column="86" selection-end-line="164" selection-end-column="86" />
           <folding>
             <element signature="e#892#944#0#HTML" expanded="true" />
             <element signature="e#1052#1116#0#HTML" expanded="true" />
@@ -918,13 +932,6 @@
             <element signature="e#12996#13048#0#HTML" expanded="true" />
             <element signature="e#13184#13248#0#HTML" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/css/student/index.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="289" column="17" selection-start-line="289" selection-start-column="17" selection-end-line="289" selection-end-column="17" />
         </state>
       </provider>
     </entry>

@@ -222,11 +222,15 @@ ul.navbar-nav li:hover {
     text-align: center;
 }
 
+.text-custom {
+    color: #00bdac;
+}
+
 
 /* Custom CheckBox */
 
 .checkbox-container {
-    margin-top: 20px;
+    margin-top: 28px;
     display: block;
     position: relative;
     padding-left: 35px;
