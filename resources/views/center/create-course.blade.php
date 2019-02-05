@@ -174,8 +174,8 @@
                                             </select>
                                             @if ($errors->has('category'))
                                                 <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('category') }}</strong>
-                                        </span>
+                                                    <strong>{{ $errors->first('category') }}</strong>
+                                                </span>
                                             @endif
                                         </div>
                                     </div>

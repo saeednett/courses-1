@@ -77,6 +77,14 @@ class StudentController extends Controller
         return view('student.show-course-details', compact('course'));
     }
 
+    public function book_course_form(Request $request) {
+        $request->validate([
+            'date' => 'required|array|max:100',
+            'date.*' => 'integer|distinct',
+        ]);
+        return "hello";
+    }
+
     public function edit()
     {
         $id = Auth::user()->id;

@@ -148,6 +148,21 @@
                             </div>
                         </div>
 
+
+                        @if($errors->any())
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="alert alert-danger">
+                                        <ul class="text-right rtl mb-0">
+                                            @foreach($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="block rounded mt-0">
@@ -170,47 +185,55 @@
                         </div>
 
                         <div class="block rounded">
-                            <?php $counter = 1; $class = "mt-4";?>
-                            @foreach($course as $cou)
-                                @foreach($cou->appointment as $appointment)
-                                    @if( $counter == 1 )
-                                        <?php $class = "mt-0";?>
-                                    @else
-                                        <?php $class = "mt-4";?>
-                                    @endif
-                                    <div class="row justify-content-end {{ $class }}">
-                                        <div class="col-lg-10">
-                                            @if( date('a', strtotime($appointment->time)) == 'pm' )
-                                                <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->time)).' مساء' }}
-                                                    ( للرجال فقط )</p>
-                                                <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
-                                                <p class="text-right text-muted rtl mt-1 mb-0">
-                                                    <b>{{ $appointment->price }} ريال </b></p>
-                                            @else
-                                                <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->time)).' صباحا' }}</p>
-                                                <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
-                                                <p class="text-right text-muted rtl mt-1 mb-0">
-                                                    <b>{{ $appointment->price }} ريال </b></p>
-                                            @endif
+                            <form method="post" action="{{ route('account.course.booking', $course[0]->identifier) }}" id='book-course'>
+                                {{ csrf_field() }}
+                                <?php $counter = 1; $class = "mt-4";?>
+                                @foreach($course as $cou)
+                                    @foreach($cou->appointment as $appointment)
+                                        @if( $counter == 1 )
+                                            <?php $class = "mt-0";?>
+                                        @else
+                                            <?php $class = "mt-4";?>
+                                        @endif
+                                        <div class="row justify-content-end {{ $class }}">
+                                            <div class="col-lg-10">
+                                                @if( date('a', strtotime($appointment->time)) == 'pm' )
+                                                    <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->time)).' مساء' }}
+                                                        ( للرجال فقط )</p>
+                                                    <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
+                                                    <p class="text-right text-muted rtl mt-1 mb-0">
+                                                        <b>{{ $appointment->price }} ريال </b></p>
+                                                @else
+                                                    <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->time)).' صباحا' }}</p>
+                                                    <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
+                                                    <p class="text-right text-muted rtl mt-1 mb-0">
+                                                        <b>{{ $appointment->price }} ريال </b></p>
+                                                @endif
+                                            </div>
+                                            <div class="col-lg-2 order-first {{ $errors->has('date') ? 'bg-danger rounded' : '' }}">
+                                                <label class="checkbox-container">
+                                                    <input type="checkbox" name="date[]" value="{{ $appointment->id }}">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                                @if ($errors->has('date'))
+                                                    <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('date[0]') }}</strong>
+                                                </span>
+                                                @endif
+                                            </div>
                                         </div>
-                                        <div class="col-lg-2 order-first">
-                                            <label class="checkbox-container">
-                                                <input type="checkbox">
-                                                <span class="checkmark"></span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    @if($counter < count($cou->appointment))
-                                        <hr>
-                                    @endif
-                                    <?php $counter++; ?>
+                                        @if($counter < count($cou->appointment))
+                                            <hr>
+                                        @endif
+                                        <?php $counter++; ?>
+                                    @endforeach
                                 @endforeach
-                            @endforeach
+                            </form>
                         </div>
 
                         <div class="row">
                             <div class="col-lg-12">
-                                <button type="submit" class="btn custom-btn" form="reset-password">احجز الآن</button>
+                                <button type="submit" class="btn custom-btn" form="book-course">احجز الآن</button>
                             </div>
                         </div>
 

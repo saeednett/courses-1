@@ -23,6 +23,7 @@ Route::get('account/booking-tickets', 'StudentController@tickets')->name('accoun
 Route::get('account/account-profile', 'StudentController@edit')->name('account.edit')->middleware('auth');
 Route::put('account/update', 'StudentController@update')->name('account.update')->middleware('auth');
 Route::get('{center}/{course}', 'StudentController@show_course')->name('account.course_details');
+Route::post('{course}/Booking', 'StudentController@book_course_form')->name('account.course.booking');
 
 /* Center Routes Part */
 Route::get('profile/{name}', 'CenterController@show')->name('center.profile');
