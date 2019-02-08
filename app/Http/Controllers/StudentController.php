@@ -82,7 +82,7 @@ class StudentController extends Controller
             'date' => 'required|array|max:100',
             'date.*' => 'integer|distinct',
         ]);
-        return "hello";
+        return view('student.book-course');
     }
 
     public function edit()

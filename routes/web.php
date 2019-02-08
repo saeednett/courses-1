@@ -52,7 +52,7 @@ Route::get('center/admin-edit/{id}', 'CenterController@edit_admin')->name('cente
 Route::put('center/admin-edit/{id}', 'CenterController@update_admin')->name('center.admin.update')->middleware('auth-center');
 
 
-Route::get('center/center-sign-up', 'CenterController@create')->name('center.register')->middleware('guest');
+Route::get('center/sign-up', 'CenterController@create')->name('center.register')->middleware('guest');
 Route::get('center/sign-in', 'CenterController@create_sign_in')->name('center.login')->middleware('guest');
 Route::post('center/', 'CenterController@store')->name('center.store')->middleware('guest');
 

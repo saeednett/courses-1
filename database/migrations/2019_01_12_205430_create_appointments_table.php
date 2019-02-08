@@ -20,6 +20,7 @@ class CreateAppointmentsTable extends Migration
             $table->time('time');
             $table->integer('price');
             $table->integer('attendance');
+            $table->integer('gender');
             $table->timestamps();
         });
     }

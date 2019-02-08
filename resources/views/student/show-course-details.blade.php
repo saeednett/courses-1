@@ -198,14 +198,22 @@
                                         <div class="row justify-content-end {{ $class }}">
                                             <div class="col-lg-10">
                                                 @if( date('a', strtotime($appointment->time)) == 'pm' )
-                                                    <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->time)).' مساء' }}
-                                                        ( للرجال فقط )</p>
-                                                    <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
+                                                    <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->time)).' مساء' }}</p>
+                                                    @if($appointment->gender == 1)
+                                                        <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
+                                                    @else
+                                                        <p class="text-right rtl mt-1 mb-0">( تذكرة نساء فوق عمر 16 )</p>
+                                                    @endif
+
                                                     <p class="text-right text-muted rtl mt-1 mb-0">
                                                         <b>{{ $appointment->price }} ريال </b></p>
                                                 @else
                                                     <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->time)).' صباحا' }}</p>
-                                                    <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
+                                                    @if($appointment->gender == 1)
+                                                        <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
+                                                    @else
+                                                        <p class="text-right rtl mt-1 mb-0">( تذكرة نساء فوق عمر 16 )</p>
+                                                    @endif
                                                     <p class="text-right text-muted rtl mt-1 mb-0">
                                                         <b>{{ $appointment->price }} ريال </b></p>
                                                 @endif
@@ -249,32 +257,32 @@
                                             <ul class="rtl text-right"
                                                 style="list-style-type: none; margin-right: 0; width: 100%; padding-right: 0px;">
                                                 <li>
-                                                    <span class="fas fa-arrow-alt-circle-left"></span>
+                                                    <span class="fas fa-arrow-alt-circle-left text-custom"></span>
                                                     <span>16 سنة أو أكبر</span>
                                                 </li>
 
                                                 <li>
-                                                    <span class="fas fa-arrow-alt-circle-left"></span>
+                                                    <span class="fas fa-arrow-alt-circle-left text-custom"></span>
                                                     <span>التذكرة صالحة لشخص واحد فقط</span>
                                                 </li>
 
                                                 <li>
-                                                    <span class="fas fa-arrow-alt-circle-left"></span>
+                                                    <span class="fas fa-arrow-alt-circle-left text-custom"></span>
                                                     <span>الحضور قبل موعد الفعالية بنصف ساعة على الأقل</span>
                                                 </li>
 
                                                 <li>
-                                                    <span class="fas fa-arrow-alt-circle-left"></span>
+                                                    <span class="fas fa-arrow-alt-circle-left text-custom"></span>
                                                     <span>فضلاً أحضر معك تذكرتك الإلكترونية لتسهيل إجراءات الدخول يوم الفعالية.</span>
                                                 </li>
 
                                                 <li>
-                                                    <span class="fas fa-arrow-alt-circle-left"></span>
+                                                    <span class="fas fa-arrow-alt-circle-left text-custom"></span>
                                                     <span>ممنوع اصطحاب الأطفال</span>
                                                 </li>
 
                                                 <li>
-                                                    <span class="fas fa-arrow-alt-circle-left"></span>
+                                                    <span class="fas fa-arrow-alt-circle-left text-custom"></span>
                                                     <span>ممنوع التدخين</span>
                                                 </li>
                                             </ul>
