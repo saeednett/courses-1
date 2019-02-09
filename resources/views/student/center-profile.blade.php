@@ -1,11 +1,11 @@
 @extends('student.master-v-1-1')
 
-@section('title', $name)
+@section('title', $center->name)
 
 @section('content')
     <div class="wrap text-md-center ">
         <div class="profile-wall h-lg-40 h-md-30 h-sm-30 h-25">
-            <img src="https://lammt.com/resource/user/supplier_placeholder/ba2b93e8a0a9966d63e44cd797cd6b81.jpg">
+            <img src="/storage/center-images/{{ $center->center->cover }}">
         </div>
 
 
@@ -17,11 +17,11 @@
                         <div class="col-lg-3 col-md-4 profile-info rtl order-lg-last order-md-last order-sm-last order-first">
 
                             <div class="profile-avatar">
-                                <img src="https://lammt.com/resource/user/profile/pic_c480540d4e8c0cf7ad03ba949e3a5280.png">
+                                <img src="/storage/center-images/{{ $center->center->logo }}">
                             </div>
 
-                            <div class="profile-title text-right">Breakout Riyadh</div>
-                            <div class="profile-site text-right"><a href="http://www.youtube.com/user/JedComedyClub" target="_blank"><b>http://www.youtube.com/user/JedComedyClub</b></a></div>
+                            <div class="profile-title text-right">{{ $center->name }}</div>
+                            <div class="profile-site text-right"><a href="http://www.youtube.com/user/JedComedyClub" target="_blank"><b>{{ $center->center->website }}</b></a></div>
                             <div class="profile-description rtl text-right">
                                 بريك أوت
                                 .لعبة تحدي وتفكير ومتعة، فيها تخلي عقلك يشتغل بطريقة مختلفة مع فريقك، في غرفة كلها ألغاز وتحديات خرافية!
@@ -56,72 +56,23 @@
 
                             <div class="col-lg-12 col-md-12 mt-2 text-center">
                                 <div class="row">
-
-                                    <div class="col-lg-4 col-md-6">
-                                        <a class="card rounded" data-post="1452" href="https://lammt.com/JeddahChamber/BM4"
-                                           title="#بسطة_ماركت4">
-                                            <img src="{{ asset('img/031.jpg ') }}" class="" alt="..." height="200" width="100%"
-                                                 style="width: 100%">
-                                            <div class="card-title text-center mt-4">
-                                                <h5>#بسطة_ماركت4</h5>
-                                            </div>
-                                            <div class="adv-footer">
-                                                <p class="adv-price">مجانًا</p>
-                                                <p class="adv-place">مكة المكرمة</p>
-                                            </div>
-                                            <div class="clear"></div>
-                                        </a>
-                                    </div>
-
-                                    <div class="col-lg-4 col-md-6">
-                                        <a class="card rounded" data-post="1452" href="https://lammt.com/JeddahChamber/BM4"
-                                           title="#بسطة_ماركت4">
-                                            <img src="{{ asset('img/031.jpg ') }}" class="" alt="..." height="200" width="100%"
-                                                 style="width: 100%">
-                                            <div class="card-title text-center mt-4">
-                                                <h5>#بسطة_ماركت4</h5>
-                                            </div>
-                                            <div class="adv-footer">
-                                                <p class="adv-price">مجانًا</p>
-                                                <p class="adv-place">مكة المكرمة</p>
-                                            </div>
-                                            <div class="clear"></div>
-                                        </a>
-                                    </div>
-
-                                    <div class="col-lg-4 col-md-6">
-                                        <a class="card rounded" data-post="1452" href="https://lammt.com/JeddahChamber/BM4"
-                                           title="#بسطة_ماركت4">
-                                            <img src="{{ asset('img/031.jpg ') }}" class="" alt="..." height="200" width="100%"
-                                                 style="width: 100%">
-                                            <div class="card-title text-center mt-4">
-                                                <h5>#بسطة_ماركت4</h5>
-                                            </div>
-                                            <div class="adv-footer">
-                                                <p class="adv-price">مجانًا</p>
-                                                <p class="adv-place">مكة المكرمة</p>
-                                            </div>
-                                            <div class="clear"></div>
-                                        </a>
-                                    </div>
-
-
-                                    <div class="col-lg-4 col-md-6">
-                                        <a class="card rounded" data-post="1452" href="https://lammt.com/JeddahChamber/BM4"
-                                           title="#بسطة_ماركت4">
-                                            <img src="{{ asset('img/031.jpg ') }}" class="" alt="..." height="200" width="100%"
-                                                 style="width: 100%">
-                                            <div class="card-title text-center mt-4">
-                                                <h5>#بسطة_ماركت4</h5>
-                                            </div>
-                                            <div class="adv-footer">
-                                                <p class="adv-price">مجانًا</p>
-                                                <p class="adv-place">مكة المكرمة</p>
-                                            </div>
-                                            <div class="clear"></div>
-                                        </a>
-                                    </div>
-
+                                    @foreach($courses as $course)
+                                        <div class="col-lg-4 col-md-6">
+                                            <a class="card rounded" data-post="1452" href="{{ route('account.course_details', [$course->center->user->username, $course->identifier,] ) }}"
+                                               title="#بسطة_ماركت4">
+                                                <img src="/storage/course-images/{{ $course->image[0]->url }}" class="" alt="..." height="200" width="100%"
+                                                     style="width: 100%">
+                                                <div class="card-title text-center mt-4">
+                                                    <h5>{{ $course->title }}</h5>
+                                                </div>
+                                                <div class="adv-footer">
+                                                    <p class="adv-price">{{ $course->appointment[0]->price }}</p>
+                                                    <p class="adv-place">{{ $course->city->name }}</p>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </a>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>

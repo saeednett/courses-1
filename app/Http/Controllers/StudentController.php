@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Appointment;
+use App\Bank;
+use App\Center;
+use App\CenterAccount;
 use App\City;
 use App\Course;
 use App\User;
@@ -77,12 +81,33 @@ class StudentController extends Controller
         return view('student.show-course-details', compact('course'));
     }
 
-    public function book_course_form(Request $request) {
+    public function book_course_form(Request $request, $identifier) {
         $request->validate([
             'date' => 'required|array|max:100',
             'date.*' => 'integer|distinct',
         ]);
-        return view('student.book-course');
+
+        $course = Course::where('identifier', $identifier)->get();
+
+        if ( count($course) == 0 ){
+            abort(404);
+        }else{
+            $appointments = Appointment::find($request->date);
+            if ( count($appointments) == 0 ){
+                abort(404);
+            }else{
+                $banks_data = array();
+                $banks_id = CenterAccount::select('id')->where('center_id', $course[0]->center->id)->get();
+
+                foreach ($banks_id as $id){
+                    array_push($banks_data, $id->id);
+                }
+
+                $banks = Bank::find($banks_data);
+                return view('student.book-course', compact('course', 'appointments', 'banks'));
+            }
+        }
+
     }
 
     public function edit()

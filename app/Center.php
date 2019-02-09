@@ -27,4 +27,9 @@ class Center extends Model
     {
         return $this->hasMany('App\Trainer');
     }
+
+    public function account()
+    {
+        return $this->hasMany('App\CenterAccount');
+    }
 }

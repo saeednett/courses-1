@@ -67,7 +67,7 @@
                                     <a href="{{ route('account.register') }}" title="تسجيل جديد">تسجيل جديد</a>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-xs-6 col-6 text-left order-first">
-                                    <a href="https://lammt.com/account/sign-up" title="نسيت كلمة المرور">نسيت كلمة المرور</a>
+                                    <a href="#" title="نسيت كلمة المرور">نسيت كلمة المرور</a>
                                 </div>
                             </div>
                         </fieldset>

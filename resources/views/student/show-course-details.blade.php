@@ -28,14 +28,14 @@
                         <h2>{{ $course[0]->title }}</h2>
                         <div class="main-info">
                             <div class="course-logo rounded-top" style="height: 300px; width: 100%; overflow: hidden">
-                                <img src="/storage/courses-images/{{ $course[0]->image[1]->url }}" alt=""
+                                <img src="/storage/course-images/{{ $course[0]->image[0]->url }}" alt=""
                                      style="width: 100%; height: 100%; display: block; margin: auto;">
                             </div>
                             <div class="block rounded-bottom mt-0">
                                 <div class="row">
                                     <div class="col-lg-9">
                                         <h5 class="text-right rtl"><span>اسم المنظم:</span> <a
-                                                    href="#">{{ $course[0]->center->user->name }}</a></h5>
+                                                    href="{{ route('center.profile', $course[0]->center->user->username) }}">{{ $course[0]->center->user->name }}</a></h5>
                                         <div class="mt-4"
                                              style="position: absolute; bottom: 0; width: 92%; height: 40px; margin: auto; overflow: hidden;">
                                             <div class="row justify-content-end">

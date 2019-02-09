@@ -7,6 +7,7 @@ use App\Appointment;
 use App\Bank;
 use App\Category;
 use App\Center;
+use App\CenterAccount;
 use App\City;
 use App\Country;
 use App\Coupon;
@@ -33,6 +34,36 @@ class CenterController extends Controller
 //        $this->middleware('auth-center')->except(['cities']);
 //    }
 
+
+    public function check_coupon($course_identifier, $coupon){
+        $course = Course::select('id')->where('identifier', $course_identifier)->get();
+        $response['status'] = array();
+        $response['errors'] = array();
+        $response['response'] = array();
+
+        if ( count($course) == 0 ){
+            array_push($response['status'], "Error");
+            array_push($response['errors'], "Wrong Course Identifier");
+            array_push($response['response'], null);
+            return response()->json($response);
+        }
+
+        $coupon = Coupon::where('coupon_code', $coupon)->get();
+
+        if ( count($coupon) == 0 ){
+            array_push($response['status'], "Failed");
+            array_push($response['errors'], null);
+            array_push($response['response'], "كود الخصم غير موجود");
+            return response()->json($response);
+        }else {
+            array_push($response['status'], "Success");
+            array_push($response['errors'], null);
+            array_push($response['response'], "%".$coupon[0]->discount." كود الخصم موجود بقيمة  ");
+            return response()->json($response);
+        }
+
+    }
+
     // For Registration Select City
     public function cities(Request $request, $id)
     {
@@ -48,6 +79,38 @@ class CenterController extends Controller
         } else {
             abort(400);
         }
+    }
+
+    public function bank_account($center_id, $bank_id){
+
+        $center = User::find($center_id);
+
+        if ( $center->role_id != 2 ){
+            $response['error'] = ['Wrong Center Identifier'];
+            return response()->json($response);
+        }
+
+        $banks_data = array();
+        $banks_id = CenterAccount::select('bank_id')->where('center_id', $center->center->id)->get();
+
+        foreach ($banks_id as $id){
+            array_push($banks_data, $id->bank_id);
+        }
+
+        if( !in_array((int)$bank_id, $banks_data) ){
+            $response['error'] = ['Wrong Bank Identifier'];
+            return response()->json($response);
+        }
+
+        $bank = Bank::find($bank_id);
+        $accounts = CenterAccount::where('center_id', $center->center->id)->where('bank_id', $bank_id)->get();
+        $response['response'] = array();
+        foreach ($accounts as $account){
+            $response['response'] = ['id' => $bank->id, 'name' => $bank->name, 'logo' => $bank->logo, 'account_owner' => $account->account_owner, 'account_number' => $account->account_number];
+        }
+
+
+        return response()->json($response);
     }
 
     public function index($center)
@@ -80,12 +143,15 @@ class CenterController extends Controller
             'country' => 'required|integer|max:99|min:1|exists:countries,id',
             'city' => 'required|integer|max:99|min:1|exists:cities,id',
             'email' => 'required|email|unique:users,email',
-            'phone' => 'required|unique:users,phone',
+            'phone' => 'required|digits:9|unique:users,phone',
             'username' => 'required|string|unique:users,username',
             'password' => 'required|string|max:32|min:8|confirmed',
             'bank' => 'required|integer|max:99|min:1|exists:banks,id',
-            'account_number' => 'required|digits:20|unique:centers,account_number',
+            'account_owner' => 'required|string|max:50|min:10',
+            'account_number' => 'required|digits:20|unique:center_accounts,account_number',
             'website' => 'required|string|max:50|min:10|unique:centers,website',
+            'profile-cover' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
+            'profile-logo' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
         ]);
 
         $center = User::create([
@@ -97,6 +163,21 @@ class CenterController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        $cover = "";
+        $logo = "";
+
+        for ($i = 0; $i < 2; $i++){
+            $input_names = ['profile-cover', 'profile-logo'];
+            $file = $request->file($input_names[$i])->store('public/center-images');
+            $file_name = basename($file);
+            if($i == 0 ){
+                $cover = $file_name;
+            }else{
+                $logo = $file_name;
+            }
+        }
+
+
 
         Center::create([
             'user_id' => $center->id,
@@ -104,19 +185,32 @@ class CenterController extends Controller
             'verification_authority' => $request->verification_authority,
             'website' => $request->website,
             'city_id' => $request->city,
-            'bank_id' => $request->bank,
-            'account_number' => $request->account_number,
             'status' => 1,
+            'cover' => $cover,
+            'logo' => $logo,
+        ]);
+
+        CenterAccount::create([
+            'account_owner' => 'Test Owner',
+            'account_number' => $request->account_number,
+            'bank_id' => $request->bank,
+            'center_id' => $center->id,
         ]);
 
         auth()->login($center);
-        return redirect()->route('center.index');
+        return redirect()->route('center.index', $request->username);
     }
 
     public function show($name)
     {
         // When User|Student Wants To See The Profile Of The Center
-        return view('student.center-profile', compact('name'));
+
+        $center = User::where('username', $name)->first();
+        if ( count($center) == 0 ){
+            abort(404);
+        }
+        $courses = Course::where('center_id', $center->center->id)->get();
+        return view('student.center-profile', compact('center', 'courses'));
     }
 
     public function edit()
@@ -482,7 +576,7 @@ class CenterController extends Controller
 
         if ($request->hasFile('course-poster-1') && $request->hasFile('course-poster-2') ) {
             for ($i = 1; $i <= 2; $i++){
-                $file = $request->file('course-poster-'.$i)->store('public/courses-images');
+                $file = $request->file('course-poster-'.$i)->store('public/course-images');
                 $file_name = basename($file);
 
                 $image = Image::create([
@@ -502,6 +596,7 @@ class CenterController extends Controller
         if ( $request->type == 2 ){
             for ($i = 0; $i < count($request->coupon_code); $i++) {
                 $coupons = Coupon::create([
+                    'coupon_code' => $request->coupon_code[$i],
                     'course_id' => $course->id,
                     'discount' => $request->coupon_discount[$i],
                 ]);
@@ -704,6 +799,5 @@ class CenterController extends Controller
 
         return redirect()->route('center.course.admin.assign')->with('success', 'تم إضافة المسؤول بنجاح');
     }
-
 
 }

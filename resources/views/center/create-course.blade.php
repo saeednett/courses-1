@@ -13,7 +13,6 @@
     <link rel="stylesheet" href="{{ asset('css/center/plugins/select2/select2.css') }}">
     <link href="{{ asset('css/center/plugins/datepicker/bootstrap-datepicker.css') }}" rel="stylesheet">
     <link href="{{ asset('css/center/bootstrap-clockpicker.min.css') }}" rel="stylesheet">
-
 @endsection
 
 

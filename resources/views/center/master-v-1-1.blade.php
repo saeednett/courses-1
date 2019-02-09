@@ -164,7 +164,7 @@
                     <li class="profile-info dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"> <img
                                     width="44" class="img-circle avatar" alt=""
-                                    src="{{ asset('img/center/man-3.jpg') }}">
+                                    src="/storage/center-images/{{ \Illuminate\Support\Facades\Auth::user()->center->logo }}">
                             @auth()
                                 {{ \Illuminate\Support\Facades\Auth::user()->username }}
                             @else

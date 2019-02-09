@@ -93,7 +93,7 @@
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     <nav class="navbar navbar-expand-lg navbar-dark align-self-start sticky-top" style="background: #6fcf8f;">
-                        <img class="navbar-brand" src="{{ asset('img/logo2.png') }}" alt="" height="70">
+                        <img class="navbar-brand" src="{{ asset('img/student/logo2.png') }}" alt="" height="70">
                         <button class="navbar-toggler" type="button" data-toggle="collapse"
                                 data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                                 aria-expanded="false" aria-label="Toggle navigation">
@@ -155,7 +155,7 @@
                                         </span>
                                 @endif
                             </div>
-                            <div class="col-lg-3 text-center">
+                            <div class="col-lg-3 text-center pt-2">
                                 <label class="col-form-label required-field rtl">اسم المركز</label>
                             </div>
                         </div>
@@ -169,7 +169,7 @@
                                         </span>
                                 @endif
                             </div>
-                            <div class="col-lg-3 text-center">
+                            <div class="col-lg-3 text-center pt-2">
                                 <label class="col-form-label required-field rtl">رقم الترخيص</label>
                             </div>
                         </div>
@@ -183,21 +183,21 @@
                                         </span>
                                 @endif
                             </div>
-                            <div class="col-lg-3 text-center">
+                            <div class="col-lg-3 text-center pt-2">
                                 <label class="col-form-label required-field rtl">الجهة المرخصة</label>
                             </div>
                         </div>
 
                         <div class="form-group row justify-content-center">
                             <div class="col-lg-9">
-                                <input type="text" name="phone" class="form-control {{ $errors->has('phone') ? ' is-invalid' : '' }} custom-input num-only text-center" value="{{ old('phone') }}" placeholder="رقم الهاتف" autocomplete="off" required>
+                                <input type="text" name="phone" class="form-control {{ $errors->has('phone') ? ' is-invalid' : '' }} custom-input num-only text-center" value="{{ old('phone') }}" placeholder="رقم الهاتف" autocomplete="off" maxlength="13" minlength="9" required>
                                 @if ($errors->has('phone'))
                                     <span class="invalid-feedback text-center" role="alert">
                                             <strong>{{ $errors->first('phone') }}</strong>
                                         </span>
                                 @endif
                             </div>
-                            <div class="col-lg-3 text-center">
+                            <div class="col-lg-3 text-center pt-2">
                                 <label class="col-form-label required-field rtl">رقم الهاتف</label>
                             </div>
                         </div>
@@ -211,7 +211,7 @@
                                         </span>
                                 @endif
                             </div>
-                            <div class="col-lg-3 text-center">
+                            <div class="col-lg-3 text-center pt-2">
                                 <label class="col-form-label required-field rtl">البريد الإلكتروني</label>
                             </div>
                         </div>
@@ -225,7 +225,7 @@
                                         </span>
                                 @endif
                             </div>
-                            <div class="col-lg-3 text-center">
+                            <div class="col-lg-3 text-center pt-2">
                                 <label class="col-form-label required-field rtl">اسم المستخدم</label>
                             </div>
                         </div>
@@ -239,7 +239,7 @@
                                         </span>
                                 @endif
                             </div>
-                            <div class="col-lg-3 text-center">
+                            <div class="col-lg-3 text-center pt-2">
                                 <label class="col-form-label required-field rtl">كلمة المرور</label>
                             </div>
                         </div>
@@ -253,7 +253,7 @@
                                         </span>
                                 @endif
                             </div>
-                            <div class="col-lg-3 text-center">
+                            <div class="col-lg-3 text-center pt-2">
                                 <label class="col-form-label required-field rtl">تأكيد كلمة المرور</label>
                             </div>
                         </div>
@@ -272,7 +272,7 @@
                                         </span>
                                 @endif
                             </div>
-                            <div class="col-lg-3 text-center">
+                            <div class="col-lg-3 text-center pt-2">
                                 <label class="col-form-label required-field rtl">اسم الدولة</label>
                             </div>
                         </div>
@@ -288,7 +288,7 @@
                                     </span>
                                 @endif
                             </div>
-                            <div class="col-lg-3 text-center">
+                            <div class="col-lg-3 text-center pt-2">
                                 <label class="col-form-label required-field rtl">اسم المدينة</label>
                             </div>
                         </div>
@@ -302,8 +302,8 @@
                                         </span>
                                 @endif
                             </div>
-                            <div class="col-lg-3 text-center">
-                                <label class="col-form-label">الموقع الإلكتروني</label>
+                            <div class="col-lg-3 text-center pt-2">
+                                <label class="col-form-label required-field rtl">الموقع الإلكتروني</label>
                             </div>
                         </div>
 
@@ -315,37 +315,90 @@
                                         <option value="{{ $bank->id }}">{{ $bank->name }}</option>
                                     @endforeach
                                 </select>
-                                @if ($errors->has('$bank'))
+                                @if ($errors->has('bank'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('$bank') }}</strong>
+                                            <strong>{{ $errors->first('bank') }}</strong>
                                         </span>
                                 @endif
                             </div>
-                            <div class="col-lg-3 text-center">
+                            <div class="col-lg-3 text-center pt-2">
                                 <label class="col-form-label required-field rtl">اسم البنك</label>
                             </div>
                         </div>
 
                         <div class="form-group row justify-content-center">
                             <div class="col-lg-9">
-                                <input type="text" name="account_number" class="form-control {{ $errors->has('account_number') ? ' is-invalid' : '' }} custom-input num-only text-center" value="{{ old('account_number') }}" placeholder="رقم الحساب | الايبان" autocomplete="off" maxlength="20" minlength="20" required>
+                                <input type="text" name="account_owner" class="form-control {{ $errors->has('account_owner') ? ' is-invalid' : '' }} custom-input text-center" value="{{ old('account_owner') }}" placeholder="اسم صاحب الحساب" autocomplete="off" maxlength="50" minlength="10" required>
+                                @if ($errors->has('account_owner'))
+                                    <span class="invalid-feedback text-center" role="alert">
+                                            <strong>{{ $errors->first('account_owner') }}</strong>
+                                        </span>
+                                @endif
+                            </div>
+                            <div class="col-lg-3 text-center pt-2">
+                                <label class="col-form-label required-field rtl">اسم الحساب</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group row justify-content-center">
+                            <div class="col-lg-9">
+                                <input type="text" name="account_woner" class="form-control {{ $errors->has('account_number') ? ' is-invalid' : '' }} custom-input num-only text-center" value="{{ old('account_number') }}" placeholder="رقم الحساب | الايبان" autocomplete="off" maxlength="20" minlength="20" required>
                                 @if ($errors->has('account_number'))
                                     <span class="invalid-feedback text-center" role="alert">
                                             <strong>{{ $errors->first('account_number') }}</strong>
                                         </span>
                                 @endif
                             </div>
-                            <div class="col-lg-3 text-center">
+                            <div class="col-lg-3 text-center pt-2">
                                 <label class="col-form-label required-field rtl">رقم الحساب</label>
                             </div>
                         </div>
 
-                        <div class="dropdown-divider mt-5 mb-5"></div>
+                        <div class="form-group row justify-content-center">
+                            <div class="col-lg-9">
+                                <input type="text" id="profile-cover" class="form-control {{ $errors->has('profile-cover') ? ' is-invalid' : '' }} custom-input text-center" value="{{ old('profile-cover') }}" placeholder="صورة الغلاف" autocomplete="off" readonly required>
+                                @if ($errors->has('profile-cover'))
+                                    <span class="invalid-feedback text-center" role="alert">
+                                            <strong>{{ $errors->first('profile-cover') }}</strong>
+                                        </span>
+                                @endif
+                            </div>
+                            <div class="col-lg-3 text-center pt-2">
+                                <label class="col-form-label required-field rtl">صورة الغلاف</label>
+                            </div>
+                        </div>
 
                         <div class="form-group row justify-content-center">
-                            <div class="col-lg-8">
-                                <button class="btn col-lg-8 custom-btn">تسجيل</button>
-                                <p class="col-lg-8 mt-2 text-right rtl"><span>هل لديك حساب؟</span> <a href="{{ route('center.login') }}"> تسجيل الدخول</a></p>
+                            <div class="col-lg-9">
+                                <input type="text" id="profile-logo" class="form-control {{ $errors->has('profile-logo') ? ' is-invalid' : '' }} custom-input text-center" value="{{ old('profile-logo') }}" placeholder="الصورة الشخصية" autocomplete="off" readonly required>
+                                @if ($errors->has('profile-logo'))
+                                    <span class="invalid-feedback text-center" role="alert">
+                                            <strong>{{ $errors->first('profile-logo') }}</strong>
+                                        </span>
+                                @endif
+                            </div>
+                            <div class="col-lg-3 text-center pt-2">
+                                <label class="col-form-label required-field rtl">الصورة الشخصية</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group row justify-content-center">
+                            <div class="col-lg-6">
+                                <input type="file" name="profile-cover" style="opacity: 0;">
+                            </div>
+                            <div class="col-lg-6 text-center">
+                                <input type="file" name="profile-logo" style="opacity: 0;">
+                            </div>
+                        </div>
+
+
+
+                        <div class="dropdown-divider mt-5 mb-5"></div>
+
+                        <div class="form-group row justify-content-start">
+                            <div class="col-lg-9">
+                                <button class="btn btn-block custom-btn">تسجيل</button>
+                                <p class="mt-2 pr-2 text-right rtl"><span>هل لديك حساب؟</span> <a href="{{ route('center.login') }}"> تسجيل الدخول</a></p>
                             </div>
                         </div>
 
@@ -427,7 +480,7 @@
 
             <div class="row justify-content-center mt-4">
                 <div class="col-lg-2 col-md-2 col-sm-5 col-5">
-                    <a href="a"><img src="{{ asset('img/logo2.png') }}"> </a>
+                    <a href="a"><img src="{{ asset('img/student/logo2.png') }}"> </a>
                 </div>
             </div>
 
@@ -484,6 +537,24 @@
                     alert("هناك خطأ الرجاء المحاولة لاحقا");
                 }
             });
+        });
+
+        $("#profile-logo").on('click', function () {
+            $("input[name=profile-logo]").trigger('click');
+        });
+
+        $("input[name=profile-logo]").on('change', function () {
+            let file = $("input[name=profile-logo]")[0].files[0];
+            $("#profile-logo").val(file.name);
+        });
+
+        $("#profile-cover").on('click', function () {
+            $("input[name=profile-cover]").trigger('click');
+        });
+
+        $("input[name=profile-cover]").on('change', function () {
+            let file = $("input[name=profile-cover]")[0].files[0];
+            $("#profile-cover").val(file.name);
         });
     });
 </script>

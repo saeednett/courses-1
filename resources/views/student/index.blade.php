@@ -117,9 +117,9 @@
 
                         @foreach($courses as $course)
                             <div class="col-lg-4 col-md-4 col-sm-4 col-12 mt-3">
-                                <a class="card" data-post="1452" href="{{ route('account.course_details', [$course->center->user->username, $course->identifier,] ) }}"
-                                   title="#بسطة_ماركت4">
-                                    <img src="/storage/courses-images/{{ $course->image[1]->url }}" class="card-img-top" alt="..." width="301" height="200">
+                                <a class="card" href="{{ route('account.course_details', [$course->center->user->username, $course->identifier,] ) }}"
+                                   title="{{ $course->title }}">
+                                    <img src="/storage/course-images/{{ $course->image[0]->url }}" class="card-img-top" alt="..." width="301" height="200">
                                     <div class="card-title text-center mt-2 mr-2">
                                         <h5>{{ $course->title }}</h5>
                                     </div>

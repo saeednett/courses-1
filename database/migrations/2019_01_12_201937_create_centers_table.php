@@ -21,8 +21,6 @@ class CreateCentersTable extends Migration
             $table->string('website');
             $table->integer('country_id');
             $table->integer('city_id');
-            $table->integer('bank_id')->nullable();
-            $table->string('account_number')->nullable();
             $table->integer('status');
             $table->timestamps();
         });
