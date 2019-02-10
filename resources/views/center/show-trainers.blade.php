@@ -53,7 +53,8 @@
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="{{ route('center.trainer.edit', $trainer->id) }}"> <span>تعديل</span>
+                                                        <a href="{{ route('center.trainer.edit', $trainer->id) }}">
+                                                            <span>تعديل</span>
                                                             <i class="fa fa-pencil-square pull-right text-success"></i>
                                                         </a>
                                                     </li>

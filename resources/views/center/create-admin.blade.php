@@ -124,7 +124,7 @@
 
                 <div class="panel-body">
 
-                    <form method="post" action="{{ route('center.admin.store') }}">
+                    <form method="post" action="{{ route('center.admin.store') }}" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="row">
                             <div class="col-lg-6">
@@ -269,19 +269,15 @@
 
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label for="personal-profile">الصورة الشخصية</label>
-                                    <input type="text" class="form-control custom-input text-center" placeholder='اختر صورة الملف الشخصي' />
-                                    <input type="file" name="personal-profile" style="opacity: 0;" accept="image/png, image/jpg">
+                                    <label for="profile-image">الصورة الشخصية</label>
+                                    <input type="text" id="profile-image" class="form-control custom-input text-center" placeholder='اختر صورة الملف الشخصي' readonly required/>
+                                    <input type="file" name="profile-image" style="opacity: 0;" accept="image/png, image/jpg" required>
                                 </div>
                             </div>
 
 
                             <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="personal-profile">الصورة الشخصية</label>
-                                    <input type="text" class="form-control custom-input text-center" placeholder='اختر صورة الملف الشخصي' />
-                                    <input type="file" name="personal-profile" style="opacity: 0;" accept="image/png, image/jpg">
-                                </div>
+
                             </div>
 
 
@@ -331,6 +327,15 @@
             $(".select2").select2();
             $(".select2-placeholer").select2({
 
+            });
+
+            $("#profile-image").on('click', function () {
+                $("input[name=profile-image]").trigger('click');
+            });
+
+            $("input[name=profile-image]").on('change', function () {
+                let file = $("input[name=profile-image]")[0].files[0];
+                $("#profile-image").val(file.name);
             });
         });
     </script>

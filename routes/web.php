@@ -47,16 +47,15 @@ Route::get('/{center}', 'CenterController@index')->name('center.index')->middlew
 // When The Student Wants To Show The Information Of The Center
 Route::get('profile/{name}', 'CenterController@show')->name('center.profile');
 // To Show And Edit The Profile Information Of The Center
-Route::get('center/center-profile', 'CenterController@edit')->name('center.edit')->middleware('auth-center');
+Route::get('center/edit-profile', 'CenterController@edit')->name('center.edit')->middleware('auth-center');
 // The New Information Goes Here
 Route::put('center/update', 'CenterController@update')->name('center.update')->middleware('auth-center');
 // To Create A New Trainer Belongs To The Center
 Route::get('center/crate-trainer', 'CenterController@create_trainer')->name('center.trainer.create')->middleware('auth-center');
 // The Information Of The Trainer Goes Here
-Route::post('center/crate-trainer', 'Center
-Controller@store_trainer')->name('center.trainer.store')->middleware('auth-center');
+Route::post('center/crate-trainer', 'CenterController@store_trainer')->name('center.trainer.store')->middleware('auth-center');
 // To Show All Trainers Who Belong To The Center
-Route::get('center/center-trainers', 'CenterController@show_trainers')->name('center.trainer.show')->middleware('auth-center');
+Route::get('center/show-trainers', 'CenterController@show_trainers')->name('center.trainer.show')->middleware('auth-center');
 // To Edit A Trainer Information
 Route::get('center/trainer-edit/{id}', 'CenterController@edit_trainer')->name('center.trainer.edit')->middleware('auth-center');
 // The New Information Goes Here
@@ -66,7 +65,7 @@ Route::get('center/crate-admin', 'CenterController@create_admin')->name('center.
 // The Data Of The Creation Goes Here
 Route::post('center/crate-admin', 'CenterController@store_admin')->name('center.admin.store')->middleware('auth-center');
 // To Show All Admins Who Belong To The Center
-Route::get('center/center-admins', 'CenterController@show_admins')->name('center.admin.show')->middleware('auth-center');
+Route::get('center/show-admins', 'CenterController@show_admins')->name('center.admin.show')->middleware('auth-center');
 // To Edit Admin Information
 Route::get('center/admin-edit/{id}', 'CenterController@edit_admin')->name('center.admin.edit')->middleware('auth-center');
 // The New Information Goes Here
@@ -80,7 +79,7 @@ Route::get('center/create-course', 'CenterController@create_course')->name('cent
 // The Data Of Creation Goes Here
 Route::post('center/create-course', 'CenterController@store_course')->name('center.course.store')->middleware('auth-center');
 // To Show All Courses Who Belong To The Center
-Route::get('center/create-courses', 'CenterController@show_courses')->name('center.course.show')->middleware('auth-center');
+Route::get('center/show-courses', 'CenterController@show_courses')->name('center.course.show')->middleware('auth-center');
 // To Register As A Center
 Route::get('center/sign-up', 'CenterController@create')->name('center.register')->middleware('guest');
 // The Data Of Registering Goes Here

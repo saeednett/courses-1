@@ -113,8 +113,16 @@
                     </ul>
                 </li>
 
-                <li class="has-sub"><a href="form-basic.html"><i class="icon-doc-text"></i><span
-                                class="title">الملف الاشخصي</span></a>
+                <li class="has-sub"><a href="form-basic.html"><i class="icon-doc-text"></i><span class="title">الملف الاشخصي</span></a>
+                    <ul class="nav collapse">
+                        <li><a href="{{ route('center.edit') }}"><span class="title">كلمة المرور</span></a></li>
+                    </ul>
+                    <ul class="nav collapse">
+                        <li><a href="{{ route('center.edit') }}"><span class="title">بياناتي البنكية</span></a></li>
+                    </ul>
+                    <ul class="nav collapse">
+                        <li><a href="{{ route('center.edit') }}"><span class="title">بيانات التواصل</span></a></li>
+                    </ul>
                     <ul class="nav collapse">
                         <li><a href="{{ route('center.edit') }}"><span class="title">بياناتي الشخصية</span></a></li>
                     </ul>

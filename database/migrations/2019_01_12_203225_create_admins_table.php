@@ -18,6 +18,7 @@ class CreateAdminsTable extends Migration
             $table->integer('user_id');
             $table->integer('center_id');
             $table->integer('status');
+            $table->string('image');
             $table->timestamps();
         });
     }

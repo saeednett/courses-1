@@ -342,7 +342,7 @@
 
                         <div class="form-group row justify-content-center">
                             <div class="col-lg-9">
-                                <input type="text" name="account_woner" class="form-control {{ $errors->has('account_number') ? ' is-invalid' : '' }} custom-input num-only text-center" value="{{ old('account_number') }}" placeholder="رقم الحساب | الايبان" autocomplete="off" maxlength="20" minlength="20" required>
+                                <input type="text" name="account_number" class="form-control {{ $errors->has('account_number') ? ' is-invalid' : '' }} custom-input num-only text-center" value="{{ old('account_number') }}" placeholder="رقم الحساب | الايبان" autocomplete="off" maxlength="20" minlength="20" required>
                                 @if ($errors->has('account_number'))
                                     <span class="invalid-feedback text-center" role="alert">
                                             <strong>{{ $errors->first('account_number') }}</strong>

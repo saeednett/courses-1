@@ -19,9 +19,9 @@ class CreateCentersTable extends Migration
             $table->string('verification_code');
             $table->string('verification_authority');
             $table->string('website');
-            $table->integer('country_id');
             $table->integer('city_id');
             $table->integer('status');
+            $table->text('about');
             $table->timestamps();
         });
     }

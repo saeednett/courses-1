@@ -348,10 +348,10 @@
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label class="required-field" for="personal-profile">غلاف الدورة</label>
-                                            <input type="text" class="form-control custom-input text-center"
-                                                   placeholder='اختر غلاف الدورة'/>
+                                            <input type="text" id="course-poster-1" class="form-control custom-input text-center"
+                                                   placeholder='اختر غلاف الدورة' readonly required/>
                                             <input type="file" name="course-poster-1" style="opacity: 0;"
-                                                   accept="image/png, image/jpg">
+                                                   accept="image/png, image/jpg" required>
                                         </div>
                                     </div>
 
@@ -359,10 +359,10 @@
                                         <div class="form-group">
                                             <label class="required-field" for="personal-profile">غلاف الدورة -
                                                 02 </label>
-                                            <input type="text" class="form-control custom-input text-center"
-                                                   placeholder='اختر غلاف الدورة - 02'/>
+                                            <input type="text" id="course-poster-2" class="form-control custom-input text-center"
+                                                   placeholder='اختر غلاف الدورة - 02' readonly required/>
                                             <input type="file" name="course-poster-2" style="opacity: 0;"
-                                                   accept="image/png, image/jpg">
+                                                   accept="image/png, image/jpg" required>
                                         </div>
                                     </div>
                                 </div>
@@ -427,8 +427,8 @@
                                             </select>
                                             @if ($errors->has('type'))
                                                 <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('type') }}</strong>
-                                        </span>
+                                                    <strong>{{ $errors->first('type') }}</strong>
+                                                </span>
                                             @endif
                                         </div>
                                     </div>
@@ -437,7 +437,7 @@
                             <div class="tab-pane" id="tab2-4">
 
                                 <div class="row">
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-2">
                                         <div class="form-group">
                                             <label class="required-field" for="title">تاريخ الدورة</label>
                                             <input type="text"
@@ -453,7 +453,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-2">
                                         <div class="form-group">
                                             <label class="required-field" for="time">وقت الدورة</label>
                                             <input type="text"
@@ -477,7 +477,7 @@
                                                    name="attendance[]" id="attendance"
                                                    value="{{ old('attendance[0]') }}"
                                                    placeholder="عدد المقاعد"
-                                                   autocomplete="off" required>
+                                                   autocomplete="off" maxlength="4" required>
                                             @if ($errors->has('attendance'))
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $errors->first('attendance') }}</strong>
@@ -490,13 +490,44 @@
                                         <div class="form-group">
                                             <label class="required-field" for="price">مبلغ الدورة</label>
                                             <input type="text"
-                                                   class="form-control {{ $errors->has('price') ? 'is-invalid' : '' }} custom-input text-center ltr"
+                                                   class="form-control {{ $errors->has('price') ? 'is-invalid' : '' }} custom-input text-center num-only ltr"
                                                    name="price[]" id="price" value="{{ old('price[0]') }}"
                                                    placeholder="مبلغ الدورة"
-                                                   autocomplete="off" required>
+                                                   autocomplete="off" maxlength="4" required>
                                             @if ($errors->has('price'))
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $errors->first('price') }}</strong>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <div class="form-group">
+                                            <label class="required-field" for="gender">الحضور</label>
+                                            <select id="gender" class="form-control select2-placeholer {{ $errors->has('gender') ? 'is-invalid' : '' }}"
+                                                    name="gender[]" required>
+                                                @if(old('gender') == 1)
+                                                    <option value="1" selected>رجال</option>
+                                                    <option value="2">نساء</option>
+                                                    <option value="3">رجال ونساء</option>
+                                                @elseif(old('gender') == 2)
+                                                    <option value="1">رجال</option>
+                                                    <option value="2" selected>نساء</option>
+                                                    <option value="3">رجال ونساء</option>
+                                                @elseif(old('gender') == 3)
+                                                    <option value="1">رجال</option>
+                                                    <option value="2">نساء</option>
+                                                    <option value="3" selected>رجال ونساء</option>
+                                                @else
+                                                    <option value="1">رجال</option>
+                                                    <option value="2">نساء</option>
+                                                    <option value="3">رجال ونساء</option>
+                                                @endif
+                                            </select>
+                                            @if ($errors->has('type'))
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('type') }}</strong>
                                                 </span>
                                             @endif
                                         </div>
@@ -772,8 +803,37 @@
 
 
             $("#add-appointment").on('click', function () {
-                $("<div class='row'> <div class='col-lg-3'><div class='form-group'> <label class='required-field' for='title'>تاريخ الدورة</label> <input type='text' class='form-control {{ $errors->has('date') ? 'is-invalid' : '' }} custom-input text-center datepicker ltr' name='date[]' id='title' placeholder='تاريخ الدورة' autocomplete='off' required> </div></div> <div class='col-lg-3'><div class='form-group'> <label class='required-field' for='time'>وقت الدورة</label> <input type='text' class='form-control {{ $errors->has('time') ? 'is-invalid' : '' }} custom-input text-center' name='time[]' id='time' placeholder='وقت الدورة' autocomplete='off' required> </div></div> <div class='col-lg-2'> <div class='form-group'> <label class='required-field' for='attendance'>عدد المقاعد</label> <input type='text' class='form-control {{ $errors->has('attendance') ? 'is-invalid' : '' }} custom-input text-center num-only ltr' name='attendance[]' id='attendance' value='{{ old('attendance[0]') }}' placeholder='عدد المقاعد' autocomplete='off' required> </div> </div>   <div class='col-lg-2'> <div class='form-group'> <label class='required-field' for='price'>مبلغ الدورة</label> <input type='text' class='form-control {{ $errors->has('price') ? 'is-invalid' : '' }} custom-input text-center ltr' name='price[]' id='price' placeholder='مبلغ الدورة' autocomplete='off' required></div></div> <div class='col-lg-2'> <label for='trainer'></label><button type='button' class='btn btn-danger btn-block custom-input remove'><i class='fa fa-trash'></i></button> </div> </div>").insertBefore($('#submit').parent().parent().parent());
+                $("<div class='row'> <div class='col-lg-2'><div class='form-group'> <label class='required-field' for='title'>تاريخ الدورة</label> <input type='text' class='form-control {{ $errors->has('date') ? 'is-invalid' : '' }} custom-input text-center datepicker ltr' name='date[]' id='title' placeholder='تاريخ الدورة' autocomplete='off' required> </div></div> <div class='col-lg-2'><div class='form-group'> <label class='required-field' for='time'>وقت الدورة</label> <input type='text' class='form-control {{ $errors->has('time') ? 'is-invalid' : '' }} custom-input text-center' name='time[]' id='time' placeholder='وقت الدورة' autocomplete='off' required> </div></div> <div class='col-lg-2'> <div class='form-group'> <label class='required-field' for='attendance'>عدد المقاعد</label> <input type='text' class='form-control {{ $errors->has('attendance') ? 'is-invalid' : '' }} custom-input text-center num-only ltr' name='attendance[]' id='attendance' value='{{ old('attendance[0]') }}' placeholder='عدد المقاعد' autocomplete='off' required> </div> </div>   <div class='col-lg-2'> <div class='form-group'> <label class='required-field' for='price'>مبلغ الدورة</label> <input type='text' class='form-control {{ $errors->has('price') ? 'is-invalid' : '' }} custom-input text-center ltr' name='price[]' id='price' placeholder='مبلغ الدورة' autocomplete='off' required></div></div> <div class='col-lg-2'> <div class='form-group'> <label class='required-field' for='gender'>الحضور</label> <select id='gender' class='form-control select2-placeholer' name='gender[]' required><option value='1'>رجال</option><option value='2'>نساء</option> <option value='3'>رجال ونساء</option> </select> </div> </div> <div class='col-lg-2'> <label for='trainer'></label><button type='button' class='btn btn-danger btn-block custom-input remove'><i class='fa fa-trash'></i></button> </div> </div>").insertBefore($('#submit').parent().parent().parent());
                 refreshTimePicker();
+                refreshSelect();
+            });
+
+
+            $("#course-poster-1").on('click', function () {
+                $("input[name=course-poster-1]").trigger('click');
+            });
+
+            $("input[name=course-poster-1]").on('change', function () {
+                let file = $("input[name=course-poster-1]")[0].files[0];
+                $("#course-poster-1").val(file.name);
+            });
+
+            $("#course-poster-2").on('click', function () {
+                $("input[name=course-poster-2]").trigger('click');
+            });
+
+            $("input[name=course-poster-2]").on('change', function () {
+                let file = $("input[name=course-poster-2]")[0].files[0];
+                $("#course-poster-2").val(file.name);
+            });
+
+
+            $(document).on("keypress", '.num-only', function(evt){
+                let charCode = (evt.which) ? evt.which : event.keyCode;
+                if ( charCode > 31 && (charCode < 48 || charCode > 57) ){
+                    return false;
+                }
+                return true;
             });
         });
     </script>

@@ -22,9 +22,11 @@ use App\Trainer;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+
 
 class CenterController extends Controller
 {
@@ -35,13 +37,14 @@ class CenterController extends Controller
 //    }
 
 
-    public function check_coupon($course_identifier, $coupon){
+    public function check_coupon($course_identifier, $coupon)
+    {
         $course = Course::select('id')->where('identifier', $course_identifier)->get();
         $response['status'] = array();
         $response['errors'] = array();
         $response['response'] = array();
 
-        if ( count($course) == 0 ){
+        if (count($course) == 0) {
             array_push($response['status'], "Error");
             array_push($response['errors'], "Wrong Course Identifier");
             array_push($response['response'], null);
@@ -50,15 +53,15 @@ class CenterController extends Controller
 
         $coupon = Coupon::where('coupon_code', $coupon)->get();
 
-        if ( count($coupon) == 0 ){
+        if (count($coupon) == 0) {
             array_push($response['status'], "Failed");
             array_push($response['errors'], null);
             array_push($response['response'], "كود الخصم غير موجود");
             return response()->json($response);
-        }else {
+        } else {
             array_push($response['status'], "Success");
             array_push($response['errors'], null);
-            array_push($response['response'], "%".$coupon[0]->discount." كود الخصم موجود بقيمة  ");
+            array_push($response['response'], "%" . $coupon[0]->discount . " كود الخصم موجود بقيمة  ");
             return response()->json($response);
         }
 
@@ -81,11 +84,12 @@ class CenterController extends Controller
         }
     }
 
-    public function bank_account($center_id, $bank_id){
+    public function bank_account($center_id, $bank_id)
+    {
 
         $center = User::find($center_id);
 
-        if ( $center->role_id != 2 ){
+        if ($center->role_id != 2) {
             $response['error'] = ['Wrong Center Identifier'];
             return response()->json($response);
         }
@@ -93,11 +97,11 @@ class CenterController extends Controller
         $banks_data = array();
         $banks_id = CenterAccount::select('bank_id')->where('center_id', $center->center->id)->get();
 
-        foreach ($banks_id as $id){
+        foreach ($banks_id as $id) {
             array_push($banks_data, $id->bank_id);
         }
 
-        if( !in_array((int)$bank_id, $banks_data) ){
+        if (!in_array((int)$bank_id, $banks_data)) {
             $response['error'] = ['Wrong Bank Identifier'];
             return response()->json($response);
         }
@@ -105,7 +109,7 @@ class CenterController extends Controller
         $bank = Bank::find($bank_id);
         $accounts = CenterAccount::where('center_id', $center->center->id)->where('bank_id', $bank_id)->get();
         $response['response'] = array();
-        foreach ($accounts as $account){
+        foreach ($accounts as $account) {
             $response['response'] = ['id' => $bank->id, 'name' => $bank->name, 'logo' => $bank->logo, 'account_owner' => $account->account_owner, 'account_number' => $account->account_number];
         }
 
@@ -154,51 +158,60 @@ class CenterController extends Controller
             'profile-logo' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
         ]);
 
-        $center = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'username' => $request->username,
-            'phone' => "+966" . $request->phone,
-            'role_id' => 2,
-            'password' => Hash::make($request->password),
-        ]);
+        DB::beginTransaction();
 
-        $cover = "";
-        $logo = "";
+        try {
+            $center = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'username' => $request->username,
+                'phone' => "+966" . $request->phone,
+                'role_id' => 2,
+                'password' => Hash::make($request->password),
+            ]);
 
-        for ($i = 0; $i < 2; $i++){
-            $input_names = ['profile-cover', 'profile-logo'];
-            $file = $request->file($input_names[$i])->store('public/center-images');
-            $file_name = basename($file);
-            if($i == 0 ){
-                $cover = $file_name;
-            }else{
-                $logo = $file_name;
+            $cover = "";
+            $logo = "";
+
+            for ($i = 0; $i < 2; $i++) {
+                $input_names = ['profile-cover', 'profile-logo'];
+                $file = $request->file($input_names[$i])->store('public/center-images');
+                $file_name = basename($file);
+                if ($i == 0) {
+                    $cover = $file_name;
+                } else {
+                    $logo = $file_name;
+                }
             }
+
+
+            $center = Center::create([
+                'user_id' => $center->id,
+                'verification_code' => $request->verification_code,
+                'verification_authority' => $request->verification_authority,
+                'website' => $request->website,
+                'city_id' => $request->city,
+                'status' => 1,
+                'cover' => $cover,
+                'logo' => $logo,
+            ]);
+
+            CenterAccount::create([
+                'account_owner' => 'Test Owner',
+                'account_number' => $request->account_number,
+                'bank_id' => $request->bank,
+                'center_id' => $center->id,
+            ]);
+
+            DB::commit();
+
+            auth()->login($center);
+            return redirect()->route('center.index', $request->username);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            // something went wrong
         }
-
-
-
-        Center::create([
-            'user_id' => $center->id,
-            'verification_code' => $request->verification_code,
-            'verification_authority' => $request->verification_authority,
-            'website' => $request->website,
-            'city_id' => $request->city,
-            'status' => 1,
-            'cover' => $cover,
-            'logo' => $logo,
-        ]);
-
-        CenterAccount::create([
-            'account_owner' => 'Test Owner',
-            'account_number' => $request->account_number,
-            'bank_id' => $request->bank,
-            'center_id' => $center->id,
-        ]);
-
-        auth()->login($center);
-        return redirect()->route('center.index', $request->username);
     }
 
     public function show($name)
@@ -206,7 +219,7 @@ class CenterController extends Controller
         // When User|Student Wants To See The Profile Of The Center
 
         $center = User::where('username', $name)->first();
-        if ( count($center) == 0 ){
+        if (count($center) == 0) {
             abort(404);
         }
         $courses = Course::where('center_id', $center->center->id)->get();
@@ -221,15 +234,12 @@ class CenterController extends Controller
         $countries = Country::all();
         $banks = Bank::all();
 
+        $courses = Course::where('center_id', Auth::user()->center->id)->get();
+        $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+        $admins = Admin::where('center_id', Auth::user()->center->id)->get();
 
-        $courses = Course::where('center_id', Auth::user()->id)->get();
-        $trainers = Trainer::where('center_id', Auth::user()->id)->get();
-        $admins = Admin::where('center_id', Auth::user()->id)->get();
-
-
-        $course_id = Course::select('id')->where('center_id', Auth::user()->id)->get();
+        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
         $students = Reservation::find($course_id)->count();
-
 
         return view('center.edit-center', compact('center', 'banks', 'countries', 'cities', 'courses', 'trainers', 'admins', 'students'));
     }
@@ -246,9 +256,11 @@ class CenterController extends Controller
             'email' => 'required|email|' . Rule::unique('users')->ignore(Auth()->user()->id),
             'phone' => 'required|' . Rule::unique('users')->ignore(Auth()->user()->id),
             'username' => 'required|string|' . Rule::unique('users')->ignore(Auth()->user()->id),
-            'bank' => 'required|integer|max:99|min:1|exists:banks,id',
-            'account_number' => 'required|digits:20|' . Rule::unique('centers')->ignore(Auth()->user()->id, 'user_id'),
+//            'bank' => 'required|integer|max:99|min:1|exists:banks,id',
+//            'account_number' => 'required|digits:20|' . Rule::unique('centers')->ignore(Auth()->user()->id, 'user_id'),
             'website' => 'required|string|max:50|min:10|' . Rule::unique('centers')->ignore(Auth()->user()->id, 'user_id'),
+            'profile-cover' => 'sometimes|image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
+            'profile-logo' => 'sometimes|image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
         ]);
 
         $counter = 0;
@@ -286,20 +298,60 @@ class CenterController extends Controller
             $counter++;
         }
 
-        if ($center->center->bank_id != $request->bank) {
-            $center->center->bank_id = $request->bank;
-            $counter++;
-        }
-
-        if ($center->center->account_number != $request->account_number) {
-            $center->center->account_number = $request->account_number;
-            $counter++;
-        }
+//        if ($center->center->bank_id != $request->bank) {
+//            $center->center->bank_id = $request->bank;
+//            $counter++;
+//        }
+//
+//        if ($center->center->account_number != $request->account_number) {
+//            $center->center->account_number = $request->account_number;
+//            $counter++;
+//        }
 
         if ($center->center->website != $request->website) {
             $center->center->website = $request->website;
             $counter++;
         }
+
+
+        if ($request->hasFile('profile-cover')) {
+            $counter++;
+            if (File::exists('public/center-images/' . $center->center->cover)) {
+                if (Storage::delete('public/center-images/' . $center->center->cover)) {
+                    $file = $request->file('profile-cover')->store('public/center-images');
+                    $file_name = basename($file);
+                    $center->center->cover = $file_name;
+                }
+            } else {
+                $file = $request->file('profile-cover')->store('public/center-images');
+                $file_name = basename($file);
+                $center->center->cover = $file_name;
+            }
+
+        }
+
+        if ($request->hasFile('profile-logo')) {
+            $counter++;
+            if (File::exists('public/center-images/' . $center->center->logo)) {
+                if (Storage::delete('public/center-images/' . $center->center->logo)) {
+                    $file = $request->file('profile-logo')->store('public/center-images');
+                    $file_name = basename($file);
+                    $center->center->logo = $file_name;
+                }
+            } else {
+                $file = $request->file('profile-logo')->store('public/center-images');
+                $file_name = basename($file);
+                $center->center->logo = $file_name;
+            }
+
+        }
+
+        if ($center->center->about != $request->about) {
+            $center->center->about = $request->about;
+            $counter++;
+        }
+
+
 
         if ($counter > 0) {
             $center->save();
@@ -327,14 +379,12 @@ class CenterController extends Controller
         $nationalities = Nationality::all();
         $titles = Title::all();
 
+        $courses = Course::where('center_id', Auth::user()->center->id)->get();
+        $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+        $admins = Admin::where('center_id', Auth::user()->center->id)->get();
 
-        $courses = Course::where('center_id', Auth::user()->id)->get();
-        $trainers = Trainer::where('center_id', Auth::user()->id)->get();
-        $admins = Admin::where('center_id', Auth::user()->id)->get();
-
-        $course_id = Course::select('id')->where('center_id', Auth::user()->id)->get();
+        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
         $students = Reservation::find($course_id)->count();
-
 
         return view('center.create-trainer', compact('nationalities', 'titles', 'courses', 'trainers', 'admins', 'students'));
     }
@@ -350,14 +400,10 @@ class CenterController extends Controller
             'password' => 'required|string|max:32|min:8|confirmed',
             'title' => 'required|integer|max:99|min:1|exists:titles,id',
             'nationality' => 'required|integer|max:99|min:1|exists:nationalities,id',
+            'profile-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
         ]);
 
         DB::beginTransaction();
-
-        function Home()
-        {
-            dd($GLOBALS['request']->name);
-        }
 
         try {
 
@@ -366,21 +412,25 @@ class CenterController extends Controller
                 'email' => $request->email,
                 'username' => $request->username,
                 'phone' => $request->phone,
-                'role_id' => 5,
+                'role_id' => 4,
                 'password' => Hash::make($request->password),
             ]);
 
+            $file = $request->file('profile-image')->store('public/trainer-images');
+            $file_name = basename($file);
 
             Trainer::create([
                 'user_id' => $user->id,
-                'center_id' => Auth::user()->id,
+                'center_id' => Auth::user()->center->id,
                 'title_id' => $request->title,
                 'nationality_id' => $request->nationality,
+                'image' => $file_name,
             ]);
 
             DB::commit();
 
-        } catch (\Exception $e) {
+
+        } catch (Exception $e) {
             DB::rollback();
             return redirect()->route('center.trainer.create')->withErrors(['لم يتم إضافة المدرب', 'الرجاء المحاولة مجددا']);
         }
@@ -500,30 +550,41 @@ class CenterController extends Controller
 
     public function create_course()
     {
+        $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+        $admins = Admin::where('center_id', Auth::user()->center->id)->get();
+        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
+        $students = Reservation::find($course_id)->count();
+        $courses = Course::where('center_id', Auth::user()->center->id)->get();
+        if (count($trainers) <= 0) {
+            (['title' => 'لاتوجد دورات في النظام', 'error' => 'من فضلك قم بإضافة بعض الدورات لكي تتمكن من تعيين مدربين لها',]);
+            return view("center.error-description", compact('trainers', 'admins', 'students', 'courses'))->withErrors(['title' => 'لايوجد مدربين في النظام', 'error' => 'من فضلك قم بإضافة بعض المدربين لكي تتمكن من إضافة الدورات']);
+        }
+
+
         $cities = City::where('country_id', 1)->get();
         $countries = Country::all();
         $categories = Category::all();
-        $courses = Course::where('center_id', Auth::user()->id)->get();
-        $trainers = Trainer::where('center_id', Auth::user()->id)->get();
-        $admins = Admin::where('center_id', Auth::user()->id)->get();
-        $course_id = Course::select('id')->where('center_id', Auth::user()->id)->get();
-        $students = Reservation::find($course_id)->count();
-        return view('center.create-course', compact('cities','countries', 'categories', 'courses', 'trainers', 'admins', 'students'));
+
+        return view('center.create-course', compact('trainers', 'admins', 'students', 'cities', 'countries', 'categories', 'courses'));
     }
 
     public function store_course(Request $request)
     {
 
-        $center = User::find( Auth::user()->id );
+        $center = User::find(Auth::user()->id);
         $trainers_data = array();
 
-        foreach ($center->trainer as $data){
+        $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+
+        if (count($trainers) <= 0) {
+            abort(404);
+        }
+
+        foreach ($center->trainer as $data) {
             array_push($trainers_data, $data->user_id);
         }
 
 
-//        dd(count($center->trainer));
-//        dd($request);
         $request->validate([
             'title' => 'required|string|max:50|min:10|unique:courses,title',
             'category' => 'required|integer|max:99|min:1|exists:categories,id',
@@ -533,87 +594,95 @@ class CenterController extends Controller
             'country' => 'required|integer|max:99|min:1|exists:countries,id',
             'address' => 'required|string|max:150|min:10',
             'location' => 'required|string|max:150|min:20',
-//            'course-poster' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
             'description' => 'required|string|max:200|min:50',
 
             /* Trainer Section */
-            'trainer' => 'required|array|max:'.count($center->trainer),
-            'trainer.*' => 'required|integer|distinct|'.Rule::in($trainers_data),
-            /* Course Type Section */
+            'trainer' => 'required|array|max:' . count($center->trainer),
+            'trainer.*' => 'required|integer|distinct|' . Rule::in($trainers_data),
+            /* Course Type Section If It Is Free or Payed */
             'type' => 'required|integer|max:2|min:1',
-            /**/
+            /* Coupon Section */
             'coupon' => 'required_if:type,2',
             'coupon_code' => 'required_if:coupon,2|array',
-            'coupon_discount' => 'required_if:coupon,2|array|size:'.count($request->coupon_code),
-            /**/
+            'coupon_discount' => 'required_if:coupon,2|array|size:' . count($request->coupon_code),
+            /* Appointments Of The Course */
             'date' => 'required|array|max:10|min:1',
             'date.*' => 'required|date|distinct',
-            'time' => 'required|array|max:10|min:1|size:'.count($request->date),
+            'time' => 'required|array|max:10|min:1|size:' . count($request->date),
             'time.*' => ['required',
                 'regex:/(^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$)/'
             ],
-            'attendance' => 'required|array|size:'.count($request->date),
+
+            'attendance' => 'required|array|size:' . count($request->date),
             'attendance.*' => 'required|integer|min:0',
-            'price' => 'required|array|size:'.count($request->date),
+            'price' => 'required|array|size:' . count($request->date),
             'price.*' => 'required|integer|min:0',
+
+            'gender' => 'required|array|size:' . count($request->date),
+            'gender.*' => 'required|integer|max:3|min:1',
 
             'course-poster-1' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
             'course-poster-2' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
         ]);
 
-        $course = Course::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'location' => $request->location,
-            'center_id' => Auth::user()->center->id,
-            'category_id' => $request->category,
-            'city_id' => $request->city,
-            'template_id' => $request->template,
-            'visible' => $request->visible,
-            'validation' => 0,
 
-        ]);
+            $course = Course::create([
+                'title' => $request->title,
+                'description' => $request->description,
+                'location' => $request->location,
+                'address' => $request->address,
+                'center_id' => Auth::user()->center->id,
+                'category_id' => $request->category,
+                'city_id' => $request->city,
+                'template_id' => $request->template,
+                'visible' => $request->visible,
+                'validation' => 0,
 
-        if ($request->hasFile('course-poster-1') && $request->hasFile('course-poster-2') ) {
-            for ($i = 1; $i <= 2; $i++){
-                $file = $request->file('course-poster-'.$i)->store('public/course-images');
-                $file_name = basename($file);
+            ]);
 
-                $image = Image::create([
-                    'url' => $file_name,
+            if ($request->hasFile('course-poster-1') && $request->hasFile('course-poster-2')) {
+                for ($i = 1; $i <= 2; $i++) {
+                    $file = $request->file('course-poster-' . $i)->store('public/course-images');
+                    $file_name = basename($file);
+
+                    Image::create([
+                        'url' => $file_name,
+                        'course_id' => $course->id,
+                    ]);
+                }
+            }
+
+            for ($i = 0; $i < count($request->trainer); $i++) {
+                CourseTrainer::create([
                     'course_id' => $course->id,
+                    'trainer_id' => $request->trainer[$i],
                 ]);
             }
-        }
 
-        for ($i = 0; $i < count($request->trainer); $i++){
-            $trainer = CourseTrainer::create([
-                'course_id' => $course->id,
-                'trainer_id' => $request->trainer[$i],
-            ]);
-        }
+            if ($request->type == 2) {
+                for ($i = 0; $i < count($request->coupon_code); $i++) {
+                    Coupon::create([
+                        'coupon_code' => $request->coupon_code[$i],
+                        'course_id' => $course->id,
+                        'discount' => $request->coupon_discount[$i],
+                    ]);
+                }
+            }
 
-        if ( $request->type == 2 ){
-            for ($i = 0; $i < count($request->coupon_code); $i++) {
-                $coupons = Coupon::create([
-                    'coupon_code' => $request->coupon_code[$i],
+            for ($i = 0; $i < count($request->date); $i++) {
+                Appointment::create([
                     'course_id' => $course->id,
-                    'discount' => $request->coupon_discount[$i],
+                    'date' => $request->date[$i],
+                    'time' => $request->time[$i],
+                    'attendance' => $request->attendance[$i],
+                    'price' => $request->price[$i],
+                    'gender' => $request->gender[$i],
                 ]);
             }
-        }
 
-        for ($i = 0; $i < count($request->date); $i++){
-            $appointments = Appointment::create([
-                'course_id' => $course->id,
-                'date' => $request->date[$i],
-                'time' => $request->time[$i],
-                'attendance' => $request->attendance[$i],
-                'price' => $request->price[$i],
-            ]);
-        }
+            return redirect()->route('center.course.create')->with('success', 'تم إضافة الدورة بنجاح');
 
-        return redirect()->route('center.course.create')->with('success', 'تم إضافة الدورة بنجاح');
+
     }
 
     public function edit_course()
@@ -628,8 +697,14 @@ class CenterController extends Controller
 
     public function show_courses()
     {
-        $courses = Course::where('center_id', Auth::user()->id);
-        return view('center.show-trainers', compact('courses'));
+
+        $courses = Course::where('center_id', Auth::user()->center->id)->get();
+        $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+        $admins = Admin::where('center_id', Auth::user()->center->id)->get();
+        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
+        $students = Reservation::find($course_id)->count();
+
+        return view('center.show-courses', compact('courses', 'trainers', 'admins', 'students'));
     }
 
     public function create_admin()
@@ -651,6 +726,7 @@ class CenterController extends Controller
             'phone' => 'required|starts_with:+|max:15|min:9|unique:users,phone',
             'email' => 'required|string|email|unique:users,email',
             'password' => 'required|string|max:32|min:8|confirmed',
+            'profile-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
         ]);
 
         DB::beginTransaction();
@@ -666,10 +742,14 @@ class CenterController extends Controller
                 'role_id' => 3,
             ]);
 
+            $file = $request->file('profile-image')->store('public/admin-images');
+            $file_name = basename($file);
 
             Admin::create([
                 'user_id' => $user->id,
                 'center_id' => Auth::user()->id,
+                'status' => 1,
+                'image' => $file_name,
             ]);
 
             DB::commit();
@@ -758,11 +838,17 @@ class CenterController extends Controller
 
     public function assign_course_admin()
     {
-        $courses = Course::where('center_id', Auth::user()->id)->get();
-        $trainers = Trainer::where('center_id', Auth::user()->id)->get();
-        $admins = Admin::where('center_id', Auth::user()->id)->get();
-        $course_id = Course::select('id')->where('center_id', Auth::user()->id)->get();
+        $courses = Course::where('center_id', Auth::user()->center->id)->get();
+        $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+        $admins = Admin::where('center_id', Auth::user()->center->id)->get();
+        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
         $students = Reservation::find($course_id)->count();
+
+        if (count($courses) <= 0) {
+            return view("center.error-description", compact('trainers', 'admins', 'students', 'courses'))->withErrors(['title' => 'لاتوجد دورات في النظام', 'error' => 'من فضلك قم بإضافة بعض الدورات لكي تتمكن من تعيين مدربين لها',]);
+        } elseif (count($admins) <= 0) {
+            return view("center.error-description", compact('trainers', 'admins', 'students', 'courses'))->withErrors(['title' => 'لايوجد مدراء في النظام', 'error' => 'من فضلك قم بإضافة بعض المدراء لكي تتمكن من تعيينهم مدربين للدورات',]);
+        }
 
         return view('center.assign-course-admin', compact('courses', 'trainers', 'admins', 'students'));
     }
@@ -770,17 +856,20 @@ class CenterController extends Controller
     public function store_course_admin(Request $request)
     {
 
-        $courses = Course::select('id')->where('center_id', Auth::user()->id)->get();
+        $courses = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
         $course_data = array();
         foreach ($courses as $course) {
             array_push($course_data, $course->id);
         }
 
-        $admins = Admin::where('center_id', Auth::user()->id)->get();
+        $admins = Admin::where('center_id', Auth::user()->center->id)->get();
         $admin_data = array();
-//        dd($admins[0]->user);
         foreach ($admins as $admin) {
             array_push($admin_data, $admin->user->id);
+        }
+
+        if (count($courses) <= 0) {
+            abort(404);
         }
 
 
@@ -797,7 +886,7 @@ class CenterController extends Controller
             'role_id' => $request->role,
         ]);
 
-        return redirect()->route('center.course.admin.assign')->with('success', 'تم إضافة المسؤول بنجاح');
+        return redirect()->route('center.course.admin.assign')->with('success', 'تم تعيين المسؤول بنجاح');
     }
 
 }

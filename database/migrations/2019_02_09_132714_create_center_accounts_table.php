@@ -16,7 +16,7 @@ class CreateCenterAccountsTable extends Migration
         Schema::create('center_accounts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('account_owner');
-            $table->string('account_number', 15);
+            $table->string('account_number', 20);
             $table->integer('bank_id');
             $table->integer('center_id');
             $table->timestamps();

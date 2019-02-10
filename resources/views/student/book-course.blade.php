@@ -55,11 +55,15 @@
         });
 
         $("button[id=check_coupon_code]").on('click', function () {
+
             let code = $("input[name=coupon_code]").val();
-            if ( code.length <= 0 || code.length < 5 ){
+
+            if ( code.length <= 0 || code.length < 3 ){
                 $("input[name=coupon_code]").addClass('is-invalid');
-                $("#coupon_error_description").text("كود الخصم لابد ان يكون ٥ احرف او أكثر");
+                $("#coupon_error_description").text("");
+                $("#coupon_error_description").text("كود الخصم لابد ان يكون ٣ احرف او أكثر").removeClass('valid-feedback').addClass('invalid-feedback');
             }else{
+
                 if ( $("input[name=coupon_code]").has('is-invalid') ){
                     $("input[name=coupon_code]").removeClass('is-invalid');
                     $("#coupon_error_description").text("");
@@ -72,9 +76,9 @@
                     type: "get",
                     success: function (data, result) {
                         if ( data['status'] == "Success" ){
-                            $("#coupon_error_description").text(data['response']).removeClass('invalid-feedback');
+                            $("#coupon_error_description").text(data['response']).removeClass('invalid-feedback').addClass('valid-feedback');
                         }else{
-                            $("#coupon_error_description").text(data['response']).addClass('valid-feedback');
+                            $("#coupon_error_description").text(data['response']).removeClass('valid-feedback').addClass('invalid-feedback');
                         }
                     },
                     error: function () {
@@ -276,7 +280,7 @@
 
                                         <div class="row justify-content-center">
                                             <div class="col-lg-8">
-                                                <img src="{{ $course[0]->center->account[0]->bank->logo }}" class="d-block ml-auto" alt="Bank Logo">
+                                                <img src="{{ $course[0]->center->account[0]->bank->logo }}" class="d-block ml-auto" alt="Bank Logo" style="width: 100%;">
                                             </div>
                                         </div>
 

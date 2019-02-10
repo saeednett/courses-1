@@ -120,7 +120,7 @@
 
                 <div class="panel-body">
 
-                    <form method="post" action="{{ route('center.update') }}">
+                    <form method="post" action="{{ route('center.update') }}" enctype="multipart/form-data">
                         <input type="hidden" name="_method" value="PUT">
                         {{ csrf_field() }}
                         <div class="row">
@@ -133,8 +133,8 @@
                                            autocomplete="off" required>
                                     @if ($errors->has('name'))
                                         <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
+                                            <strong>{{ $errors->first('name') }}</strong>
+                                        </span>
                                     @endif
                                 </div>
                             </div>
@@ -144,7 +144,7 @@
                                     <label class="required-field rtl" for="phone">رقم الهاتف</label>
                                     <input type="text"
                                            class="form-control {{ $errors->has('phone') ? ' is-invalid' : '' }} custom-input num-only text-center ltr"
-                                           name="phone" id="phone" value="{{ $center->phone }}" maxlength="13" minlength="9">
+                                           name="phone" id="phone" value="{{ $center->phone }}" maxlength="13" minlength="9" required>
                                     @if ($errors->has('phone'))
                                         <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('phone') }}</strong>
@@ -160,7 +160,7 @@
                                     <label class="required-field" for="email">البريد الإلكتروني</label>
                                     <input type="email"
                                            class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }} custom-input text-center ltr"
-                                           name="email" id="email" value="{{ $center->email }}">
+                                           name="email" id="email" value="{{ $center->email }}" required>
                                     @if ($errors->has('email'))
                                         <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('email') }}</strong>
@@ -174,7 +174,7 @@
                                     <label class="required-field" for="username">اسم المستخدم</label>
                                     <input type="text"
                                            class="form-control custom-input text-center ltr"
-                                           name="username" id="username" value="{{ $center->username }}">
+                                           name="username" id="username" value="{{ $center->username }}" required>
                                     @if ($errors->has('username'))
                                         <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('username') }}</strong>
@@ -191,7 +191,7 @@
                                     <input type="text"
                                            class="form-control {{ $errors->has('verification_code') ? ' is-invalid' : '' }} custom-input num-only text-center ltr"
                                            name="verification_code" id="verification_code"
-                                           value="{{ $center->center->verification_code }}" maxlength="10">
+                                           value="{{ $center->center->verification_code }}" maxlength="10" required>
                                     @if ($errors->has('verification_code'))
                                         <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('verification_code') }}</strong>
@@ -206,7 +206,7 @@
                                     <input type="text"
                                            class="form-control {{ $errors->has('verification_authority') ? ' is-invalid' : '' }} custom-input text-center ltr"
                                            name="verification_authority" id="verification_authority"
-                                           value="{{ $center->center->verification_authority }}">
+                                           value="{{ $center->center->verification_authority }}" required>
                                     @if ($errors->has('verification_authority'))
                                         <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('verification_authority') }}</strong>
@@ -221,7 +221,7 @@
                                 <div class="form-group">
                                     <label class="required-field" for="country">الدولة</label>
                                     <select class="form-control select2-placeholer {{ $errors->has('country') ? ' is-invalid' : '' }}"
-                                            name="country">
+                                            name="country" required>
                                         @foreach($countries as $country)
                                             @if($center->center->city->country->id == $country->id)
                                                 <option value="{{ $country->id }}"
@@ -241,9 +241,9 @@
 
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label for="country">المدينة</label>
-                                    <select class="form-control select2-placeholer {{ $errors->has('city') ? ' is-invalid' : '' }}"
-                                            name="city">
+                                    <label for="city" class="required-field">المدينة</label>
+                                    <select id="city" class="form-control select2-placeholer {{ $errors->has('city') ? ' is-invalid' : '' }}"
+                                            name="city" required>
                                         @foreach($cities as $city)
                                             @if($center->center->city_id == $city->id)
                                                 <option value="{{ $city->id }}" selected>{{ $city->name }}</option>
@@ -261,52 +261,52 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="bank">البنك</label>
-                                    <select class="form-control select2-placeholer {{ $errors->has('bank') ? ' is-invalid' : '' }}"
-                                            name="bank" id="bank">
-                                        @foreach($banks as $bank)
-                                            @if($center->center->bank_id == $bank->id)
-                                                <option value="{{ $bank->id }}" selected>{{ $bank->name }}</option>
-                                            @else
-                                                <option value="{{ $bank->id }}">{{ $bank->name }}</option>
-                                            @endif
-                                        @endforeach
-                                    </select>
-                                    @if ($errors->has('bank'))
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('bank') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
+                        {{--<div class="row">--}}
+                            {{--<div class="col-lg-6">--}}
+                                {{--<div class="form-group">--}}
+                                    {{--<label for="bank">البنك</label>--}}
+                                    {{--<select class="form-control select2-placeholer {{ $errors->has('bank') ? ' is-invalid' : '' }}"--}}
+                                            {{--name="bank" id="bank">--}}
+                                        {{--@foreach($banks as $bank)--}}
+                                            {{--@if($center->center->bank_id == $bank->id)--}}
+                                                {{--<option value="{{ $bank->id }}" selected>{{ $bank->name }}</option>--}}
+                                            {{--@else--}}
+                                                {{--<option value="{{ $bank->id }}">{{ $bank->name }}</option>--}}
+                                            {{--@endif--}}
+                                        {{--@endforeach--}}
+                                    {{--</select>--}}
+                                    {{--@if ($errors->has('bank'))--}}
+                                        {{--<span class="invalid-feedback" role="alert">--}}
+                                        {{--<strong>{{ $errors->first('bank') }}</strong>--}}
+                                    {{--</span>--}}
+                                    {{--@endif--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
 
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="required-field mr-4" for="account_number">رقم الحساب</label>
-                                    <input type="text"
-                                           class="form-control {{ $errors->has('account_number') ? ' is-invalid' : '' }} custom-input text-center ltr"
-                                           name="account_number" id="account_number" value="{{ $center->center->account_number }}"
-                                           placeholder="رقم الحساب | الأيبان">
-                                    @if ($errors->has('account_number'))
-                                        <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('account_number') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
+                            {{--<div class="col-lg-6">--}}
+                                {{--<div class="form-group">--}}
+                                    {{--<label class="required-field mr-4" for="account_number">رقم الحساب</label>--}}
+                                    {{--<input type="text"--}}
+                                           {{--class="form-control {{ $errors->has('account_number') ? ' is-invalid' : '' }} custom-input text-center ltr"--}}
+                                           {{--name="account_number" id="account_number" value="{{ $center->center->account[0]->account_number }}"--}}
+                                           {{--placeholder="رقم الحساب | الأيبان">--}}
+                                    {{--@if ($errors->has('account_number'))--}}
+                                        {{--<span class="invalid-feedback" role="alert">--}}
+                                        {{--<strong>{{ $errors->first('account_number') }}</strong>--}}
+                                    {{--</span>--}}
+                                    {{--@endif--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
 
                         <div class="row">
-                            <div class="col-lg-6">
+                            <div class="col-lg-12">
                                 <div class="form-group">
                                     <label class="required-field" for="website">الموقع الاإلكتروني</label>
                                     <input type="text"
                                            class="form-control {{ $errors->has('website') ? ' is-invalid' : '' }} custom-input text-center"
-                                           name="website" id="website"
-                                           value="{{ $center->center->website }}">
+                                           name="website" id="website" style="direction: ltr;"
+                                           value="{{ $center->center->website }}" autocomplete="off" required>
                                     @if ($errors->has('website'))
                                         <span class="invalid-feedback text-center" role="alert">
                                         <strong>{{ $errors->first('website') }}</strong>
@@ -315,47 +315,70 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label class="" for="website">كلمة المرور</label>
-                                    <input type="password"
-                                           class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }} custom-input text-center"
-                                           name="password" id="password" placeholder="كلمة المرور">
-                                    @if ($errors->has('password'))
-                                        <span class="invalid-feedback text-center" role="alert">
-                                        <strong>{{ $errors->first('password') }}</strong>
-                                    </span>
-                                    @endif
-                                </div>
-                            </div>
+                            {{--<div class="col-lg-6">--}}
+                                {{--<div class="form-group">--}}
+                                    {{--<label class="" for="website">كلمة المرور</label>--}}
+                                    {{--<input type="password"--}}
+                                           {{--class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }} custom-input text-center"--}}
+                                           {{--name="password" id="password" placeholder="كلمة المرور">--}}
+                                    {{--@if ($errors->has('password'))--}}
+                                        {{--<span class="invalid-feedback text-center" role="alert">--}}
+                                        {{--<strong>{{ $errors->first('password') }}</strong>--}}
+                                    {{--</span>--}}
+                                    {{--@endif--}}
+                                {{--</div>--}}
+                            {{--</div>--}}
                         </div>
-
 
                         <div class="row">
 
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label for="personal-profile">الصورة الشخصية</label>
-                                    <input type="text" class="form-control custom-input text-center" placeholder='اختر صورة الملف الشخصي' />
-                                    <input type="file" name="personal-profile" style="opacity: 0;" accept="image/png, image/jpg">
+                                    <label for="profile-cover">صورة الغلاف</label>
+                                    <input type="text" id="profile-cover" class="form-control {{ $errors->has('profile-cover') ? ' is-invalid' : '' }} custom-input text-center" placeholder='اختر صورة الملف الشخصي' readonly/>
+                                    <input type="file" name="profile-cover" style="opacity: 0;" accept="image/png, image/jpg">
+                                    @if ($errors->has('profile-cover'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('profile-cover') }}</strong>
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
 
 
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label for="personal-profile">الصورة الشخصية</label>
-                                    <input type="text" class="form-control custom-input text-center" placeholder='اختر صورة الملف الشخصي' />
-                                    <input type="file" name="personal-profile" style="opacity: 0;" accept="image/png, image/jpg">
+                                    <label for="profile-logo">الصورة الشخصية</label>
+                                    <input type="text" id="profile-logo" class="form-control {{ $errors->has('profile-logo') ? ' is-invalid' : '' }} custom-input text-center" placeholder='اختر صورة الملف الشخصي' readonly/>
+                                    <input type="file" name="profile-logo" style="opacity: 0;" accept="image/png, image/jpg">
+                                    @if ($errors->has('profile-logo'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('profile-logo') }}</strong>
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
 
 
                         </div>
 
-                        {{--<div class="checkbox">--}}
-                        {{--<label><input type="checkbox">Check me out</label>--}}
-                        {{--</div>--}}
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="form-group">
+                                    <label class="required-field" for="about">وصف المركز</label>
+                                    <textarea id="about" class="form-control {{ $errors->has('about') ? ' is-invalid' : '' }} text-center required"
+                                              name="about"
+                                              minlength="10" placeholder="وصف المركز" rows="10" maxlength="150"
+                                              style="padding: 40px; resize: none;" required>{{ old('about') . $center->center->about }}</textarea>
+                                    @if ($errors->has('about'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('about') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-lg-2">
                                 <div class="form-group">
@@ -404,9 +427,27 @@
                 });
             });
 
-            $(".select2").select2();
+
             $(".select2-placeholer").select2({
 
+            });
+
+            $("#profile-logo").on('click', function () {
+                $("input[name=profile-logo]").trigger('click');
+            });
+
+            $("input[name=profile-logo]").on('change', function () {
+                let file = $("input[name=profile-logo]")[0].files[0];
+                $("#profile-logo").val(file.name);
+            });
+
+            $("#profile-cover").on('click', function () {
+                $("input[name=profile-cover]").trigger('click');
+            });
+
+            $("input[name=profile-cover]").on('change', function () {
+                let file = $("input[name=profile-cover]")[0].files[0];
+                $("#profile-cover").val(file.name);
             });
         });
     </script>
