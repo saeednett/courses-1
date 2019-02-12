@@ -2,17 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a191d43f-2373-4b36-91cf-be5b4fd6662e" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/resources/views/student/payment-confirmation.blade.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/resources/views/student/payment-confirmed.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/CenterController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/CenterController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/StudentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/StudentController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Reservation.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Reservation.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/migrations/2019_01_12_195730_create_reservations_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2019_01_12_195730_create_reservations_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/css/student/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/student/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/center/master-v-1-1.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/center/master-v-1-1.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/student/book-course.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/student/book-course.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/student/center-profile.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/student/center-profile.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/student/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/student/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/student/show-course-details.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/student/show-course-details.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/2019_02_12_145859_create_payment_confirmations_table.php" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/2019_02_12_145859_create_payment_confirmations_table.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/student/tickets.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/student/tickets.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
@@ -61,12 +56,12 @@
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key=".env file" value="1" />
-          <entry key="Blade" value="165" />
+          <entry key="Blade" value="170" />
           <entry key="CSS" value="61" />
           <entry key="HTML" value="21" />
           <entry key="Image" value="34" />
           <entry key="JavaScript" value="47" />
-          <entry key="PHP" value="201" />
+          <entry key="PHP" value="203" />
           <entry key="PLAIN_TEXT" value="2" />
           <entry key="RNG Compact" value="1" />
           <entry key="SCSS" value="14" />
@@ -84,10 +79,10 @@
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key=".env file" value="11" />
-          <entry key="Blade" value="44290" />
+          <entry key="Blade" value="45194" />
           <entry key="CSS" value="2181" />
           <entry key="HTML" value="8" />
-          <entry key="PHP" value="23128" />
+          <entry key="PHP" value="23882" />
           <entry key="SCSS" value="45" />
         </counts>
       </usages-collector>
@@ -98,8 +93,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/web.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="100" column="91" selection-start-line="100" selection-start-column="79" selection-end-line="100" selection-end-column="91" />
+            <state relative-caret-position="236">
+              <caret line="41" column="82" selection-start-line="41" selection-start-column="62" selection-end-line="41" selection-end-column="82" />
               <folding>
                 <element signature="e#7#389#0#PHP" expanded="true" />
               </folding>
@@ -110,8 +105,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/StudentController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="294">
-              <caret line="234" column="21" selection-start-line="234" selection-start-column="8" selection-end-line="234" selection-end-column="21" />
+            <state relative-caret-position="389">
+              <caret line="254" column="47" selection-start-line="254" selection-start-column="47" selection-end-line="254" selection-end-column="47" />
               <folding>
                 <element signature="e#40#60#0#PHP" expanded="true" />
               </folding>
@@ -120,10 +115,34 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/student/index.blade.php">
+        <entry file="file://$PROJECT_DIR$/resources/views/student/payment-confirmed.blade.php">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/resources/views/student/payment-confirmation.blade.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="127" selection-start-line="127" selection-end-line="156" selection-end-column="35" />
+            <state relative-caret-position="279">
+              <caret line="189" column="74" lean-forward="true" selection-start-line="189" selection-start-column="74" selection-end-line="189" selection-end-column="74" />
+              <folding>
+                <element signature="e#1276#8227#0#HTML" />
+                <element signature="e#1365#1417#0#HTML" expanded="true" />
+                <element signature="e#1571#1635#0#HTML" expanded="true" />
+                <element signature="e#2238#2334#0#HTML" expanded="true" />
+                <element signature="e#3954#4018#0#HTML" expanded="true" />
+                <element signature="e#4308#4386#0#HTML" expanded="true" />
+                <element signature="e#7936#7989#0#HTML" expanded="true" />
+                <element signature="e#12127#12146#0#HTML" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/views/center/register.blade.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="167">
+              <caret line="344" column="93" selection-start-line="344" selection-start-column="93" selection-end-line="344" selection-end-column="150" />
             </state>
           </provider>
         </entry>
@@ -131,8 +150,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CenterController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="465">
-              <caret line="138" column="13" selection-start-line="138" selection-start-column="13" selection-end-line="138" selection-end-column="13" />
+            <state relative-caret-position="264">
+              <caret line="162" column="39" selection-start-line="162" selection-start-column="33" selection-end-line="162" selection-end-column="39" />
               <folding>
                 <element signature="e#40#54#0#PHP" expanded="true" />
               </folding>
@@ -143,35 +162,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/views/student/tickets.blade.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="63">
-              <caret line="94" column="79" lean-forward="true" selection-start-line="94" selection-start-column="79" selection-end-line="94" selection-end-column="79" />
+            <state relative-caret-position="126">
+              <caret line="119" column="71" lean-forward="true" selection-start-line="119" selection-start-column="71" selection-end-line="119" selection-end-column="99" />
               <folding>
-                <element signature="e#4197#4280#0#HTML" expanded="true" />
-                <element signature="e#6967#7014#0#HTML" expanded="true" />
-                <element signature="e#7427#7516#0#HTML" expanded="true" />
-                <element signature="e#8122#8182#0#HTML" expanded="true" />
-                <element signature="e#8468#8557#0#HTML" expanded="true" />
-                <element signature="e#9037#9126#0#HTML" expanded="true" />
-                <element signature="e#9579#9668#0#HTML" expanded="true" />
+                <element signature="e#4256#4340#0#HTML" expanded="true" />
+                <element signature="e#6844#6891#0#HTML" expanded="true" />
+                <element signature="e#7255#7344#0#HTML" expanded="true" />
+                <element signature="e#8325#8385#0#HTML" expanded="true" />
+                <element signature="e#8310#8399#0#HTML" expanded="true" />
+                <element signature="e#8862#8951#0#HTML" expanded="true" />
+                <element signature="e#9412#9501#0#HTML" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/database/migrations/2019_02_12_145859_create_payment_confirmations_table.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="22" column="48" selection-start-line="22" selection-start-column="48" selection-end-line="22" selection-end-column="48" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/Reservation.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="405">
-              <caret line="27" column="44" lean-forward="true" selection-start-line="27" selection-start-column="44" selection-end-line="27" selection-end-column="44" />
+            <state relative-caret-position="225">
+              <caret line="15" column="26" selection-start-line="15" selection-start-column="20" selection-end-line="15" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -197,18 +207,12 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>name='gender</find>
-      <find>name='ge</find>
-      <find>tab2-4</find>
-      <find>tab2-1</find>
-      <find>Course</find>
       <find>طريقة الدفع</find>
       <find>profile/{</find>
       <find>show</find>
       <find>profile-in</find>
       <find>Booking</find>
       <find>Rulei</find>
-      <find>&lt;form</find>
       <find>form</find>
       <find>&lt;for</find>
       <find>$course</find>
@@ -227,6 +231,12 @@
       <find>$student</find>
       <find>ticke</find>
       <find>$course-&gt;appointment[0]</find>
+      <find>bg-</find>
+      <find>PaymentConfirmation</find>
+      <find>student.payment.confirmation</find>
+      <find>payment_confirmation</find>
+      <find>digits</find>
+      <find>&lt;form</find>
     </findStrings>
     <replaceStrings>
       <replace>img/chosen-sprite.png</replace>
@@ -247,8 +257,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/Http/Middleware/AuthenticateCenterMiddleware.php" />
-        <option value="$PROJECT_DIR$/database/migrations/2019_01_27_150449_create_course_admins_table.php" />
         <option value="$PROJECT_DIR$/app/Admin.php" />
         <option value="$PROJECT_DIR$/app/Appointment.php" />
         <option value="$PROJECT_DIR$/resources/views/center/show-admins.blade.php" />
@@ -287,17 +295,19 @@
         <option value="$PROJECT_DIR$/resources/views/student/center-profile.blade.php" />
         <option value="$PROJECT_DIR$/public/css/student/index.css" />
         <option value="$PROJECT_DIR$/resources/views/student/show-course-details.blade.php" />
-        <option value="$PROJECT_DIR$/routes/web.php" />
         <option value="$PROJECT_DIR$/resources/views/student/book-course.blade.php" />
-        <option value="$PROJECT_DIR$/database/migrations/2019_01_12_195730_create_reservations_table.php" />
         <option value="$PROJECT_DIR$/resources/views/student/index.blade.php" />
         <option value="$PROJECT_DIR$/resources/views/center/master-v-1-1.blade.php" />
         <option value="$PROJECT_DIR$/app/Http/Controllers/CenterController.php" />
-        <option value="$PROJECT_DIR$/app/Http/Controllers/StudentController.php" />
-        <option value="$PROJECT_DIR$/resources/views/student/tickets.blade.php" />
         <option value="$PROJECT_DIR$/app/PaymentConfirmation.php" />
-        <option value="$PROJECT_DIR$/database/migrations/2019_02_12_145859_create_payment_confirmations_table.php" />
         <option value="$PROJECT_DIR$/app/Reservation.php" />
+        <option value="$PROJECT_DIR$/database/migrations/2019_02_12_145859_create_payment_confirmations_table.php" />
+        <option value="$PROJECT_DIR$/database/migrations/2019_01_12_195730_create_reservations_table.php" />
+        <option value="$PROJECT_DIR$/routes/web.php" />
+        <option value="$PROJECT_DIR$/resources/views/student/tickets.blade.php" />
+        <option value="$PROJECT_DIR$/resources/views/student/payment-confirmed.blade.php" />
+        <option value="$PROJECT_DIR$/app/Http/Controllers/StudentController.php" />
+        <option value="$PROJECT_DIR$/resources/views/student/payment-confirmation.blade.php" />
       </list>
     </option>
   </component>
@@ -578,18 +588,18 @@
       <workItem from="1549466415655" duration="2096000" />
       <workItem from="1549558188186" duration="34306000" />
       <workItem from="1549795060793" duration="17598000" />
-      <workItem from="1549898990239" duration="17792000" />
+      <workItem from="1549898990239" duration="29806000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="363752000" />
+    <option name="totallyTimeSpent" value="375766000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="877" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2639485" />
+      <window_info content_ui="combo" id="Project" order="0" weight="0.2639485" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -618,12 +628,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/public/img/student/Dmam_Lammat_2-01.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/img/student/chosen-sprite.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/img/student/adv.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
@@ -817,13 +821,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/center/register.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="236">
-          <caret line="529" column="39" selection-start-line="529" selection-start-column="37" selection-end-line="529" selection-end-column="39" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/database/migrations/2019_01_12_204552_create_courses_table.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
@@ -855,58 +852,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/student/show-course-details.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="234" column="68" selection-start-line="234" selection-start-column="68" selection-end-line="234" selection-end-column="68" />
-          <folding>
-            <element signature="e#3456#3520#0#HTML" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/student/book-course.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="521">
-          <caret line="75" column="62" selection-start-line="75" selection-start-column="56" selection-end-line="75" selection-end-column="62" />
-          <folding>
-            <element signature="n#style#0;n#img#0;n#div#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="e#16070#16090#0#HTML" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/web.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="100" column="91" selection-start-line="100" selection-start-column="79" selection-end-line="100" selection-end-column="91" />
-          <folding>
-            <element signature="e#7#389#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/database/migrations/2019_01_12_195730_create_reservations_table.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="23" column="11" lean-forward="true" selection-start-line="23" selection-start-column="11" selection-end-line="23" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/resources/views/center/master-v-1-1.blade.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
           <caret line="416" column="73" selection-start-line="416" selection-start-column="58" selection-end-line="416" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CenterController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="138" column="13" selection-start-line="138" selection-start-column="13" selection-end-line="138" selection-end-column="13" />
-          <folding>
-            <element signature="e#40#54#0#PHP" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -917,32 +866,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/StudentController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="234" column="21" selection-start-line="234" selection-start-column="8" selection-end-line="234" selection-end-column="21" />
-          <folding>
-            <element signature="e#40#60#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/views/student/tickets.blade.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="63">
-          <caret line="94" column="79" lean-forward="true" selection-start-line="94" selection-start-column="79" selection-end-line="94" selection-end-column="79" />
-          <folding>
-            <element signature="e#4197#4280#0#HTML" expanded="true" />
-            <element signature="e#6967#7014#0#HTML" expanded="true" />
-            <element signature="e#7427#7516#0#HTML" expanded="true" />
-            <element signature="e#8122#8182#0#HTML" expanded="true" />
-            <element signature="e#8468#8557#0#HTML" expanded="true" />
-            <element signature="e#9037#9126#0#HTML" expanded="true" />
-            <element signature="e#9579#9668#0#HTML" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/PaymentConfirmation.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
@@ -950,17 +873,111 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/database/migrations/2019_02_12_145859_create_payment_confirmations_table.php">
+    <entry file="file://$PROJECT_DIR$/app/Reservation.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="22" column="48" selection-start-line="22" selection-start-column="48" selection-end-line="22" selection-end-column="48" />
+        <state relative-caret-position="225">
+          <caret line="15" column="26" selection-start-line="15" selection-start-column="20" selection-end-line="15" selection-end-column="26" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/Reservation.php">
+    <entry file="file://$PROJECT_DIR$/resources/views/student/book-course.blade.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="44" lean-forward="true" selection-start-line="27" selection-start-column="44" selection-end-line="27" selection-end-column="44" />
+        <state relative-caret-position="521">
+          <caret line="75" column="62" selection-end-line="349" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/student/show-course-details.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="400">
+          <caret line="234" column="68" selection-end-line="320" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/database/migrations/2019_02_12_145859_create_payment_confirmations_table.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="21" column="35" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/database/migrations/2019_01_12_195730_create_reservations_table.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="21" column="50" selection-start-line="21" selection-start-column="50" selection-end-line="21" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/student/tickets.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="126">
+          <caret line="119" column="71" lean-forward="true" selection-start-line="119" selection-start-column="71" selection-end-line="119" selection-end-column="99" />
+          <folding>
+            <element signature="e#4256#4340#0#HTML" expanded="true" />
+            <element signature="e#6844#6891#0#HTML" expanded="true" />
+            <element signature="e#7255#7344#0#HTML" expanded="true" />
+            <element signature="e#8325#8385#0#HTML" expanded="true" />
+            <element signature="e#8310#8399#0#HTML" expanded="true" />
+            <element signature="e#8862#8951#0#HTML" expanded="true" />
+            <element signature="e#9412#9501#0#HTML" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/web.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="236">
+          <caret line="41" column="82" selection-start-line="41" selection-start-column="62" selection-end-line="41" selection-end-column="82" />
+          <folding>
+            <element signature="e#7#389#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/center/register.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="167">
+          <caret line="344" column="93" selection-start-line="344" selection-start-column="93" selection-end-line="344" selection-end-column="150" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CenterController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="162" column="39" selection-start-line="162" selection-start-column="33" selection-end-line="162" selection-end-column="39" />
+          <folding>
+            <element signature="e#40#54#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/student/payment-confirmed.blade.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/Http/Controllers/StudentController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="389">
+          <caret line="254" column="47" selection-start-line="254" selection-start-column="47" selection-end-line="254" selection-end-column="47" />
+          <folding>
+            <element signature="e#40#60#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/views/student/payment-confirmation.blade.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="279">
+          <caret line="189" column="74" lean-forward="true" selection-start-line="189" selection-start-column="74" selection-end-line="189" selection-end-column="74" />
+          <folding>
+            <element signature="e#1276#8227#0#HTML" />
+            <element signature="e#1365#1417#0#HTML" expanded="true" />
+            <element signature="e#1571#1635#0#HTML" expanded="true" />
+            <element signature="e#2238#2334#0#HTML" expanded="true" />
+            <element signature="e#3954#4018#0#HTML" expanded="true" />
+            <element signature="e#4308#4386#0#HTML" expanded="true" />
+            <element signature="e#7936#7989#0#HTML" expanded="true" />
+            <element signature="e#12127#12146#0#HTML" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

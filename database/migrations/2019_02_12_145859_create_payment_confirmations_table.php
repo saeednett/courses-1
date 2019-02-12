@@ -17,8 +17,7 @@ class CreatePaymentConfirmationsTable extends Migration
             $table->increments('id');
             $table->string('account_owner');
             $table->string('account_number');
-            $table->date('date');
-            $table->time('time');
+            $table->string('image');
             $table->integer('reservation_id');
             $table->integer('status')->default(0);
             $table->timestamps();

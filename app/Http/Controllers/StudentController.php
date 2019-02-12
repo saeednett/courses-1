@@ -9,6 +9,7 @@ use App\CenterAccount;
 use App\City;
 use App\Coupon;
 use App\Course;
+use App\PaymentConfirmation;
 use App\Reservation;
 use App\User;
 use App\Student;
@@ -236,6 +237,40 @@ class StudentController extends Controller
         return view('student.tickets', compact('reservations'));
     }
 
+    public function payment_confirmation(Request $request, $identifier)
+    {
+        $reservation = Reservation::where('identifier', $identifier)->first();
+        if ( count($reservation) <= 0 ){
+            abort(404);
+        }
+        return view('student.payment-confirmation', compact('reservation'));
+    }
+
+    public function confirm(Request $request, $identifier)
+    {
+        $reservation = Reservation::where('identifier', $identifier)->first();
+
+        $request->validate([
+            'account_owner' => 'required|string|max:50|min:10',
+            'account_number' => 'required|max:30|min:10',
+            'receipt-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
+        ]);
+
+        $file = $request->file('receipt-image')->store('public/receipt-images');
+        $file_name = basename($file);
+
+        PaymentConfirmation::create([
+            'account_owner' => $request->account_owner,
+            'account_number' => $request->account_number,
+            'image' => $file_name,
+            'reservation_id' => $reservation->id,
+            'status' => 0,
+        ]);
+
+        return "All Good";
+//        return view('student.payment-confirmed');
+    }
+
     public function create_reset_password()
     {
         return view('student.account-reset-password');
@@ -260,7 +295,6 @@ class StudentController extends Controller
                 return redirect()->route('account.password')->with('success', 'تم تغير كلمة المرور بنجاح');
             }
         } else {
-            dd($user->password . "-------" . Hash::make($request->old_password));
             return redirect()->route('account.password')->withErrors('كلمة المرور القديمة غير صحصيحة');
         }
     }

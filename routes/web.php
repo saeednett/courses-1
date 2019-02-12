@@ -34,11 +34,14 @@ Route::get('account/account-profile', 'StudentController@edit')->name('account.e
 Route::put('account/update', 'StudentController@update')->name('account.update')->middleware('auth');
 // To Show The Information Of A Course Before Reserved It
 Route::get('{center}/Course/{course}', 'StudentController@show_course')->name('account.course_details');
-
+// To Reserve The Course
 Route::post('Reserve/Course', 'StudentController@book_course_reservation')->name('account.course.booking.reserve');
-
 // The Data Of Reserving A Course Goes Here
 Route::post('{course}/Booking', 'StudentController@book_course_form')->name('account.course.booking')->middleware('auth');
+// To Confirm The Payment Of A Course
+Route::get('{course}/PaymentConfirmation', 'StudentController@payment_confirmation')->name('student.payment.confirmation')->middleware('auth');
+// The Data Of Confirmation Goes Here
+Route::post('{course}/Confirmed', 'StudentController@confirm')->name('student.payment.confirmation.confirm')->middleware('auth');
 
 /* End Of Account || User || Student Routes Part  */
 
