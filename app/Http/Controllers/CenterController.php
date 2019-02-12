@@ -39,7 +39,7 @@ class CenterController extends Controller
 
     public function check_coupon($course_identifier, $coupon)
     {
-        $course = Course::select('id')->where('identifier', $course_identifier)->get();
+        $course = Course::select('id')->where('identifier', $course_identifier)->first();
         $response['status'] = array();
         $response['errors'] = array();
         $response['response'] = array();
@@ -51,7 +51,7 @@ class CenterController extends Controller
             return response()->json($response);
         }
 
-        $coupon = Coupon::where('coupon_code', $coupon)->get();
+        $coupon = Coupon::where('coupon_code', $coupon)->where('course_id',$course->id)->first();
 
         if (count($coupon) == 0) {
             array_push($response['status'], "Failed");
@@ -61,7 +61,7 @@ class CenterController extends Controller
         } else {
             array_push($response['status'], "Success");
             array_push($response['errors'], null);
-            array_push($response['response'], "%" . $coupon[0]->discount . " كود الخصم موجود بقيمة  ");
+            array_push($response['response'], "%" . $coupon->discount . " كود الخصم موجود بقيمة  ");
             return response()->json($response);
         }
 
@@ -124,8 +124,21 @@ class CenterController extends Controller
             $trainers = Trainer::where('center_id', Auth::user()->id)->get();
             $admins = Admin::where('center_id', Auth::user()->id)->get();
             $course_id = Course::select('id')->where('center_id', Auth::user()->id)->get();
-            $students = Reservation::find($course_id)->count();
-            return view('center.index', compact('courses', 'trainers', 'admins', 'students'));
+            $students = Reservation::find($course_id);
+
+            $total_students = array();
+
+            for ($i = 0; $i < count($students); $i ++){
+                if ( $i == 0 ){
+                    array_push($total_students, $students[$i]->student_id);
+                }else{
+                    if( !in_array($students[$i]->student_id, $total_students) ){
+                        array_push($total_students, $students[$i]->student_id);
+                    }
+                }
+            }
+            $total_students = count($total_students);
+            return view('center.index', compact('courses', 'trainers', 'admins', 'students','total_students'));
         } else {
             return abort(404);
         }
@@ -222,8 +235,26 @@ class CenterController extends Controller
         if (count($center) == 0) {
             abort(404);
         }
+
+        $course_id = array();
+        $current_appointment = array();
+        $past_appointment = array();
+
+        foreach ($center->center->course as $course){
+            array_push($course_id, $course->id);
+        }
+
+        for ($i = 0; $i < count($course_id); $i++){
+            $max_appointment = Appointment::where('course_id', $course_id[$i])->max('date');
+            if ( $max_appointment > date('Y-m-d') ){
+                array_push($current_appointment, $max_appointment);
+            }else{
+                array_push($past_appointment, $max_appointment);
+            }
+        }
+
         $courses = Course::where('center_id', $center->center->id)->get();
-        return view('student.center-profile', compact('center', 'courses'));
+        return view('student.center-profile', compact('center', 'courses', 'current_appointment', 'past_appointment'));
     }
 
     public function edit()

@@ -17,9 +17,9 @@ class CreateReservationsTable extends Migration
             $table->increments('id');
             $table->integer('student_id');
             $table->integer('course_id');
-            $table->date('date');
-            $table->time('time');
+            $table->integer('coupon_id')->default(0);
             $table->integer('appointment_id');
+            $table->integer('confirmation')->default(0);
             $table->timestamps();
         });
     }

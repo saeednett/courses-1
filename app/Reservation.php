@@ -22,4 +22,9 @@ class Reservation extends Model
     {
         return $this->belongsTo('App\Appointment');
     }
+
+    public function payment()
+    {
+        return $this->hasOne('App\PaymentConfirmation');
+    }
 }

@@ -23,6 +23,17 @@
     <div class="container">
         <div class="row justify-content-center mt-lg-3 mt-2">
             <div class="col-lg-10">
+
+                @if(session()->has('success'))
+                    <div class="row justify-content-center">
+                        <div class="col-lg-12 pr-0">
+                            <div class="alert alert-success text-right">
+                                <h4 class="mb-0 mt-2">{{ session('success') }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 <div class="row justify-content-center">
                     <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 order-lg-first order-last d-lg-block d-md-block d-none text-lg-right text-center">
                         <a href="http://lammt.com/pricing" target="_self" title="">
@@ -35,30 +46,30 @@
                             <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                 <div class="carousel-inner">
                                     <div class="carousel-item active">
-                                        <img src="{{ asset('img/student/Yaser_Presents-02.png') }}" class="" alt="..."
+                                        <img src="/storage/course-images/{{ $courses[0]->image[0]->url }}" class="" alt="..."
                                              style="width: 100%; height: 330px;">
                                         <div class="carousel-caption d-block d-md-block"
                                              style="width: 100%; background: #000000a6; bottom: 0; left: 0; right: 0; padding-top: 10px; padding-bottom: 0;">
-                                            <h5>Hello</h5>
-                                            <p>jniowejvioenvoiejm</p>
+                                            <h5>{{ $courses[0]->title }}</h5>
+                                            <p>{{ $courses[0]->appointment[0]->date }}</p>
                                         </div>
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="{{ asset('img/student/330x640@3x-.jpg') }}" class="" alt="..."
+                                        <img src="/storage/course-images/{{ $courses[1]->image[0]->url }}" class="" alt="..."
                                              style="width: 100%; height: 330px;">
                                         <div class="carousel-caption d-block d-md-block"
                                              style="width: 100%; background: #000000a6; bottom: 0; left: 0; right: 0; padding-top: 10px; padding-bottom: 0;">
-                                            <h5>Hello</h5>
-                                            <p>jniowejvioenvoiejm</p>
+                                            <h5>{{ $courses[1]->title }}</h5>
+                                            <p>{{ $courses[1]->appointment[0]->date }}</p>
                                         </div>
                                     </div>
                                     <div class="carousel-item">
-                                        <img src="{{ asset('img/student/Dmam_Lammat_2-01.png') }}" class="" alt="..."
+                                        <img src="/storage/course-images/{{ $courses[2]->image[0]->url }}" class="" alt="..."
                                              style="width: 100%; height: 330px;">
                                         <div class="carousel-caption d-block d-md-block"
                                              style="width: 100%; background: #000000a6; bottom: 0; left: 0; right: 0; padding-top: 10px; padding-bottom: 0;">
-                                            <h5>Hello</h5>
-                                            <p>jniowejvioenvoiejm</p>
+                                            <h5>{{ $courses[2]->title }}</h5>
+                                            <p>{{ $courses[2]->appointment[0]->date }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -111,8 +122,7 @@
 
         <div class="row justify-content-center mt-2 mb-4">
             <div class="col-lg-10 col-md-10 col-sm-10 col-11">
-                <div class="row">
-
+                <div class="row justify-content-end">
                     @if( count($courses) > 0 )
 
                         @foreach($courses as $course)

@@ -23,10 +23,7 @@
                             <div class="profile-title text-right">{{ $center->name }}</div>
                             <div class="profile-site text-right"><a href="http://www.youtube.com/user/JedComedyClub" target="_blank"><b>{{ $center->center->website }}</b></a></div>
                             <div class="profile-description rtl text-right">
-                                بريك أوت
-                                .لعبة تحدي وتفكير ومتعة، فيها تخلي عقلك يشتغل بطريقة مختلفة مع فريقك، في غرفة كلها ألغاز وتحديات خرافية!
-                                مهمة الفريق هي استخدام المنطق والتعاون للوصول لكل الحلول المطلوبة والخروج من الغرفة قبل ما تخلص الـ 60 دقيقة.
-                                يحمس الموضوع؟ ودك تجرب هالتحدي؟
+                                {{ $center->center->about }}
                             </div>
 
                             <div class="profile-social-media-accounts">
@@ -49,32 +46,37 @@
 
 
                         <div class="col-lg-9 col-md-8 order-first profile-content-wraper">
-                            <div class="col-md-12 rtl text-lg-right text-center d-lg-block d-md-block d-none">
-                                <button class="btn filter-tabs custom-active">الدورات الحالية ( ٦ )</button>
-                                <button class="btn filter-tabs">الدورات السابقة ( ٢٠ )</button>
-                            </div>
-
-                            <div class="col-lg-12 col-md-12 mt-2 text-center">
-                                <div class="row">
-                                    @foreach($courses as $course)
-                                        <div class="col-lg-4 col-md-6">
-                                            <a class="card rounded" data-post="1452" href="{{ route('account.course_details', [$course->center->user->username, $course->identifier,] ) }}"
-                                               title="#بسطة_ماركت4">
-                                                <img src="/storage/course-images/{{ $course->image[0]->url }}" class="" alt="..." height="200" width="100%"
-                                                     style="width: 100%">
-                                                <div class="card-title text-center mt-4">
-                                                    <h5>{{ $course->title }}</h5>
-                                                </div>
-                                                <div class="adv-footer">
-                                                    <p class="adv-price">{{ $course->appointment[0]->price }}</p>
-                                                    <p class="adv-place">{{ $course->city->name }}</p>
-                                                </div>
-                                                <div class="clear"></div>
-                                            </a>
-                                        </div>
-                                    @endforeach
+                            <div class="row">
+                                <div class="col-md-12 rtl text-lg-right text-center d-lg-block d-md-block d-none">
+                                    <button class="btn filter-tabs custom-active">الدورات الحالية ( {{ count($current_appointment) }} )</button>
+                                    <button class="btn filter-tabs">الدورات السابقة ( {{ count($past_appointment) }} )</button>
                                 </div>
                             </div>
+
+                            <div class="row justify-content-end mt-4">
+                                <div class="col-lg-12 col-md-12 mt-2 text-center">
+                                    <div class="row justify-content-end">
+                                        @foreach($courses as $course)
+                                            <div class="col-lg-4 col-md-6">
+                                                <a class="card rounded" data-post="1452" href="{{ route('account.course_details', [$course->center->user->username, $course->identifier,] ) }}"
+                                                   title="#بسطة_ماركت4">
+                                                    <img src="/storage/course-images/{{ $course->image[0]->url }}" class="" alt="..." height="200" width="100%"
+                                                         style="width: 100%">
+                                                    <div class="card-title text-center mt-4">
+                                                        <h5>{{ $course->title }}</h5>
+                                                    </div>
+                                                    <div class="adv-footer">
+                                                        <p class="adv-price">{{ $course->appointment[0]->price }}</p>
+                                                        <p class="adv-place">{{ $course->city->name }}</p>
+                                                    </div>
+                                                    <div class="clear"></div>
+                                                </a>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
 

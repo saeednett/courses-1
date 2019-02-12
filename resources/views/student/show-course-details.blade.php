@@ -1,6 +1,6 @@
 @extends('student.master-v-1-1')
 
-@section('title', $course[0]->title)
+@section('title', $course->title)
 
 @section('guest-links')
     <a class="dropdown-item" href="{{ route('account.login') }}">تسجيل الدخول</a>
@@ -25,17 +25,17 @@
             <div class="col-lg-10">
                 <div class="row justify-content-center">
                     <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12 order-last text-right mb-4">
-                        <h2>{{ $course[0]->title }}</h2>
+                        <h2>{{ $course->title }}</h2>
                         <div class="main-info">
                             <div class="course-logo rounded-top" style="height: 300px; width: 100%; overflow: hidden">
-                                <img src="/storage/course-images/{{ $course[0]->image[0]->url }}" alt=""
+                                <img src="/storage/course-images/{{ $course->image[0]->url }}" alt=""
                                      style="width: 100%; height: 100%; display: block; margin: auto;">
                             </div>
                             <div class="block rounded-bottom mt-0">
                                 <div class="row">
                                     <div class="col-lg-9">
                                         <h5 class="text-right rtl"><span>اسم المنظم:</span> <a
-                                                    href="{{ route('center.profile', $course[0]->center->user->username) }}">{{ $course[0]->center->user->name }}</a></h5>
+                                                    href="{{ route('center.profile', $course->center->user->username) }}">{{ $course->center->user->name }}</a></h5>
                                         <div class="mt-4"
                                              style="position: absolute; bottom: 0; width: 92%; height: 40px; margin: auto; overflow: hidden;">
                                             <div class="row justify-content-end">
@@ -61,11 +61,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3" style="overflow: hidden; padding: 0;">
-                                        <img class="border"
-                                             src="https://lammt.com/resource/user/profile/pic_ce8ae867a0accc0b7577fcc340bb99f4.jpg"
-                                             alt=""
-                                             style="width: 90px; height: 90px; display: block; margin: auto; padding: 10px;">
+                                    <div class="col-lg-3">
+                                        <div class="logo-holder" style="width: 90px; height: 90px; overflow: hidden; padding: 0;">
+                                            <img class="border"
+                                                 src="/storage/center-images/{{ $course->center->logo }}"
+                                                 alt=""
+                                                 style="width: 100%; height: 100%; display: block; margin: auto; padding: 3px;">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -79,7 +81,7 @@
                                         <span class="">الدورة:</span>
                                     </div>
                                     <div class="col-lg-9">
-                                        {{ $course[0]->title }}
+                                        {{ $course->title }}
                                     </div>
                                 </div>
 
@@ -89,7 +91,7 @@
                                         <span class="">التاريخ:</span>
                                     </div>
                                     <div class="col-lg-9">
-                                        {{ date('F d l', strtotime($course[0]->appointment[0]->date)) }}
+                                        {{ date('F d l', strtotime($course->appointment[0]->date)) }}
                                     </div>
                                 </div>
 
@@ -99,7 +101,7 @@
                                         <span class="">المكان:</span>
                                     </div>
                                     <div class="col-lg-9 rtl">
-                                        {{ $course[0]->city->name.' - '.$course[0]->location }}
+                                        {{ $course->city->name.' - '.$course->address }}
                                     </div>
                                 </div>
 
@@ -109,10 +111,10 @@
                                         <span class="">الوقت:</span>
                                     </div>
                                     <div class="col-lg-9 rtl">
-                                        @if( date('a', strtotime($course[0]->appointment[0]->time)) == 'pm' )
-                                            {{ date('h:i', strtotime($course[0]->appointment[0]->time)).' مساء' }}
+                                        @if( date('a', strtotime($course->appointment[0]->time)) == 'pm' )
+                                            {{ date('h:i', strtotime($course->appointment[0]->time)).' مساء' }}
                                         @else
-                                            {{ date('h:i', strtotime($course[0]->appointment[0]->time)).' صباحا' }}
+                                            {{ date('h:i', strtotime($course->appointment[0]->time)).' صباحا' }}
                                         @endif
                                     </div>
                                 </div>
@@ -124,7 +126,7 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <p class="text-right">
-                                            {{ $course[0]->title }}
+                                            {{ $course->title }}
                                         </p>
                                     </div>
                                 </div>
@@ -132,7 +134,7 @@
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <p class=""
-                                           style="text-align: right; overflow-wrap: break-word;">{{ $course[0]->description }}</p>
+                                           style="text-align: right; overflow-wrap: break-word;">{{ $course->description }}</p>
                                         <hr>
                                     </div>
                                 </div>
@@ -169,7 +171,7 @@
                                     <div class="row">
 
                                         <div class="col-lg-7 text-right mt-3">
-                                            {{ date('F d l', strtotime($course[0]->appointment[0]->date)) }}
+                                            {{ date('F d l', strtotime($course->appointment[0]->date)) }}
                                         </div>
 
                                         <div class="col-lg-2 text-right mt-3">
@@ -185,11 +187,11 @@
                         </div>
 
                         <div class="block rounded">
-                            <form method="post" action="{{ route('account.course.booking', $course[0]->identifier) }}" id='book-course'>
+                            <form method="post" action="{{ route('account.course.booking', $course->identifier) }}" id='book-course'>
                                 {{ csrf_field() }}
                                 <?php $counter = 1; $class = "mt-4";?>
-                                @foreach($course as $cou)
-                                    @foreach($cou->appointment as $appointment)
+
+                                    @foreach($course->appointment as $appointment)
                                         @if( $counter == 1 )
                                             <?php $class = "mt-0";?>
                                         @else
@@ -230,12 +232,12 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        @if($counter < count($cou->appointment))
+                                        @if($counter < count($course->appointment))
                                             <hr>
                                         @endif
                                         <?php $counter++; ?>
                                     @endforeach
-                                @endforeach
+
                             </form>
                         </div>
 
@@ -305,7 +307,7 @@
                                              style="width: 100%; height: 100%; display: block; margin: auto;">
                                     </div>
                                     <div class="block rounded-bottom mt-0 rtl">
-                                        <p class="text-right">{{ $course[0]->city->name.' - '.$course[0]->location }}</p>
+                                        <p class="text-right">{{ $course->city->name.' - '.$course->address }}</p>
                                     </div>
                                 </div>
                             </div>

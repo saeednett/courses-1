@@ -414,7 +414,7 @@
                         <!-- panel body -->
                         <div class="panel-body">
                             <div class="stack-order">
-                                <h1 class="no-margins">{{ $students }}</h1>
+                                <h1 class="no-margins">{{ $total_students }}</h1>
                                 <small>إجمالي الطلاب للدورات</small>
                             </div>
                             <div class="bar-chart-icon"></div>

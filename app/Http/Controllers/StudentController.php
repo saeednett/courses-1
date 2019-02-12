@@ -7,7 +7,9 @@ use App\Bank;
 use App\Center;
 use App\CenterAccount;
 use App\City;
+use App\Coupon;
 use App\Course;
+use App\Reservation;
 use App\User;
 use App\Student;
 use Illuminate\Http\Request;
@@ -68,12 +70,12 @@ class StudentController extends Controller
 
     public function show_course($center, $identifier)
     {
-        $center = User::where('username', $center)->get();
+        $center = User::where('username', $center)->first();
         if ( count($center) == 0 ){
             return abort(404);
         }
 
-        $course = Course::where('identifier', $identifier)->get();
+        $course = Course::where('identifier', $identifier)->first();
         if ( count($course) == 0 ){
             return abort(404);
         }
@@ -87,7 +89,7 @@ class StudentController extends Controller
             'date.*' => 'integer|distinct',
         ]);
 
-        $course = Course::where('identifier', $identifier)->get();
+        $course = Course::where('identifier', $identifier)->first();
 
         if ( count($course) == 0 ){
             abort(404);
@@ -97,16 +99,61 @@ class StudentController extends Controller
                 abort(404);
             }else{
                 $banks_data = array();
-                $banks_id = CenterAccount::select('id')->where('center_id', $course[0]->center->id)->get();
+                $banks_id = CenterAccount::select('id')->where('center_id', $course->center->id)->get();
 
                 foreach ($banks_id as $id){
                     array_push($banks_data, $id->id);
                 }
 
                 $banks = Bank::find($banks_data);
-                return view('student.book-course', compact('course', 'appointments', 'banks'));
+                $date = $request->date;
+                $unique_id = $course->identifier;
+                return view('student.book-course', compact('course', 'appointments', 'banks', 'unique_id', 'date'));
             }
         }
+
+    }
+
+    public function book_course_reservation(Request $request)
+    {
+        $course = Course::where('identifier', $request->identifier)->first();
+
+        if ( count($course) <= 0 ){
+            abort(404);
+        }
+
+        $date = array();
+
+        foreach ($course->appointment as $appointment){
+            array_push($date, $appointment->id);
+        }
+
+        $request->validate([
+            'date' => 'required|array|max:'.count($course->appointment),
+            'date.*' => 'integer|distinct|'.Rule::in($date),
+            'coupon_code' => 'nullable|string|min:3|max:30',
+        ]);
+
+
+        for ($i = 0; $i < count($request->date); $i++){
+            $coupon = Coupon::where('coupon_code', $request->coupon_code)->where('course_id', $course->id)->first();
+            if ( count($coupon) <= 0 ){
+                Reservation::create([
+                    'student_id' => Auth::user()->student->id,
+                    'course_id' => $course->id,
+                    'appointment_id' => $request->date[$i],
+                ]);
+            }else {
+                Reservation::create([
+                    'student_id' => Auth::user()->student->id,
+                    'course_id' => $course->id,
+                    'coupon_id' => $coupon->id,
+                    'appointment_id' => $request->date[$i],
+                ]);
+            }
+        }
+
+        return redirect()->route('account.index')->with('success', 'تم حجز دورة '.$course->title.' بنجاح قم بتسديد المبلغ لكي يتم إصدار البطاقة');
 
     }
 
@@ -185,7 +232,8 @@ class StudentController extends Controller
 
     public function tickets()
     {
-        return view('student.tickets');
+        $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
+        return view('student.tickets', compact('reservations'));
     }
 
     public function create_reset_password()
@@ -195,7 +243,6 @@ class StudentController extends Controller
 
     public function reset_password(Request $request)
     {
-
 
         $user = User::find(Auth::user()->id);
 
