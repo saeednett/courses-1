@@ -163,10 +163,10 @@
                                             name="admin">
                                         @foreach($admins as $admin)
                                             @if(old('admin') == $admin->id)
-                                                <option value="{{ $admin->user->id }}"
+                                                <option value="{{ $admin->id }}"
                                                         selected>{{ $admin->user->name }}</option>
                                             @else
-                                                <option value="{{ $admin->user->id }}">{{ $admin->user->name }}</option>
+                                                <option value="{{ $admin->id }}">{{ $admin->user->name }}</option>
                                             @endif
                                         @endforeach
                                     </select>

@@ -23,9 +23,26 @@
     <div class="container mb-5">
         <div class="row justify-content-center mt-lg-3 mt-2">
             <div class="col-lg-10">
+                <?php $students = array(); ?>
+                @foreach($course->appointment->reservation as $reservation)
+                    @if($reservation->student_id == \Illuminate\Support\Facades\Auth::user()->student->id)
+                        <? array_push($students, $reservation->student_id); ?>
+                    @endif
+                @endforeach
+                @if(!empty($students))
+                    <div class="row justify-content-center">
+                        <div class="col-12">
+                            <div class="alert alert-success">
+                                <ul class="text-right mb-0 rtl">
+                                    <li>لقد قم بالتسجيل في هذه الدورة</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                @endif
                 <div class="row justify-content-center">
-                    <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12 order-last text-right mb-4">
-                        <h2>{{ $course->title }}</h2>
+                    <div class="col-lg-7 col-md-12 col-sm-12 col-12 text-right order-lg-last order-first mb-lg-4 mt-lg-0 mb-0 mt-4">
+                        <h3>{{ $course->title }}</h3>
                         <div class="main-info">
                             <div class="course-logo rounded-top" style="height: 300px; width: 100%; overflow: hidden">
                                 <img src="/storage/course-images/{{ $course->image[0]->url }}" alt=""
@@ -33,36 +50,41 @@
                             </div>
                             <div class="block rounded-bottom mt-0">
                                 <div class="row">
-                                    <div class="col-lg-9">
-                                        <h5 class="text-right rtl"><span>اسم المنظم:</span> <a
-                                                    href="{{ route('center.profile', $course->center->user->username) }}">{{ $course->center->user->name }}</a></h5>
+                                    <div class="col-lg-9 col-md-8 col-sm-8 col-8">
+                                        <h5 class="text-right d-lg-block d-none rtl"><span>اسم المنظم:</span> <a
+                                                    href="{{ route('center.profile', $course->center->user->username) }}">{{ $course->center->user->name }}</a>
+                                        </h5>
+                                        <h5 class="text-right d-lg-none d-block rtl"><a
+                                                    href="{{ route('center.profile', $course->center->user->username) }}">{{ $course->center->user->name }}</a>
+                                        </h5>
                                         <div class="mt-4"
                                              style="position: absolute; bottom: 0; width: 92%; height: 40px; margin: auto; overflow: hidden;">
                                             <div class="row justify-content-end">
                                                 <div class="col-lg-8 text-center h-100">
                                                     <div class="row justify-content-center">
-                                                        <div class="col-lg mt-1">
-                                                            <i class="fab fa-facebook fa-2x"></i>
+                                                        <div class="col-lg col-md col-sm col mt-1">
+                                                            <i class="fa fa-facebook fa-2x"></i>
                                                         </div>
 
-                                                        <div class="col-lg mt-1">
-                                                            <i class="fab fa-twitter fa-2x"></i>
+                                                        <div class="col-lg col-md col-sm col mt-1">
+                                                            <i class="fa fa-twitter fa-2x"></i>
                                                         </div>
 
-                                                        <div class="col-lg mt-1">
-                                                            <i class="fab fa-snapchat fa-2x"></i>
+                                                        <div class="col-lg col-md col-sm col mt-1">
+                                                            <i class="fa fa-snapchat fa-2x"></i>
                                                         </div>
 
-                                                        <div class="col-lg mt-1">
-                                                            <i class="fab fa-instagram fa-2x"></i>
+                                                        <div class="col-lg col-md col-sm col mt-1">
+                                                            <i class="fa fa-instagram fa-2x"></i>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-3">
-                                        <div class="logo-holder" style="width: 90px; height: 90px; overflow: hidden; padding: 0;">
+                                    <div class="col-lg-3 col-md-4 col-sm-4 col-4">
+                                        <div class="logo-holder"
+                                             style="width: 90px; height: 90px; overflow: hidden; padding: 0;">
                                             <img class="border"
                                                  src="/storage/center-images/{{ $course->center->logo }}"
                                                  alt=""
@@ -76,53 +98,87 @@
                             <div class="block rounded">
 
                                 <div class="row info">
-                                    <div class="col-lg-3 text-right rtl order-last">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-4 text-right order-last rtl">
                                         <i class="fa fa-star labels-icon"></i>
                                         <span class="">الدورة:</span>
                                     </div>
-                                    <div class="col-lg-9">
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
                                         {{ $course->title }}
                                     </div>
                                 </div>
 
                                 <div class="row info">
-                                    <div class="col-lg-3 text-right rtl order-last">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-4 text-right order-last rtl">
                                         <i class="fa fa-calendar-o labels-icon"></i>
                                         <span class="">التاريخ:</span>
                                     </div>
-                                    <div class="col-lg-9">
-                                        {{ date('F d l', strtotime($course->appointment[0]->date)) }}
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
+                                        {{ date('F d l', strtotime($course->appointment->start_date)) }}
                                     </div>
                                 </div>
 
                                 <div class="row info">
-                                    <div class="col-lg-3 text-right rtl order-last">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-4 text-right order-last rtl">
                                         <i class="fa fa-map-marker labels-icon"></i>
-                                        <span class="">المكان:</span>
+                                        <span class="">المدينة:</span>
                                     </div>
-                                    <div class="col-lg-9 rtl">
-                                        {{ $course->city->name.' - '.$course->address }}
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
+                                        {{ $course->city->name}}
                                     </div>
                                 </div>
 
                                 <div class="row info">
-                                    <div class="col-lg-3 text-right rtl order-last">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-4 text-right order-last rtl">
+                                        <i class="fa fa-map-marker labels-icon"></i>
+                                        <span class="">العنوان:</span>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
+                                        {{ $course->address }}
+                                    </div>
+                                </div>
+
+                                <div class="row info">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-4 text-right rtl order-last">
                                         <i class="fa fa-clock-o labels-icon"></i>
                                         <span class="">الوقت:</span>
                                     </div>
-                                    <div class="col-lg-9 rtl">
-                                        @if( date('a', strtotime($course->appointment[0]->time)) == 'pm' )
-                                            {{ date('h:i', strtotime($course->appointment[0]->time)).' مساء' }}
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
+                                        @if( date('a', strtotime($course->appointment->start_time)) == 'pm' )
+                                            {{ date('h:i', strtotime($course->appointment->start_time)).' مساء' }}
                                         @else
-                                            {{ date('h:i', strtotime($course->appointment[0]->time)).' صباحا' }}
+                                            {{ date('h:i', strtotime($course->appointment->start_time)).' صباحا' }}
                                         @endif
+                                    </div>
+                                </div>
+
+                                <div class="row info">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-4 text-right rtl order-last">
+                                        <i class="fa fa-calendar labels-icon"></i>
+                                        <span class="">المدة:</span>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
+                                        <?php
+                                        $date1 = date_create($course->appointment->start_date);
+                                        $date2 = date_create($course->appointment->finish_date);
+                                        $diff = date_diff($date1, $date2);
+                                        $days = $diff->format("%a");
+                                        if ($days == 1) {
+                                            echo $days . " يوم ";
+                                        } elseif ($days == 2) {
+                                            echo $days . " يومين ";
+                                        } elseif ($days > 2 && $days <= 10) {
+                                            echo $days . " أيام ";
+                                        } else {
+                                            echo $days . " يوم ";
+                                        }
+                                        ?>
                                     </div>
                                 </div>
 
                             </div>
 
 
-                            <div class="block rounded mb-4">
+                            <div class="block rounded mb-0">
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <p class="text-right">
@@ -139,121 +195,17 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
-                    <div class="col-lg-5">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <h2 class="text-right">التذاكر</h2>
+                    <div class="col-lg-5 col-md-12 col-sm-12 col-12">
+                        <div class="row justify-content-center mt-lg-0 mt-4">
+                            <div class="col-12">
+                                <h4 class="text-right pr-2">ملاحظات مهمة</h4>
                             </div>
-                        </div>
 
-
-                        @if($errors->any())
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="alert alert-danger">
-                                        <ul class="text-right rtl mb-0">
-                                            @foreach($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-                        <div class="row">
-                            <div class="col-lg-12">
+                            <div class="col-12">
                                 <div class="block rounded mt-0">
-                                    <div class="row">
-
-                                        <div class="col-lg-7 text-right mt-3">
-                                            {{ date('F d l', strtotime($course->appointment[0]->date)) }}
-                                        </div>
-
-                                        <div class="col-lg-2 text-right mt-3">
-                                            <span class="center-block">التاريخ:</span>
-                                        </div>
-
-                                        <div class="col-lg-3">
-                                            <i class="fa fa-calendar fa-3x text-custom"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="block rounded">
-                            <form method="post" action="{{ route('account.course.booking', $course->identifier) }}" id='book-course'>
-                                {{ csrf_field() }}
-                                <?php $counter = 1; $class = "mt-4";?>
-
-                                    @foreach($course->appointment as $appointment)
-                                        @if( $counter == 1 )
-                                            <?php $class = "mt-0";?>
-                                        @else
-                                            <?php $class = "mt-4";?>
-                                        @endif
-                                        <div class="row justify-content-end {{ $class }}">
-                                            <div class="col-lg-10">
-                                                @if( date('a', strtotime($appointment->time)) == 'pm' )
-                                                    <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->time)).' مساء' }}</p>
-                                                    @if($appointment->gender == 1)
-                                                        <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
-                                                    @else
-                                                        <p class="text-right rtl mt-1 mb-0">( تذكرة نساء فوق عمر 16 )</p>
-                                                    @endif
-
-                                                    <p class="text-right text-muted rtl mt-1 mb-0">
-                                                        <b>{{ $appointment->price }} ريال </b></p>
-                                                @else
-                                                    <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->time)).' صباحا' }}</p>
-                                                    @if($appointment->gender == 1)
-                                                        <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
-                                                    @else
-                                                        <p class="text-right rtl mt-1 mb-0">( تذكرة نساء فوق عمر 16 )</p>
-                                                    @endif
-                                                    <p class="text-right text-muted rtl mt-1 mb-0">
-                                                        <b>{{ $appointment->price }} ريال </b></p>
-                                                @endif
-                                            </div>
-                                            <div class="col-lg-2 order-first {{ $errors->has('date') ? 'bg-danger rounded' : '' }}">
-                                                <label class="checkbox-container">
-                                                    <input type="checkbox" name="date[]" value="{{ $appointment->id }}">
-                                                    <span class="checkmark"></span>
-                                                </label>
-                                                @if ($errors->has('date'))
-                                                    <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $errors->first('date[0]') }}</strong>
-                                                </span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        @if($counter < count($course->appointment))
-                                            <hr>
-                                        @endif
-                                        <?php $counter++; ?>
-                                    @endforeach
-
-                            </form>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <button type="submit" class="btn custom-btn" form="book-course">احجز الآن</button>
-                            </div>
-                        </div>
-
-                        <div class="row mt-4">
-                            <div class="col-lg-12">
-                                <h2 class="text-right">ملاحظات مهمة</h2>
-                            </div>
-
-                            <div class="col-lg-12">
-                                <div class="block rounded">
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <ul class="rtl text-right"
@@ -297,10 +249,11 @@
 
 
                         <div class="row mt-4">
-                            <div class="col-lg-12">
-                                <h2 class="text-right">خريطة الموقع</h2>
+                            <div class="col-12">
+                                <h4 class="text-right pr-2">خريطة الموقع</h4>
                             </div>
-                            <div class="col-lg-12">
+
+                            <div class="col-12">
                                 <div class="map-location">
                                     <div class="map rounded-top" style="height: 250px; width: 100%; overflow: hidden">
                                         <img src="https://snazzy-maps-cdn.azureedge.net/assets/1243-xxxxxxxxxxx.png?v=20170626083204"
@@ -313,6 +266,23 @@
                             </div>
                         </div>
 
+                    </div>
+                </div>
+
+                <div class="row justify-content-lg-end justify-content-center">
+                    <div class="col-lg-7 col-12">
+                        <?php $students = array(); ?>
+                        @foreach($course->appointment->reservation as $reservation)
+                            @if($reservation->student_id == \Illuminate\Support\Facades\Auth::user()->student->id)
+                                <?php array_push($students, $reservation->student_id); ?>
+                            @endif
+                        @endforeach
+                        @if(empty($students))
+                            <form method="post" action="{{ route('account.course.booking', $course->identifier) }}">
+                                {{ csrf_field() }}
+                                <button type="submit" class="btn custom-btn">احجز الآن</button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -44,13 +44,8 @@ class User extends Authenticatable
         return $this->hasOne('App\Admin');
     }
 
-    public function course()
-    {
-        return $this->hasMany('App\CourseAdmin');
-    }
-
     public function trainer()
     {
-        return $this->hasMany('App\Trainer', 'center_id');
+        return $this->hasOne('App\Trainer');
     }
 }

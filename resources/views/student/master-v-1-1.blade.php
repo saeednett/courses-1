@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    {{--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">--}}
     <link href="https://fonts.googleapis.com/css?family=Tajawal" rel="stylesheet">
     <link href="{{ asset('css/student/bootstrap-chosen.css') }}" rel="stylesheet">
     <link href="{{ asset('css/student/index.css') }}" rel="stylesheet">
@@ -25,46 +25,52 @@
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-lg-8 col-md-10 col-sm-12 col-12">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-8 col-md-8 col-sm-12 col-12 text-right">
+                    <div class="row justify-content-end">
+                        <div class="col-lg-9 col-md-8 col-sm-12 col-12">
                             <nav class="navbar navbar-expand-lg navbar-light">
 
                                 <a class="navbar-brand rtl" href="#">
-                                    <img src="{{ asset('img/student/logo2.png') }}" alt="" height="70">
-                                    <form class="text-center float-left rtl" style="margin-top: 15px;" action="" method="post">
-                                        <select data-placeholder="" class="chosen-select col-lg-8 col-md-8 col-sm-4 col-4">
-                                            <option value="all">كل المدن</option>
-                                            <option value="Jeddah" >جدة</option>
-                                            <option value="Riyadh" >الرياض</option>
-                                            <option value="Dammam" >الدمام</option>
-                                            <option value="Mecca" >مكة المكرمة</option>
-                                            <option value="Medina" >المدينة المنورة</option>
-                                            <option value="Khobar" >الخبر</option>
-                                            <option value="Al-Ahsa" >الأحساء</option>
-                                            <option value="Ta&#39;if" >الطائف</option>
-                                            <option value="Khamis Mushait" >خميس مشيط</option>
-                                            <option value="Buraidah" >بريدة</option>
-                                            <option value="Jubail" >الجبيل</option>
-                                            <option value="AlJouf" >الجوف</option>
-                                            <option value="Yunba" >ينبع</option>
-                                            <option value="Njran" >نجران</option>
-                                            <option value="Tabuk" >تبوك</option>
-                                            <option value="Hail" >حائل</option>
-                                            <option value="Assir" >عسير</option>
-                                            <option value="Abha" >أبها</option>
-                                            <option value="Qassim" >القصيم</option>
-                                            <option value="HaferAlbaten" >حفرالباطن</option>
-                                            <option value="Unaizah" >عنيزة</option>
-                                            <option value="ِAlkharg" >الخرج</option>
-                                            <option value="AlOla" >العلا</option>
-                                            <option value="Bahrain" >البحرين</option>
-                                            <option value="Jazan" >جازان</option>
-                                            <option value="Dhahran" >الظهران</option>
-                                            <option value="Kuwait" >الكويت</option>
-                                            <option value="Arar" >عرعر</option>
-                                            <option value="Qatif" >القطيف</option>
-                                        </select>
-                                    </form>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <img src="{{ asset('img/student/logo2.png') }}" alt="" height="70" width="50">
+                                        </div>
+                                        <div class="col-8">
+                                            <form class="text-center" style="margin-top: 25px;" action="" method="post">
+                                                <select data-placeholder="" class="chosen-select col-lg-12 col-md-8 col-sm-12 col-12">
+                                                    <option value="all">كل المدن</option>
+                                                    <option value="Jeddah" >جدة</option>
+                                                    <option value="Riyadh" >الرياض</option>
+                                                    <option value="Dammam" >الدمام</option>
+                                                    <option value="Mecca" >مكة المكرمة</option>
+                                                    <option value="Medina" >المدينة المنورة</option>
+                                                    <option value="Khobar" >الخبر</option>
+                                                    <option value="Al-Ahsa" >الأحساء</option>
+                                                    <option value="Ta&#39;if" >الطائف</option>
+                                                    <option value="Khamis Mushait" >خميس مشيط</option>
+                                                    <option value="Buraidah" >بريدة</option>
+                                                    <option value="Jubail" >الجبيل</option>
+                                                    <option value="AlJouf" >الجوف</option>
+                                                    <option value="Yunba" >ينبع</option>
+                                                    <option value="Njran" >نجران</option>
+                                                    <option value="Tabuk" >تبوك</option>
+                                                    <option value="Hail" >حائل</option>
+                                                    <option value="Assir" >عسير</option>
+                                                    <option value="Abha" >أبها</option>
+                                                    <option value="Qassim" >القصيم</option>
+                                                    <option value="HaferAlbaten" >حفرالباطن</option>
+                                                    <option value="Unaizah" >عنيزة</option>
+                                                    <option value="ِAlkharg" >الخرج</option>
+                                                    <option value="AlOla" >العلا</option>
+                                                    <option value="Bahrain" >البحرين</option>
+                                                    <option value="Jazan" >جازان</option>
+                                                    <option value="Dhahran" >الظهران</option>
+                                                    <option value="Kuwait" >الكويت</option>
+                                                    <option value="Arar" >عرعر</option>
+                                                    <option value="Qatif" >القطيف</option>
+                                                </select>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </a>
 
                                 <button class="navbar-toggler d-lg-none d-md-none d-sm-block d-block" type="button" data-toggle="collapse"
@@ -75,7 +81,6 @@
                                 </button>
 
                                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
                                     <!-- Left Side Of Navbar -->
                                     <ul class="navbar-nav d-lg-none d-md-block d-sm-block d-block">
                                         <li class="nav-item tap-link">
@@ -83,16 +88,18 @@
                                         </li>
 
                                         <li class="nav-item tap-link">
-                                            <a class="nav-link" href="{{ route('login') }}">من نحن</a>
+                                            <a class="nav-link" href="{{ route('about.us') }}">من نحن</a>
                                         </li>
 
                                         <li class="nav-item tap-link">
-                                            <a class="nav-link" href="{{ route('center.profile', "test-name") }}">الجهات</a>
+                                            <a class="nav-link" href="{{ route('contact.us') }}">اتصل بنا</a>
                                         </li>
-
-                                        <li class="nav-item tap-link">
-                                            <a class="nav-link" href="{{ route('account.ticket') }}">تذاكري</a>
-                                        </li>
+                                        {{--<li class="nav-item tap-link">--}}
+                                            {{--<a class="nav-link rtl" href="{{ route('account.ticket') }}">--}}
+                                                {{--تذاكري--}}
+                                                {{--<span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>--}}
+                                            {{--</a>--}}
+                                        {{--</li>--}}
                                     </ul>
 
                                     <ul class="navbar-nav d-lg-none d-md-none d-sm-block d-block" style="direction: ltr;">
@@ -122,9 +129,11 @@
                                                     <a href="{{ route('account.edit') }}" class="dropdown-item">
                                                         بياناتي
                                                     </a>
-                                                    <a href="{{ route('account.ticket') }}" class="dropdown-item">
+                                                    <a href="{{ route('account.ticket') }}" class="dropdown-item rtl">
                                                         تذاكري
-                                                        <span class="rounded-circle count-booking-tickets">1</span>
+                                                        @if($tickets > 0)
+                                                            <span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>
+                                                        @endif
                                                     </a>
                                                     <div class="dropdown-divider"></div>
                                                     <a class="dropdown-item" href="{{ route('logout') }}"
@@ -145,8 +154,8 @@
                                 </div>
                             </nav>
                         </div>
-                        <div class="col-lg-4 col-md-4 col-sm-12 col-12 d-lg-block d-md-block d-sm-none d-none text-left">
-                            <button class="btn btn-outline-success mt-4">أضف فعاليتك الآن!</button>
+                        <div class="col-lg-3 col-md-4 col-sm-12 col-12 d-lg-block d-md-block d-sm-none d-none">
+                            <button class="btn btn-outline-success" style="margin-top: 40px;">أضف فعاليتك الآن!</button>
                         </div>
                     </div>
                 </div>
@@ -165,15 +174,20 @@
                                 </li>
 
                                 <li class="nav-item tap-link">
-                                    <a class="nav-link" href="{{ route('login') }}">من نحن</a>
+                                    <a class="nav-link" href="{{ route('about.us') }}">من نحن</a>
                                 </li>
 
                                 <li class="nav-item tap-link">
-                                    <a class="nav-link" href="{{ route('center.profile', "test-name") }}">الجهات</a>
+                                    <a class="nav-link" href="{{ route('contact.us') }}">اتصل بنا</a>
                                 </li>
 
                                 <li class="nav-item tap-link">
-                                    <a class="nav-link" href="{{ route('account.ticket') }}">تذاكري</a>
+                                    <a class="nav-link rtl" href="{{ route('account.ticket') }}">
+                                        تذاكري
+                                        @if($tickets > 0)
+                                            <span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>
+                                        @endif
+                                    </a>
                                 </li>
                             </ul>
 
@@ -205,10 +219,10 @@
                                             <a href="{{ route('account.edit') }}" class="dropdown-item">
                                                 بياناتي
                                             </a>
-                                            <a href="{{ route('account.ticket') }}" class="dropdown-item">
-                                                تذاكري
-                                                <span class="rounded-circle count-booking-tickets">1</span>
-                                            </a>
+                                            {{--<a href="{{ route('account.ticket') }}" class="dropdown-item">--}}
+                                                {{--تذاكري--}}
+                                                {{--<span class="rounded-circle count-booking-tickets">1</span>--}}
+                                            {{--</a>--}}
                                             <div class="dropdown-divider"></div>
                                             <a class="dropdown-item" href="{{ route('logout') }}"
                                                onclick="event.preventDefault();
@@ -303,14 +317,14 @@
                 </div>
             </div>
 
-            <div class="row justify-content-center mt-4">
+            <div class="row justify-content-center mt-3 mb-3">
                 <div class="col-lg-2 col-md-2 col-sm-5 col-5">
-                    <a href="a"><img src="{{ asset('img/student/logo2.png') }}"> </a>
+                    <a href="a"><img class="m-auto d-block" src="{{ asset('img/student/logo2.png') }}" width="70"> </a>
                 </div>
             </div>
 
-            <div class="row justify-content-center">
-                <div class="col-lg-5 col-md-5 col-sm-5 col-10 text-center">
+            <div class="row justify-content-center pt-lg-0 pt-1">
+                <div class="col-lg-5 col-md-5 col-sm-5 col-11 text-center">
                     <p>الحقوق محفوظة - لمة 2015
                         حقوق الفعاليات محفوظة لمنظمي الفعاليات</p>
                 </div>

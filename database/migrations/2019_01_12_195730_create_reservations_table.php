@@ -16,7 +16,6 @@ class CreateReservationsTable extends Migration
         Schema::create('reservations', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('student_id');
-            $table->integer('course_id');
             $table->integer('coupon_id')->default(0);
             $table->integer('appointment_id');
             $table->string('identifier')->unique();

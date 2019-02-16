@@ -133,7 +133,7 @@
                                     <tr class="gradeX">
                                         <td>{{ $admin->user->name }}</td>
                                         <td class="ltr">{{ date( 'Y-M-D h:i' ,strtotime($admin->user->created_at)) }}</td>
-                                        <td>{{ count($admin->user->course) }}</td>
+                                        <td>{{ count($admin->course) }}</td>
                                         @if(count($admin->course) > 0)
                                             @foreach($admin->course as $course_details)
                                                 @if ($course_details->role_id == 1)
@@ -142,8 +142,8 @@
                                                     <?php $course_attendance++; ?>
                                                 @endif
                                             @endforeach
+                                            <td>{{ $course_attendance}}</td>
                                             <td>{{ $course_admin }}</td>
-                                            <td>{{ $course_attendance }}</td>
                                         @else
                                             <td>0</td>
                                             <td>0</td>

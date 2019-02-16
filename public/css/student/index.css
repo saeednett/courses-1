@@ -36,10 +36,10 @@ select {
 }
 
 .footer {
-    height: 380px;
+    height: 420px;
     margin-top: 0;
     width: 100%;
-    padding-top: 20px;
+    padding-top: 15px;
     background: #00bdac url('https://lammt.com/resource/img/footer_bg_top.png') no-repeat bottom left;
     font-size: 12px;
     font-weight: 400;

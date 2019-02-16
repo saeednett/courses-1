@@ -2,7 +2,7 @@
 
 @extends('student.master-v-1-1')
 
-@section('title', $reservation->course->title)
+@section('title', $reservation->appointment->course->title)
 
 @section('guest-links')
     <a class="dropdown-item" href="{{ route('account.login') }}">تسجيل الدخول</a>
@@ -50,7 +50,7 @@
                         <div class="course-information-section">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <h2>{{ $reservation->course->title }}</h2>
+                                    <h2>{{ $reservation->appointment->course->title }}</h2>
                                 </div>
                             </div>
 
@@ -59,14 +59,14 @@
                                 <div class="col-lg-12">
                                     <div class="main-info">
                                         <div class="course-logo rounded-top" style="height: 300px; width: 100%; overflow: hidden">
-                                            <img src="/storage/course-images/{{ $reservation->course->image[0]->url }}" alt=""
+                                            <img src="/storage/course-images/{{ $reservation->appointment->course->image[0]->url }}" alt=""
                                                  style="width: 100%; height: 100%; display: block; margin: auto;">
                                         </div>
                                         <div class="block rounded-bottom mt-0">
                                             <div class="row">
                                                 <div class="col-lg-9">
                                                     <h5 class="text-right rtl"><span>اسم المنظم:</span> <a
-                                                                href="{{ route('center.profile', $reservation->course->center->user->username) }}">{{ $reservation->course->center->user->name }}</a></h5>
+                                                                href="{{ route('center.profile', $reservation->appointment->course->center->user->username) }}">{{ $reservation->appointment->course->center->user->name }}</a></h5>
                                                     <div class="mt-4"
                                                          style="position: absolute; bottom: 0; width: 92%; height: 40px; margin: auto; overflow: hidden;">
                                                         <div class="row justify-content-end">
@@ -95,7 +95,7 @@
                                                 <div class="col-lg-3">
                                                     <div class="logo-holder" style="width: 90px; height: 90px; overflow: hidden; padding: 0;">
                                                         <img class="border"
-                                                             src="/storage/center-images/{{ $reservation->course->center->logo }}"
+                                                             src="/storage/center-images/{{ $reservation->appointment->course->center->logo }}"
                                                              alt=""
                                                              style="width: 100%; height: 100%; display: block; margin: auto; padding: 3px;">
                                                     </div>
@@ -112,7 +112,7 @@
                                                     <span class="">الدورة:</span>
                                                 </div>
                                                 <div class="col-lg-9">
-                                                    {{ $reservation->course->title }}
+                                                    {{ $reservation->appointment->course->title }}
                                                 </div>
                                             </div>
 
@@ -122,7 +122,7 @@
                                                     <span class="">التاريخ:</span>
                                                 </div>
                                                 <div class="col-lg-9">
-                                                    {{ date('F d l', strtotime($reservation->appointment->date)) }}
+                                                    {{ date('F d l', strtotime($reservation->appointment->start_date)) }}
                                                 </div>
                                             </div>
 
@@ -132,7 +132,7 @@
                                                     <span class="">المكان:</span>
                                                 </div>
                                                 <div class="col-lg-9 rtl">
-                                                    {{ $reservation->course->city->name.' - '.$reservation->course->address }}
+                                                    {{ $reservation->appointment->course->city->name.' - '.$reservation->appointment->course->address }}
                                                 </div>
                                             </div>
 
@@ -142,11 +142,35 @@
                                                     <span class="">الوقت:</span>
                                                 </div>
                                                 <div class="col-lg-9 rtl">
-                                                    @if( date('a', strtotime($reservation->appointment->time)) == 'pm' )
-                                                        {{ date('h:i', strtotime($reservation->appointment->time)).' مساء' }}
+                                                    @if( date('a', strtotime($reservation->appointment->start_time)) == 'pm' )
+                                                        {{ date('h:i', strtotime($reservation->appointment->start_time)).' مساء' }}
                                                     @else
-                                                        {{ date('h:i', strtotime($reservation->appointment->time)).' صباحا' }}
+                                                        {{ date('h:i', strtotime($reservation->appointment->start_time)).' صباحا' }}
                                                     @endif
+                                                </div>
+                                            </div>
+
+                                            <div class="row info">
+                                                <div class="col-lg-3 text-right rtl order-last">
+                                                    <i class="fa fa-calendar labels-icon"></i>
+                                                    <span class="">المدة:</span>
+                                                </div>
+                                                <div class="col-lg-9 rtl">
+                                                    <?php
+                                                    $date1 = date_create($reservation->appointment->start_date);
+                                                    $date2 = date_create($reservation->appointment->finish_date);
+                                                    $diff = date_diff($date1,$date2);
+                                                    $days = $diff->format("%a");
+                                                    if ( $days == 1 ){
+                                                        echo $days." يوم ";
+                                                    }elseif ($days == 2 ){
+                                                        echo $days." يومين ";
+                                                    }elseif ($days > 2 && $days <= 10){
+                                                        echo $days." أيام ";
+                                                    }else{
+                                                        echo $days." يوم ";
+                                                    }
+                                                    ?>
                                                 </div>
                                             </div>
 
@@ -157,7 +181,7 @@
                                             <div class="row">
                                                 <div class="col-lg-12">
                                                     <p class="text-right">
-                                                        {{ $reservation->course->title }}
+                                                        {{ $reservation->appointment->course->title }}
                                                     </p>
                                                 </div>
                                             </div>
@@ -165,7 +189,7 @@
                                             <div class="row">
                                                 <div class="col-lg-12">
                                                     <p class=""
-                                                       style="text-align: right; overflow-wrap: break-word;">{{ $reservation->course->description }}</p>
+                                                       style="text-align: right; overflow-wrap: break-word;">{{ $reservation->appointment->course->description }}</p>
                                                     <hr>
                                                 </div>
                                             </div>
@@ -301,7 +325,7 @@
                                                  style="width: 100%; height: 100%; display: block; margin: auto;">
                                         </div>
                                         <div class="block rounded-bottom mt-0 rtl">
-                                            <p class="text-right">{{ $reservation->course->city->name.' - '.$reservation->course->address }}</p>
+                                            <p class="text-right">{{ $reservation->appointment->course->city->name.' - '.$reservation->appointment->course->address }}</p>
                                         </div>
                                     </div>
                                 </div>

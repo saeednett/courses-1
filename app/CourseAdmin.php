@@ -7,11 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 class CourseAdmin extends Model
 {
     protected $guarded = [];
-    public function user(){
-        return $this->belongsTo('App\User');
+
+    public function admin()
+    {
+        return $this->belongsTo('App\Admin');
     }
 
-    public function course(){
+    public function course()
+    {
         return $this->belongsTo('App\Course');
     }
 }

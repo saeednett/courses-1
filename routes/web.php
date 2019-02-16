@@ -24,7 +24,7 @@ Route::post('account/sign-up', 'StudentController@store')->name('account.store')
 Route::get('account/sign-in', 'StudentController@create_sign_in')->name('account.login')->middleware('guest');
 // To Reset The Password For The STudent Who Has An Account
 Route::get('account/account-password', 'StudentController@create_reset_password')->name('account.password')->middleware('auth');
-// the Data Of Reseting Password Goes Here
+// the Data Of Resetting Password Goes Here
 Route::post('account/account-password', 'StudentController@reset_password')->name('account.password')->middleware('auth');
 // To Show The Tickets Of The Student That Was Reserved
 Route::get('account/booking-tickets', 'StudentController@tickets')->name('account.ticket')->middleware('auth');
@@ -34,12 +34,16 @@ Route::get('account/account-profile', 'StudentController@edit')->name('account.e
 Route::put('account/update', 'StudentController@update')->name('account.update')->middleware('auth');
 // To Show The Information Of A Course Before Reserved It
 Route::get('{center}/Course/{course}', 'StudentController@show_course')->name('account.course_details');
-// To Reserve The Course
-Route::post('Reserve/Course', 'StudentController@book_course_reservation')->name('account.course.booking.reserve');
 // The Data Of Reserving A Course Goes Here
 Route::post('{course}/Booking', 'StudentController@book_course_form')->name('account.course.booking')->middleware('auth');
+// To Reserve The Course
+Route::post('{course}/Reserve', 'StudentController@book_course_reservation')->name('account.course.booking.reserve');
 // To Confirm The Payment Of A Course
 Route::get('{course}/PaymentConfirmation', 'StudentController@payment_confirmation')->name('student.payment.confirmation')->middleware('auth');
+// To Edit Payment Confirmation Of The Course
+Route::get('{reservation}/PaymentConfirmation/edit', 'StudentController@edit_payment_confirmation_form')->name('student.payment.confirmation.edit')->middleware('auth');
+// The Data Of Editing Payment Confirmation Goes Here
+Route::put('{reservation}/PaymentConfirmation/edit', 'StudentController@update_payment_confirmation_form')->name('student.payment.confirmation.update')->middleware('auth');
 // The Data Of Confirmation Goes Here
 Route::post('{course}/Confirmed', 'StudentController@confirm')->name('student.payment.confirmation.confirm')->middleware('auth');
 
@@ -92,8 +96,21 @@ Route::get('center/sign-up', 'CenterController@create')->name('center.register')
 Route::post('center/', 'CenterController@store')->name('center.store')->middleware('guest');
 // To Login As A Center
 Route::get('center/sign-in', 'CenterController@create_sign_in')->name('center.login')->middleware('guest');
-
+// To Show Contacts Information Of The Site
+Route::get('contact/contact-us', 'CenterController@contact_us')->name('contact.us');
+// To Show About Us Information Of The Site
+Route::get('contact/about-us', 'CenterController@about_us')->name('about.us');
 /*  End Of Center Routes Part */
+
+
+/*  Admin Routes Part */
+
+Route::get('admin/{admin}', 'AdminController@index')->name('admin.index')->middleware('auth-center');
+Route::get('admin/show-courses', 'AdminController@index')->name('admin.courses.show')->middleware('auth-center');
+
+/*  End Of Admin Routes Part */
+
+
 
 /*  API Part */
 // To Get The Cities Of A Counter

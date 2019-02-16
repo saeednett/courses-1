@@ -16,7 +16,7 @@ class CreateCourseAdminsTable extends Migration
         Schema::create('course_admins', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('course_id');
-            $table->integer('user_id');
+            $table->integer('admin_id');
             $table->integer('role_id');
             $table->timestamps();
         });

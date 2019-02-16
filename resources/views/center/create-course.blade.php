@@ -348,7 +348,8 @@
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label class="required-field" for="personal-profile">غلاف الدورة</label>
-                                            <input type="text" id="course-poster-1" class="form-control custom-input text-center"
+                                            <input type="text" id="course-poster-1"
+                                                   class="form-control custom-input text-center"
                                                    placeholder='اختر غلاف الدورة' readonly required/>
                                             <input type="file" name="course-poster-1" style="opacity: 0;"
                                                    accept="image/png, image/jpg" required>
@@ -359,7 +360,8 @@
                                         <div class="form-group">
                                             <label class="required-field" for="personal-profile">غلاف الدورة -
                                                 02 </label>
-                                            <input type="text" id="course-poster-2" class="form-control custom-input text-center"
+                                            <input type="text" id="course-poster-2"
+                                                   class="form-control custom-input text-center"
                                                    placeholder='اختر غلاف الدورة - 02' readonly required/>
                                             <input type="file" name="course-poster-2" style="opacity: 0;"
                                                    accept="image/png, image/jpg" required>
@@ -437,45 +439,49 @@
                             <div class="tab-pane" id="tab2-4">
 
                                 <div class="row">
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-6 col-lg-offset-3">
                                         <div class="form-group">
-                                            <label class="required-field" for="title">تاريخ الدورة</label>
+                                            <label class="required-field" for="start_date">تاريخ بدء الدورة</label>
                                             <input type="text"
-                                                   class="form-control {{ $errors->has('date') ? 'is-invalid' : '' }} custom-input text-center datepicker ltr"
-                                                   name="date[]" id="title" value="{{ old('date[0]') }}"
-                                                   placeholder="تاريخ الدورة"
+                                                   class="form-control {{ $errors->has('start_date') ? 'is-invalid' : '' }} custom-input text-center ltr"
+                                                   name="start_date" id="start_date" value="{{ old('start_date') }}"
+                                                   placeholder="تاريخ بدء الدورة"
                                                    autocomplete="off" required>
-                                            @if ($errors->has('date'))
+                                            @if ($errors->has('start_date'))
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $errors->first('date') }}</strong>
+                                                    <strong>{{ $errors->first('start_date') }}</strong>
                                                 </span>
                                             @endif
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="col-lg-2">
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3">
                                         <div class="form-group">
-                                            <label class="required-field" for="time">وقت الدورة</label>
+                                            <label class="required-field" for="start_time">وقت بدء الدورة</label>
                                             <input type="text"
-                                                   class="form-control {{ $errors->has('time') ? 'is-invalid' : '' }} custom-input text-center"
-                                                   name="time[]" id="time" value="{{ old('time[0]') }}"
-                                                   placeholder="وقت الدورة"
+                                                   class="form-control {{ $errors->has('start_time') ? 'is-invalid' : '' }} custom-input text-center"
+                                                   name="start_time" id="start_time" value="{{ old('start_time') }}"
+                                                   placeholder="وقت بدء الدورة"
                                                    autocomplete="off" required>
-                                            @if ($errors->has('time'))
+                                            @if ($errors->has('start_time'))
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $errors->first('time') }}</strong>
+                                                    <strong>{{ $errors->first('start_time') }}</strong>
                                                 </span>
                                             @endif
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="col-lg-2">
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3">
                                         <div class="form-group">
                                             <label class="required-field" for="attendance">عدد المقاعد</label>
                                             <input type="text"
                                                    class="form-control {{ $errors->has('attendance') ? 'is-invalid' : '' }} custom-input text-center num-only ltr"
-                                                   name="attendance[]" id="attendance"
-                                                   value="{{ old('attendance[0]') }}"
+                                                   name="attendance" id="attendance"
+                                                   value="{{ old('attendance') }}"
                                                    placeholder="عدد المقاعد"
                                                    autocomplete="off" maxlength="4" required>
                                             @if ($errors->has('attendance'))
@@ -485,28 +491,19 @@
                                             @endif
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="col-lg-2">
-                                        <div class="form-group">
-                                            <label class="required-field" for="price">مبلغ الدورة</label>
-                                            <input type="text"
-                                                   class="form-control {{ $errors->has('price') ? 'is-invalid' : '' }} custom-input text-center num-only ltr"
-                                                   name="price[]" id="price" value="{{ old('price[0]') }}"
-                                                   placeholder="مبلغ الدورة"
-                                                   autocomplete="off" maxlength="4" required>
-                                            @if ($errors->has('price'))
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $errors->first('price') }}</strong>
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </div>
+                                {{--البرمجة بإستخدام لارافيل--}}
+                                {{--الشوقية خلف حلويات زمان--}}
+                                {{--سوف تتعلم في هذه الدورة اساسيات البرمجة بإستخدام لارافيل ومن ثم سوف ننتقل للتعمق قليلا ولنحول كل ما مررنا به الى تطبيق عملي--}}
 
-                                    <div class="col-lg-2">
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3">
                                         <div class="form-group">
                                             <label class="required-field" for="gender">الحضور</label>
-                                            <select id="gender" class="form-control select2-placeholer {{ $errors->has('gender') ? 'is-invalid' : '' }}"
-                                                    name="gender[]" required>
+                                            <select id="gender"
+                                                    class="form-control select2-placeholer {{ $errors->has('gender') ? 'is-invalid' : '' }}"
+                                                    name="gender" required>
                                                 @if(old('gender') == 1)
                                                     <option value="1" selected>رجال</option>
                                                     <option value="2">نساء</option>
@@ -525,21 +522,52 @@
                                                     <option value="3">رجال ونساء</option>
                                                 @endif
                                             </select>
-                                            @if ($errors->has('type'))
+                                            @if ($errors->has('gender'))
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $errors->first('type') }}</strong>
+                                                    <strong>{{ $errors->first('gender') }}</strong>
                                                 </span>
                                             @endif
                                         </div>
                                     </div>
-
-                                    <div class='col-lg-2'><label for='trainer'></label>
-                                        <button type='button' class='btn btn-success btn-block custom-input'
-                                                id="add-appointment"><i class='fa fa-plus-circle'></i></button>
-                                    </div>
-
                                 </div>
 
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3">
+                                        <div class="form-group">
+                                            <label class="required-field" for="start_date">تاريخ انتهاء الدورة</label>
+                                            <input type="text"
+                                                   class="form-control {{ $errors->has('finish_date') ? 'is-invalid' : '' }} custom-input text-center ltr"
+                                                   name="finish_date" id="finish_date" value="{{ old('finish_date') }}"
+                                                   placeholder="تاريخ انتهاء الدورة"
+                                                   autocomplete="off" readonly disabled required>
+                                            @if ($errors->has('finish_date'))
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('finish_date') }}</strong>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3">
+                                        <div class="form-group">
+                                            <label class="required-field" for="end_reservation">تاريخ انتهاء
+                                                التسجيل</label>
+                                            <input type="text"
+                                                   class="form-control {{ $errors->has('end_reservation') ? 'is-invalid' : '' }} custom-input text-center ltr"
+                                                   name="end_reservation" id="start_date"
+                                                   value="{{ old('end_reservation') }}"
+                                                   placeholder="تاريخ انتهاء التسجيل"
+                                                   autocomplete="off" readonly disabled required>
+                                            @if ($errors->has('end_reservation'))
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('end_reservation') }}</strong>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="row" style="margin-top: 20px;">
                                     <div class="col-lg-4 col-lg-offset-4">
@@ -739,7 +767,7 @@
             $("select[name=type]").on('change', function () {
                 let value = $(this).val();
                 if (value == 2) {
-                    $("#tab2-3").append("<div class='row'> <div class='col-lg-6 col-lg-offset-3'> <div class='form-group'> <label class='required-field' for='coupon'>كوبونات الخصم</label> <select class='form-control select2-placeholer {{ $errors->has('coupon') ? 'is-invalid' : '' }}' name='coupon' id='coupon'> <option value='1'> لا يوجد كوبونات خصم</option><option value='2'>يوجد كوبونات خصم</option></select></div></div> </div>");
+                    $("#tab2-3").append("<div class='row'> <div class='col-lg-6 col-lg-offset-3'> <div class='form-group'> <label class='required-field' for='price'>قيمة الدورة</label> <input type='text' class='form-control custom-input text-center num-only ltr' name='price' id='price'  placeholder='قيمة الدورة' autocomplete='off' required> </div></div> </div>   <div class='row'> <div class='col-lg-6 col-lg-offset-3'> <div class='form-group'> <label class='required-field' for='coupon'>كوبونات الخصم</label> <select class='form-control select2-placeholer {{ $errors->has('coupon') ? 'is-invalid' : '' }}' name='coupon' id='coupon'> <option value='1'> لا يوجد كوبونات خصم</option><option value='2'>يوجد كوبونات خصم</option></select></div></div> </div>");
                     refreshSelect();
                 } else {
                     $("#tab2-3 > div:not(#tab2-3 > div:eq(0))").remove();
@@ -777,7 +805,7 @@
                     weekStart: 0,
                 };
 
-                $('.datepicker').datepicker({
+                $("input[name=start_date]").datepicker({
                     keyboardNavigation: false,
                     forceParse: false,
                     todayHighlight: true,
@@ -790,7 +818,66 @@
 
                 });
 
-                $("input[name='time[]']").clockpicker({
+                initializeFinishDate();
+                function initializeFinishDate() {
+                    $("input[name=finish_date]").datepicker({
+                        keyboardNavigation: false,
+                        forceParse: false,
+                        todayHighlight: false,
+                        format: 'yyyy/mm/dd',
+                        autoclose: true,
+                        clearBtn: true,
+                        title: "تاريخ انتهاء الدورة",
+                        language: "ar"
+
+                    });
+                }
+
+                function refreshFinishDate(date){
+                    if (date.length < 10 || date.length > 10){
+                        $("input[name=finish_date]").prop({'readonly': false, 'disabled': true});
+                    }else {
+                        $("input[name=finish_date]").prop({'readonly': false, 'disabled': false});
+                        $("input[name=finish_date]").datepicker('update', '');
+                        $("input[name=finish_date]").datepicker( 'setStartDate', new Date(date));
+                    }
+                }
+
+
+                initializeEndReservation();
+                function initializeEndReservation() {
+                    $("input[name=end_reservation]").datepicker({
+                        keyboardNavigation: false,
+                        forceParse: false,
+                        todayHighlight: false,
+                        format: 'yyyy/mm/dd',
+                        autoclose: true,
+                        clearBtn: true,
+                        title: "تاريخ انتهاء التسجيل",
+                        language: "ar"
+
+                    });
+                }
+
+                function refreshEndReservation(date) {
+                    if (date.length < 10 || date.length > 10) {
+                        $("input[name=end_reservation]").prop({'readonly': false, 'disabled': true});
+                    } else {
+                        $("input[name=end_reservation]").prop({'readonly': false, 'disabled': false});
+                        $("input[name=end_reservation]").datepicker('update', '');
+                        $("input[name=end_reservation]").datepicker( 'setEndDate', new Date(date));
+                        $("input[name=end_reservation]").datepicker( 'setStartDate', new Date());
+                    }
+                }
+
+
+                $("input[name=start_date]").on('change', function () {
+                    refreshFinishDate($("input[name=start_date]").val());
+                    refreshEndReservation($("input[name=start_date]").val());
+
+                });
+
+                $("input[name=start_time]").clockpicker({
                     autoclose: true,
                     placement: "top",
                     align: "right",
@@ -800,14 +887,6 @@
                 });
 
             }
-
-
-            $("#add-appointment").on('click', function () {
-                $("<div class='row'> <div class='col-lg-2'><div class='form-group'> <label class='required-field' for='title'>تاريخ الدورة</label> <input type='text' class='form-control {{ $errors->has('date') ? 'is-invalid' : '' }} custom-input text-center datepicker ltr' name='date[]' id='title' placeholder='تاريخ الدورة' autocomplete='off' required> </div></div> <div class='col-lg-2'><div class='form-group'> <label class='required-field' for='time'>وقت الدورة</label> <input type='text' class='form-control {{ $errors->has('time') ? 'is-invalid' : '' }} custom-input text-center' name='time[]' id='time' placeholder='وقت الدورة' autocomplete='off' required> </div></div> <div class='col-lg-2'> <div class='form-group'> <label class='required-field' for='attendance'>عدد المقاعد</label> <input type='text' class='form-control {{ $errors->has('attendance') ? 'is-invalid' : '' }} custom-input text-center num-only ltr' name='attendance[]' id='attendance' value='{{ old('attendance[0]') }}' placeholder='عدد المقاعد' autocomplete='off' required> </div> </div>   <div class='col-lg-2'> <div class='form-group'> <label class='required-field' for='price'>مبلغ الدورة</label> <input type='text' class='form-control {{ $errors->has('price') ? 'is-invalid' : '' }} custom-input text-center ltr' name='price[]' id='price' placeholder='مبلغ الدورة' autocomplete='off' required></div></div> <div class='col-lg-2'> <div class='form-group'> <label class='required-field' for='gender'>الحضور</label> <select id='gender' class='form-control select2-placeholer' name='gender[]' required><option value='1'>رجال</option><option value='2'>نساء</option> <option value='3'>رجال ونساء</option> </select> </div> </div> <div class='col-lg-2'> <label for='trainer'></label><button type='button' class='btn btn-danger btn-block custom-input remove'><i class='fa fa-trash'></i></button> </div> </div>").insertBefore($('#submit').parent().parent().parent());
-                refreshTimePicker();
-                refreshSelect();
-            });
-
 
             $("#course-poster-1").on('click', function () {
                 $("input[name=course-poster-1]").trigger('click');
@@ -828,9 +907,9 @@
             });
 
 
-            $(document).on("keypress", '.num-only', function(evt){
+            $(document).on("keypress", '.num-only', function (evt) {
                 let charCode = (evt.which) ? evt.which : event.keyCode;
-                if ( charCode > 31 && (charCode < 48 || charCode > 57) ){
+                if (charCode > 31 && (charCode < 48 || charCode > 57)) {
                     return false;
                 }
                 return true;

@@ -56,7 +56,7 @@ class Course extends Model
 
     public function appointment()
     {
-        return $this->hasMany('App\Appointment');
+        return $this->hasOne('App\Appointment');
     }
 
 }

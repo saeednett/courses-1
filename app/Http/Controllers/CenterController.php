@@ -20,6 +20,7 @@ use App\Reservation;
 use App\Title;
 use App\Trainer;
 use App\User;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -37,6 +38,7 @@ class CenterController extends Controller
 //    }
 
 
+    // To Check A Coupon Of A Course If It Is Valid
     public function check_coupon($course_identifier, $coupon)
     {
         $course = Course::select('id')->where('identifier', $course_identifier)->first();
@@ -51,7 +53,7 @@ class CenterController extends Controller
             return response()->json($response);
         }
 
-        $coupon = Coupon::where('coupon_code', $coupon)->where('course_id',$course->id)->first();
+        $coupon = Coupon::where('coupon_code', $coupon)->where('course_id', $course->id)->first();
 
         if (count($coupon) == 0) {
             array_push($response['status'], "Failed");
@@ -67,7 +69,7 @@ class CenterController extends Controller
 
     }
 
-    // For Registration Select City
+    // To Return A Cities List Of A Country
     public function cities(Request $request, $id)
     {
         if ($request->ajax()) {
@@ -84,6 +86,7 @@ class CenterController extends Controller
         }
     }
 
+    // To Return A Bank Account Information Of The Center
     public function bank_account($center_id, $bank_id)
     {
 
@@ -117,33 +120,40 @@ class CenterController extends Controller
         return response()->json($response);
     }
 
+    // To Show The Index Of The Center After Login
     public function index($center)
     {
         if ($center == Auth::user()->username) {
-            $courses = Course::where('center_id', Auth::user()->id)->get();
-            $trainers = Trainer::where('center_id', Auth::user()->id)->get();
-            $admins = Admin::where('center_id', Auth::user()->id)->get();
-            $course_id = Course::select('id')->where('center_id', Auth::user()->id)->get();
+
+            $courses = Course::where('center_id', Auth::user()->center->id)->get();
+            $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+            $admins = Admin::where('center_id', Auth::user()->center->id)->get();
+
+            $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
             $students = Reservation::find($course_id);
+
+            $course_admin = CourseAdmin::where('course_id', 3)->first();
+//            dd($course_admin);
 
             $total_students = array();
 
-            for ($i = 0; $i < count($students); $i ++){
-                if ( $i == 0 ){
+            for ($i = 0; $i < count($students); $i++) {
+                if ($i == 0) {
                     array_push($total_students, $students[$i]->student_id);
-                }else{
-                    if( !in_array($students[$i]->student_id, $total_students) ){
+                } else {
+                    if (!in_array($students[$i]->student_id, $total_students)) {
                         array_push($total_students, $students[$i]->student_id);
                     }
                 }
             }
             $total_students = count($total_students);
-            return view('center.index', compact('courses', 'trainers', 'admins', 'students','total_students'));
+            return view('center.index', compact('courses', 'trainers', 'admins', 'students', 'total_students'));
         } else {
             return abort(404);
         }
     }
 
+    // To Show The Form Of Creating A New Center
     public function create()
     {
         $banks = Bank::all();
@@ -151,6 +161,7 @@ class CenterController extends Controller
         return view('center.register', compact('countries', 'banks'));
     }
 
+    // The Data Of Creating Or Registering For The Center Goes Here And The Process Happens Here
     public function store(Request $request)
     {
         $request->validate([
@@ -227,6 +238,7 @@ class CenterController extends Controller
         }
     }
 
+    // To Show The Center Information For The Student
     public function show($name)
     {
         // When User|Student Wants To See The Profile Of The Center
@@ -240,15 +252,15 @@ class CenterController extends Controller
         $current_appointment = array();
         $past_appointment = array();
 
-        foreach ($center->center->course as $course){
+        foreach ($center->center->course as $course) {
             array_push($course_id, $course->id);
         }
 
-        for ($i = 0; $i < count($course_id); $i++){
+        for ($i = 0; $i < count($course_id); $i++) {
             $max_appointment = Appointment::where('course_id', $course_id[$i])->max('date');
-            if ( $max_appointment > date('Y-m-d') ){
+            if ($max_appointment > date('Y-m-d')) {
                 array_push($current_appointment, $max_appointment);
-            }else{
+            } else {
                 array_push($past_appointment, $max_appointment);
             }
         }
@@ -257,24 +269,47 @@ class CenterController extends Controller
         return view('student.center-profile', compact('center', 'courses', 'current_appointment', 'past_appointment'));
     }
 
+    // To Show The Form Of Editing Center Information
     public function edit()
     {
-        $id = Auth::user()->id;
-        $center = User::find($id);
+
+        // The Center That Will Be Edited
+        $center = User::find(Auth::user()->id);
+
         $cities = City::where('country_id', $center->center->city->country_id)->get();
+        // Get All Countries
         $countries = Country::all();
+        // Get All Banks
         $banks = Bank::all();
 
-        $courses = Course::where('center_id', Auth::user()->center->id)->get();
-        $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+        // All Admins Who Belongs To The Center
         $admins = Admin::where('center_id', Auth::user()->center->id)->get();
-
+        // All Courses Which Belongs To The Center
+        $courses = Course::where('center_id', Auth::user()->center->id)->get();
+        // All Trainers Who Belongs To The Center
+        $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+        // All Courses Id's Of The Courses Which Who Belongs To The Center
         $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
-        $students = Reservation::find($course_id)->count();
+        // All Students Who Reserved A Course Of The Center
+        $students = Reservation::find($course_id);
+        // An Empty Array To Hold The Different Id's Of The Students
+        $total_students = array();
+        for ($i = 0; $i < count($students); $i++) {
+            if ($i == 0) {
+                array_push($total_students, $students[$i]->student_id);
+            } else {
+                if (!in_array($students[$i]->student_id, $total_students)) {
+                    array_push($total_students, $students[$i]->student_id);
+                }
+            }
+        }
+        // To Hold The Count Of The Array And Pass It As String
+        $total_students = count($total_students);
 
-        return view('center.edit-center', compact('center', 'banks', 'countries', 'cities', 'courses', 'trainers', 'admins', 'students'));
+        return view('center.edit-center', compact('center', 'banks', 'countries', 'cities', 'courses', 'trainers', 'admins', 'students', 'total_students'));
     }
 
+    // The Data Of Updating A Center Goes Here And The Process Happens Here
     public function update(Request $request)
     {
 
@@ -383,7 +418,6 @@ class CenterController extends Controller
         }
 
 
-
         if ($counter > 0) {
             $center->save();
             $center->center->save();
@@ -400,11 +434,13 @@ class CenterController extends Controller
 
     }
 
+    // To Show The Form Of Signing in For The Center
     public function create_sign_in()
     {
         return view('center.login');
     }
 
+    // To Show The Form Of Creating New Trainer
     public function create_trainer()
     {
         $nationalities = Nationality::all();
@@ -420,6 +456,7 @@ class CenterController extends Controller
         return view('center.create-trainer', compact('nationalities', 'titles', 'courses', 'trainers', 'admins', 'students'));
     }
 
+    // The Data Of Storing New Trainer Goes Here And The Process Happens Here
     public function store_trainer(Request $request)
     {
 
@@ -469,27 +506,50 @@ class CenterController extends Controller
         return redirect()->route('center.trainer.create')->with('success', 'تم إضافة المدرب بنجاح');
     }
 
+    // To Show The Form Of Editing A Trainer
     public function edit_trainer($id)
     {
+        // The Trainer That Will Be Edited
         $trainer = Trainer::findOrFail($id);
-        if ($trainer->center_id == Auth::user()->id) {
+        if ($trainer->center_id == Auth::user()->center->id) {
 
+            // Get All Titles To Chose One Of Them
             $titles = Title::all();
+            // Get All Nationalities To Chose One Of Them
             $nationalities = Nationality::all();
+            // All Admins Who Belongs To The Center
+            $admins = Admin::where('center_id', Auth::user()->center->id)->get();
+            // All Courses Which Belongs To The Center
+            $courses = Course::where('center_id', Auth::user()->center->id)->get();
+            // All Trainers Who Belongs To The Center
+            $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+            // All Courses Id's Of The Courses Which Who Belongs To The Center
+            $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
+            // All Students Who Reserved A Course Of The Center
+            $students = Reservation::find($course_id);
+            // An Empty Array To Hold The Different Id's Of The Students
+            $total_students = array();
+            for ($i = 0; $i < count($students); $i++) {
+                if ($i == 0) {
+                    array_push($total_students, $students[$i]->student_id);
+                } else {
+                    if (!in_array($students[$i]->student_id, $total_students)) {
+                        array_push($total_students, $students[$i]->student_id);
+                    }
+                }
+            }
+            // To Hold The Count Of The Array And Pass It As String
+            $total_students = count($total_students);
 
-            $trainers = Trainer::where('center_id', Auth::user()->id)->get();
-            $courses = Course::where('center_id', Auth::user()->id)->get();
-            $admins = Admin::where('center_id', Auth::user()->id)->get();
-            $course_id = Course::select('id')->where('center_id', Auth::user()->id)->get();
-            $students = Reservation::find($course_id)->count();
 
-            return view('center.edit-trainer', compact('trainer', 'titles', 'nationalities', 'trainers', 'courses', 'admins', 'students'));
+            return view('center.edit-trainer', compact('trainer', 'titles', 'nationalities', 'trainers', 'courses', 'admins', 'students', 'total_students'));
 
         } else {
             return abort(400);
         }
     }
 
+    // The Data Of Updating A Trainer Goes Here And The Process Happens Here
     public function update_trainer(Request $request, $id)
     {
         $trainer = Trainer::find($id);
@@ -565,100 +625,153 @@ class CenterController extends Controller
         return redirect()->route('center.trainer.edit', $trainer->id)->with('success', 'تم تعديل البيانات بنجاح');
     }
 
+    // To Show All Trainers Who Belongs To The Center
     public function show_trainers()
     {
 
-        $trainers = Trainer::where('center_id', Auth::user()->id)->get();
+        // All Admins Who Belongs To The Center
+        $admins = Admin::where('center_id', Auth::user()->center->id)->get();
+        // All Courses Which Belongs To The Center
+        $courses = Course::where('center_id', Auth::user()->center->id)->get();
+        // All Trainers Who Belongs To The Center
+        $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+        // All Courses Id's Of The Courses Which Who Belongs To The Center
+        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
+        // All Students Who Reserved A Course Of The Center
+        $students = Reservation::find($course_id);
+        // An Empty Array To Hold The Different Id's Of The Students
+        $total_students = array();
+        for ($i = 0; $i < count($students); $i++) {
+            if ($i == 0) {
+                array_push($total_students, $students[$i]->student_id);
+            } else {
+                if (!in_array($students[$i]->student_id, $total_students)) {
+                    array_push($total_students, $students[$i]->student_id);
+                }
+            }
+        }
+        // To Hold The Count Of The Array And Pass It As String
+        $total_students = count($total_students);
 
 
-        $courses = Course::where('center_id', Auth::user()->id)->get();
-        $admins = Admin::where('center_id', Auth::user()->id)->get();
-        $course_id = Course::select('id')->where('center_id', Auth::user()->id)->get();
-        $students = Reservation::find($course_id)->count();
-
-        return view('center.show-trainers', compact('trainers', 'courses', 'admins', 'students'));
+        return view('center.show-trainers', compact('trainers', 'courses', 'admins', 'students', 'total_students'));
     }
 
+    // To Show The Form Of Creating New Course
     public function create_course()
     {
+        // All Trainers Who Belongs To The Center
         $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
-        $admins = Admin::where('center_id', Auth::user()->center->id)->get();
-        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
-        $students = Reservation::find($course_id)->count();
-        $courses = Course::where('center_id', Auth::user()->center->id)->get();
         if (count($trainers) <= 0) {
             (['title' => 'لاتوجد دورات في النظام', 'error' => 'من فضلك قم بإضافة بعض الدورات لكي تتمكن من تعيين مدربين لها',]);
             return view("center.error-description", compact('trainers', 'admins', 'students', 'courses'))->withErrors(['title' => 'لايوجد مدربين في النظام', 'error' => 'من فضلك قم بإضافة بعض المدربين لكي تتمكن من إضافة الدورات']);
         }
+        // All Admins Who Belongs To The Center
+        $admins = Admin::where('center_id', Auth::user()->center->id)->get();
+        // All Courses Which Belongs To The Center
+        $courses = Course::where('center_id', Auth::user()->center->id)->get();
+        // All Courses Id's Of The Courses Which Who Belongs To The Center
+        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
+        // All Students Who Reserved A Course Of The Center
+        $students = Reservation::find($course_id);
+        // An Empty Array To Hold The Different Id's Of The Students
+        $total_students = array();
+        for ($i = 0; $i < count($students); $i++) {
+            if ($i == 0) {
+                array_push($total_students, $students[$i]->student_id);
+            } else {
+                if (!in_array($students[$i]->student_id, $total_students)) {
+                    array_push($total_students, $students[$i]->student_id);
+                }
+            }
+        }
+        // To Hold The Count Of The Array And Pass It As String
+        $total_students = count($total_students);
 
-
+        // Get The First Cities The The Rest With Ajax Rexuest
         $cities = City::where('country_id', 1)->get();
+        // Get All Countries
         $countries = Country::all();
+        // Get All Categories
         $categories = Category::all();
 
-        return view('center.create-course', compact('trainers', 'admins', 'students', 'cities', 'countries', 'categories', 'courses'));
+        return view('center.create-course', compact('trainers', 'admins', 'students', 'cities', 'countries', 'categories', 'courses', 'total_students'));
     }
 
+    // The Data Of Storing New Course Goes Here And The Process Happens Here
     public function store_course(Request $request)
     {
-
+        // Getting Center Main Information
         $center = User::find(Auth::user()->id);
+        // Trainers Array That Will Hold Ids Of The Trainers Who Belong To The Center
         $trainers_data = array();
-
+        // Getting Trainers Information
         $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
 
+        // Making Sure That The Center Has Trainers
         if (count($trainers) <= 0) {
             abort(404);
         }
-
-        foreach ($center->trainer as $data) {
+        // Fetching Trainers Data Into The Array
+        foreach ($center->center->trainer as $data) {
             array_push($trainers_data, $data->user_id);
         }
-
-
+        // Validating The Request Data
         $request->validate([
+            // The Title Of The Course
             'title' => 'required|string|max:50|min:10|unique:courses,title',
+            // the Category Of The Course
             'category' => 'required|integer|max:99|min:1|exists:categories,id',
+            // The Template Of The Certificate Of The Course
             'template' => 'required|integer|max:3|min:1',
+            // If The Course Is Visible To The Users
             'visible' => 'required|integer|max:2|min:1',
+            // The City Of The Course
             'city' => 'required|integer|max:99|min:1|exists:cities,id',
+            // The Country Of The City
             'country' => 'required|integer|max:99|min:1|exists:countries,id',
+            // The Address Of tHE Course
             'address' => 'required|string|max:150|min:10',
+            // The Location The Course On Google Map
             'location' => 'required|string|max:150|min:20',
+            // The Description Of tHE Course
             'description' => 'required|string|max:200|min:50',
-
-            /* Trainer Section */
-            'trainer' => 'required|array|max:' . count($center->trainer),
+            //The Trainers Array Of The Course
+            'trainer' => 'required|array|max:' . count($center->center->trainer),
+            // The Trainers Array Data
             'trainer.*' => 'required|integer|distinct|' . Rule::in($trainers_data),
-            /* Course Type Section If It Is Free or Payed */
+            // The Type Of Course Payed Or Free
             'type' => 'required|integer|max:2|min:1',
-            /* Coupon Section */
+            //The Coupons Array Of The Course
             'coupon' => 'required_if:type,2',
+            //The Coupons Array Data
             'coupon_code' => 'required_if:coupon,2|array',
             'coupon_discount' => 'required_if:coupon,2|array|size:' . count($request->coupon_code),
-            /* Appointments Of The Course */
-            'date' => 'required|array|max:10|min:1',
-            'date.*' => 'required|date|distinct',
-            'time' => 'required|array|max:10|min:1|size:' . count($request->date),
-            'time.*' => ['required',
-                'regex:/(^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$)/'
-            ],
-
-            'attendance' => 'required|array|size:' . count($request->date),
-            'attendance.*' => 'required|integer|min:0',
-            'price' => 'required|array|size:' . count($request->date),
-            'price.*' => 'required|integer|min:0',
-
-            'gender' => 'required|array|size:' . count($request->date),
-            'gender.*' => 'required|integer|max:3|min:1',
-
+            // The Start Date Of The Course
+            'start_date' => 'required|date',
+            // The Finish Date Of The Course
+            'finish_date' => 'required|date|after_or_equal:' . $request->start_date,
+            // The Deadline Of Reservation
+            'end_reservation' => 'required|date|before_or_equal:' . $request->start_date,
+            // The Start Time Of The Course
+            'start_time' => ['required', 'regex:/(^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$)/', 'string', 'max:5', 'min:5'],
+            // The Total Attendance Of The Course
+            'attendance' => 'required|digits_between:1,4',
+            // The Price Of The Course
+            'price' => 'required_if:type,2|digits_between:1,4',
+            // The Attendance Gender
+            'gender' => 'required|digits_between:1,3|',
+            // The Cover And Image Of The Course
             'course-poster-1' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
             'course-poster-2' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
         ]);
 
-
+        DB::beginTransaction();
+        try {
+            // Creating The New Course
             $course = Course::create([
                 'title' => $request->title,
+                'identifier' => Str::random(10),
                 'description' => $request->description,
                 'location' => $request->location,
                 'address' => $request->address,
@@ -670,7 +783,7 @@ class CenterController extends Controller
                 'validation' => 0,
 
             ]);
-
+            // Making Sure That The Data Has A Cover And Image For The Course
             if ($request->hasFile('course-poster-1') && $request->hasFile('course-poster-2')) {
                 for ($i = 1; $i <= 2; $i++) {
                     $file = $request->file('course-poster-' . $i)->store('public/course-images');
@@ -682,14 +795,14 @@ class CenterController extends Controller
                     ]);
                 }
             }
-
+            // Storing The Course Trainers
             for ($i = 0; $i < count($request->trainer); $i++) {
                 CourseTrainer::create([
                     'course_id' => $course->id,
                     'trainer_id' => $request->trainer[$i],
                 ]);
             }
-
+            // Storing The Course Coupons If The Type Is Payed
             if ($request->type == 2) {
                 for ($i = 0; $i < count($request->coupon_code); $i++) {
                     Coupon::create([
@@ -699,33 +812,56 @@ class CenterController extends Controller
                     ]);
                 }
             }
-
-            for ($i = 0; $i < count($request->date); $i++) {
+            // Storing The Appointment Date Of The Course
+            // If The Price Is Empty Course Is Free
+            if (is_null($request->price)) {
                 Appointment::create([
                     'course_id' => $course->id,
-                    'date' => $request->date[$i],
-                    'time' => $request->time[$i],
-                    'attendance' => $request->attendance[$i],
-                    'price' => $request->price[$i],
-                    'gender' => $request->gender[$i],
+                    'start_date' => $request->start_date,
+                    'finish_date' => $request->finish_date,
+                    'end_reservation' => $request->end_reservation,
+                    'start_time' => $request->start_time,
+                    'attendance' => $request->attendance,
+                    'price' => 0,
+                    'gender' => $request->gender,
+                ]);
+            } else {
+                Appointment::create([
+                    'course_id' => $course->id,
+                    'start_date' => $request->start_date,
+                    'finish_date' => $request->finish_date,
+                    'end_reservation' => $request->end_reservation,
+                    'start_time' => $request->start_time,
+                    'attendance' => $request->attendance,
+                    'price' => $request->price,
+                    'gender' => $request->gender,
                 ]);
             }
 
+            // Save The Changes If The Is No Errors
+            DB::commit();
+
             return redirect()->route('center.course.create')->with('success', 'تم إضافة الدورة بنجاح');
-
-
+        } catch (\Exception $e) {
+            // Don't Save The Changes If The Is Errors
+            DB::rollBack();
+            return "Error";
+        }
     }
 
+    // To Show The Form Of Editing A Course
     public function edit_course()
     {
 
     }
 
+    // The Data Of Updating A Course Goes Here And The Process Happens Here
     public function update_course()
     {
 
     }
 
+    // To Show All Courses Which Belongs To The Center
     public function show_courses()
     {
 
@@ -738,6 +874,7 @@ class CenterController extends Controller
         return view('center.show-courses', compact('courses', 'trainers', 'admins', 'students'));
     }
 
+    // To Show The Form Of Creating New Admin
     public function create_admin()
     {
         $courses = Course::where('center_id', Auth::user()->id)->get();
@@ -749,6 +886,7 @@ class CenterController extends Controller
         return view('center.create-admin', compact('courses', 'trainers', 'admins', 'students'));
     }
 
+    // The Data Of Storing New Admin Goes Here And The Process Happens Here
     public function store_admin(Request $request)
     {
         $request->validate([
@@ -792,24 +930,42 @@ class CenterController extends Controller
         return redirect()->route('center.admin.create')->with('success', 'تم إضافة المسؤول بنجاح');
     }
 
+    // To Show The Form Editing Admin
     public function edit_admin($id)
     {
-
+        // The Data Of The Admin That Will Be Edited
         $admin = Admin::findorFail($id);
-        if ($admin->center_id == Auth::user()->id) {
-
-            $courses = Course::where('center_id', Auth::user()->id)->get();
-            $trainers = Trainer::where('center_id', Auth::user()->id)->get();
-            $admins = Admin::where('center_id', Auth::user()->id)->get();
-            $course_id = Course::select('id')->where('center_id', Auth::user()->id)->get();
-            $students = Reservation::find($course_id)->count();
-
-            return view('center.edit-admin', compact('admin', 'courses', 'trainers', 'admins', 'students'));
+        if ($admin->center_id == Auth::user()->center->id) {
+            // All Admins Who Belongs To The Center
+            $admins = Admin::where('center_id', Auth::user()->center->id)->get();
+            // All Courses Which Belongs To The Center
+            $courses = Course::where('center_id', Auth::user()->center->id)->get();
+            // All Trainers Who Belongs To The Center
+            $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+            // All Courses Id's Of The Courses Which Who Belongs To The Center
+            $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
+            // All Students Who Reserved A Course Of The Center
+            $students = Reservation::find($course_id);
+            // An Empty Array To Hold The Different Id's Of The Students
+            $total_students = array();
+            for ($i = 0; $i < count($students); $i++) {
+                if ($i == 0) {
+                    array_push($total_students, $students[$i]->student_id);
+                } else {
+                    if (!in_array($students[$i]->student_id, $total_students)) {
+                        array_push($total_students, $students[$i]->student_id);
+                    }
+                }
+            }
+            // To Hold The Count Of The Array And Pass It As String
+            $total_students = count($total_students);
+            return view('center.edit-admin', compact('admin', 'courses', 'trainers', 'admins', 'students', 'total_students'));
         } else {
             abort(404);
         }
     }
 
+    // The Data Of Updating Admin Goes Here And The Process Happens Here
     public function update_admin(Request $request, $id)
     {
         $admin = Admin::find($id);
@@ -857,23 +1013,43 @@ class CenterController extends Controller
         return redirect()->route('center.admin.edit', $id)->with('success', 'تم تعديل البيانات بنجاح');
     }
 
+    // To Show All Admins Who Belongs To The Center
     public function show_admins()
     {
-        $admins = Admin::where('center_id', Auth::user()->id)->get();
-        $courses = Course::where('center_id', Auth::user()->id)->get();
-        $trainers = Trainer::where('center_id', Auth::user()->id)->get();
-        $course_id = Course::select('id')->where('center_id', Auth::user()->id)->get();
-        $students = Reservation::find($course_id)->count();
-        return view('center.show-admins', compact('admins', 'courses', 'trainers', 'students'));
+        // All Admins Who Belongs To The Center
+        $admins = Admin::where('center_id', Auth::user()->center->id)->get();
+        // All Courses Which Belongs To The Center
+        $courses = Course::where('center_id', Auth::user()->center->id)->get();
+        // All Trainers Who Belongs To The Center
+        $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+        // All Courses Id's Of The Courses Which Who Belongs To The Center
+        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
+        // All Students Who Reserved A Course Of The Center
+        $students = Reservation::find($course_id);
+        // An Empty Array To Hold The Different Id's Of The Students
+        $total_students = array();
+        for ($i = 0; $i < count($students); $i++) {
+            if ($i == 0) {
+                array_push($total_students, $students[$i]->student_id);
+            } else {
+                if (!in_array($students[$i]->student_id, $total_students)) {
+                    array_push($total_students, $students[$i]->student_id);
+                }
+            }
+        }
+        // To Hold The Count Of The Array And Pass It As String
+        $total_students = count($total_students);
+        return view('center.show-admins', compact('admins', 'courses', 'trainers', 'students', 'total_students'));
     }
 
+    // To Show The Form Of Assigning Course Admin
     public function assign_course_admin()
     {
         $courses = Course::where('center_id', Auth::user()->center->id)->get();
         $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
         $admins = Admin::where('center_id', Auth::user()->center->id)->get();
         $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
-        $students = Reservation::find($course_id)->count();
+        $students = Reservation::find($course_id);
 
         if (count($courses) <= 0) {
             return view("center.error-description", compact('trainers', 'admins', 'students', 'courses'))->withErrors(['title' => 'لاتوجد دورات في النظام', 'error' => 'من فضلك قم بإضافة بعض الدورات لكي تتمكن من تعيين مدربين لها',]);
@@ -881,9 +1057,22 @@ class CenterController extends Controller
             return view("center.error-description", compact('trainers', 'admins', 'students', 'courses'))->withErrors(['title' => 'لايوجد مدراء في النظام', 'error' => 'من فضلك قم بإضافة بعض المدراء لكي تتمكن من تعيينهم مدربين للدورات',]);
         }
 
-        return view('center.assign-course-admin', compact('courses', 'trainers', 'admins', 'students'));
+        $total_students = array();
+        for ($i = 0; $i < count($students); $i++) {
+            if ($i == 0) {
+                array_push($total_students, $students[$i]->student_id);
+            } else {
+                if (!in_array($students[$i]->student_id, $total_students)) {
+                    array_push($total_students, $students[$i]->student_id);
+                }
+            }
+        }
+        $total_students = count($total_students);
+
+        return view('center.assign-course-admin', compact('courses', 'trainers', 'admins', 'students', 'total_students'));
     }
 
+    // The Data Of Assigning Course Admin Goes Here And The Process Happens Here
     public function store_course_admin(Request $request)
     {
 
@@ -896,7 +1085,7 @@ class CenterController extends Controller
         $admins = Admin::where('center_id', Auth::user()->center->id)->get();
         $admin_data = array();
         foreach ($admins as $admin) {
-            array_push($admin_data, $admin->user->id);
+            array_push($admin_data, $admin->id);
         }
 
         if (count($courses) <= 0) {
@@ -913,11 +1102,19 @@ class CenterController extends Controller
 
         CourseAdmin::create([
             'course_id' => $request->course,
-            'user_id' => $request->admin,
+            'admin_id' => $request->admin,
             'role_id' => $request->role,
         ]);
 
         return redirect()->route('center.course.admin.assign')->with('success', 'تم تعيين المسؤول بنجاح');
+    }
+
+    public function contact_us(){
+
+    }
+
+    public function about_us(){
+
     }
 
 }

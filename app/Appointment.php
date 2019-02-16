@@ -15,6 +15,6 @@ class Appointment extends Model
 
     public function reservation()
     {
-        return $this->belongsTo('App\Reservation');
+        return $this->hasMany('App\Reservation');
     }
 }

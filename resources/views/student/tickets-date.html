@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <div class="block rounded d-none">
+        <form method="post" action="{{ route('account.course.booking', $course->identifier) }}" id='book-course'>
+            {{ csrf_field() }}
+            <?php $counter = 1; $class = "mt-4";?>
+
+            @foreach($course->appointment as $appointment)
+            @if( $counter == 1 )
+            <?php $class = "mt-0";?>
+            @else
+            <?php $class = "mt-4";?>
+            @endif
+            <div class="row justify-content-end {{ $class }}">
+                <div class="col-lg-10">
+                    @if( date('a', strtotime($appointment->time)) == 'pm' )
+                    <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->start_time)).' مساء' }}</p>
+                    @if($appointment->gender == 1)
+                    <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
+                    @else
+                    <p class="text-right rtl mt-1 mb-0">( تذكرة نساء فوق عمر 16 )</p>
+                    @endif
+
+                    <p class="text-right text-muted rtl mt-1 mb-0">
+                        <b>{{ $appointment->price }} ريال </b></p>
+                    @else
+                    <p class="text-right rtl mt-1 mb-0">{{ date('h:i', strtotime($appointment->time)).' صباحا' }}</p>
+                    @if($appointment->gender == 1)
+                    <p class="text-right rtl mt-1 mb-0">( تذكرة رجال فوق عمر 16 )</p>
+                    @else
+                    <p class="text-right rtl mt-1 mb-0">( تذكرة نساء فوق عمر 16 )</p>
+                    @endif
+                    <p class="text-right text-muted rtl mt-1 mb-0">
+                        <b>{{ $appointment->price }} ريال </b></p>
+                    @endif
+                </div>
+                <div class="col-lg-2 order-first {{ $errors->has('date') ? 'bg-danger rounded' : '' }}">
+                    <label class="checkbox-container">
+                        <input type="checkbox" name="date[]" value="{{ $appointment->id }}">
+                        <span class="checkmark"></span>
+                    </label>
+                    @if ($errors->has('date'))
+                    <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('date[0]') }}</strong>
+                                                </span>
+                    @endif
+                </div>
+            </div>
+            @if($counter < count($course->appointment))
+            <hr>
+            @endif
+            <?php $counter++; ?>
+            @endforeach
+
+        </form>
+    </div>
+</head>
+<body>
+
+</body>
+</html>
