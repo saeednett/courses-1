@@ -248,25 +248,22 @@ class CenterController extends Controller
             abort(404);
         }
 
-        $course_id = array();
-        $current_appointment = array();
-        $past_appointment = array();
+        $courses = Course::where('center_id', $center->center->id)->get();
 
-        foreach ($center->center->course as $course) {
-            array_push($course_id, $course->id);
-        }
 
-        for ($i = 0; $i < count($course_id); $i++) {
-            $max_appointment = Appointment::where('course_id', $course_id[$i])->max('date');
-            if ($max_appointment > date('Y-m-d')) {
-                array_push($current_appointment, $max_appointment);
-            } else {
-                array_push($past_appointment, $max_appointment);
+        // Get All Reservations To Filter It
+        $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
+        // To Filter The Reservation That Is Not Confirmed
+        $tickets_data = array();
+        foreach ($reservations as $reservation){
+            if ( $reservation->appointment->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+                array_push($tickets_data, $reservation->id);
             }
         }
+        // Save The Total Count
+        $tickets = count($tickets_data);
 
-        $courses = Course::where('center_id', $center->center->id)->get();
-        return view('student.center-profile', compact('center', 'courses', 'current_appointment', 'past_appointment'));
+        return view('student.center-profile', compact('center', 'courses', 'tickets'));
     }
 
     // To Show The Form Of Editing Center Information

@@ -131,8 +131,10 @@
                                                     </a>
                                                     <a href="{{ route('account.ticket') }}" class="dropdown-item rtl">
                                                         تذاكري
-                                                        @if($tickets > 0)
-                                                            <span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>
+                                                        @if(\Illuminate\Support\Facades\Auth::check())
+                                                            @if($tickets > 0)
+                                                                <span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>
+                                                            @endif
                                                         @endif
                                                     </a>
                                                     <div class="dropdown-divider"></div>
@@ -184,8 +186,10 @@
                                 <li class="nav-item tap-link">
                                     <a class="nav-link rtl" href="{{ route('account.ticket') }}">
                                         تذاكري
-                                        @if($tickets > 0)
-                                            <span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>
+                                        @if(\Illuminate\Support\Facades\Auth::check())
+                                            @if($tickets > 0)
+                                                <span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>
+                                            @endif
                                         @endif
                                     </a>
                                 </li>
@@ -252,7 +256,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 text-center">
-                    <h5>اشترك الآن في النشرة البريدية للفعاليات</h5>
+                    <h5>اشترك الآن في النشرة البريدية للدورات</h5>
                 </div>
             </div>
             <div class="row justify-content-center mt-2">
@@ -325,8 +329,8 @@
 
             <div class="row justify-content-center pt-lg-0 pt-1">
                 <div class="col-lg-5 col-md-5 col-sm-5 col-11 text-center">
-                    <p>الحقوق محفوظة - لمة 2015
-                        حقوق الفعاليات محفوظة لمنظمي الفعاليات</p>
+                    <p>الحقوق محفوظة - لورد 2015
+                        حقوق الدورات محفوظة لمنظمي الدورات</p>
                 </div>
             </div>
         </div>

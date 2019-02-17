@@ -2,6 +2,10 @@
 
 @section('title', 'تذاكري')
 
+@section('style-file')
+    <link rel="stylesheet" href="{{ asset('css/student/tickets.css') }}" />
+@endsection
+
 @section('content')
     <div class="wrap">
         <div class="container">
@@ -18,7 +22,6 @@
                                         تذاكري</h3>
                                 </div>
                             </div>
-
                             <div class="row justify-content-center mt-2">
                                 <div class="col-10 text-center d-lg-none d-md-none d-sm-block d-block">
                                     <select class="custom-select" name="filter-type"
@@ -32,7 +35,6 @@
                                     </select>
                                 </div>
                             </div>
-
                             <div class="row justify-content-end">
                                 <div class="col-12 text-right d-lg-block d-md-block d-none rtl">
                                     <button class="btn filter-tabs custom-active">الجميع</button>
@@ -41,7 +43,6 @@
                                     <button class="btn filter-tabs">المعلقة</button>
                                 </div>
                             </div>
-
                             @if(session()->has('success'))
                                 <div class="row mt-4">
                                     <div class="col-lg-12 col-md-12 col-10">
@@ -53,7 +54,6 @@
                                     </div>
                                 </div>
                             @endif
-
                             @if ($errors->any())
                                 <div class="row mt-4">
                                     <div class="col-lg-12 col-md-12 col-10">
@@ -67,12 +67,10 @@
                                     </div>
                                 </div>
                             @endif
-
                             <div class="row justify-content-lg-end justify-content-md-end justify-content-sm-center justify-content-center mb-4">
                                 @foreach($reservations as $reservation)
                                     <div class="col-lg-4 col-md-5 col-sm-8 col-10 mt-3">
-                                        <div class="card"
-                                             style="border-radius: 0; border-top-left-radius: 5px; border-top-right-radius: 5px;">
+                                        <div class="card">
                                             <img src="/storage/course-images/{{ $reservation->appointment->course->image[0]->url }}"
                                                  class="card-img-top" alt="..." width="301" height="200">
                                             <div class="card-title text-center mt-2 mr-2">
@@ -97,15 +95,12 @@
                                             @if($reservation->appointment->start_date >= date('y-m-d'))
                                                 @if($reservation->appointment->start_date > date('y-m-d') && $reservation->confirmation == 1)
                                                     <div class="status">
-                                                        <div class="col-12 bg-warning"
-                                                             style="padding-top: 10px; padding-bottom: 5px;">
+                                                        <div class="col-12 show-confirmed-ticket bg-success">
                                                             <p class="text-center mb-0"><b>عرض بطاقة الحضور</b></p>
                                                         </div>
                                                     </div>
-
                                                     <div class="status">
-                                                        <div class="col-12 bg-success"
-                                                             style="padding-top: 8px;border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">
+                                                        <div class="col-12 confirmed-ticket-label bg-success">
                                                             <p class="text-white text-center mb-0"><b>مؤكدة</b></p>
                                                         </div>
                                                     </div>
@@ -113,17 +108,14 @@
                                                     <div class="status">
                                                         <div class="col-12 p-0 m-0">
                                                             <a href="{{ route('student.payment.confirmation.edit', $reservation->identifier) }}">
-                                                                <button class="btn btn-block rtl"
-                                                                        style="border: none; border-radius: 0; background: #00bdac;">
+                                                                <button class="btn btn-block edit-ticket rtl">
                                                                     <b>تعديل معلومات تأكيد الدفع</b>
                                                                 </button>
                                                             </a>
                                                         </div>
                                                     </div>
-
                                                     <div class="status">
-                                                        <div class="col-12 bg-warning"
-                                                             style="padding-top: 8px;border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">
+                                                        <div class="col-12 unconfirmed-ticket bg-warning">
                                                             <p class="text-white text-center mb-0"><b>بنتظار التأكد من
                                                                     الدفع</b></p>
                                                         </div>
@@ -131,8 +123,7 @@
                                                 @endif
                                             @else
                                                 <div class="status">
-                                                    <div class="col-12 bg-danger"
-                                                         style="padding-top: 8px;border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">
+                                                    <div class="col-12 finish-ticket bg-danger">
                                                         <p class="text-white text-center mb-0"><b>الدورة منتهية</b></p>
                                                     </div>
                                                 </div>
@@ -141,18 +132,15 @@
                                             <div class="status">
                                                 <div class="col-12 p-0 m-0">
                                                     <a href="{{ route('student.payment.confirmation', $reservation->identifier) }}">
-                                                        <button class="btn btn-block rtl"
-                                                                style="border: none; border-radius: 0; background: #00bdac;">
+                                                        <button class="btn btn-block payed-ticket rtl">
                                                             <b>ابلاغ بدفع ({{ $reservation->appointment->price }}
                                                                 ريال)</b>
                                                         </button>
                                                     </a>
                                                 </div>
                                             </div>
-
                                             <div class="status">
-                                                <div class="col-12 bg-danger"
-                                                     style="padding-top: 8px;border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">
+                                                <div class="col-12 waiting-paying bg-danger">
                                                     <p class="text-white text-center mb-0"><b>بنتظار الدفع</b></p>
                                                 </div>
                                             </div>

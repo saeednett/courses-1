@@ -1,0 +1,46 @@
+.card {
+    border-radius: 0;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.show-confirmed-ticket {
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
+
+.confirmed-ticket-label {
+    padding-top: 8px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.edit-ticket {
+    border: none;
+    border-radius: 0;
+    background: #00bdac;
+}
+
+.unconfirmed-ticket {
+    padding-top: 8px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.finish-ticket {
+    padding-top: 8px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.payed-ticket {
+    border: none;
+    border-radius: 0;
+    background: #00bdac;
+}
+
+.waiting-paying {
+    padding-top: 8px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}

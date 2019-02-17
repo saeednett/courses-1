@@ -10,80 +10,50 @@
 @endsection
 
 @section('style-file')
-
+    <link rel="stylesheet" href="{{ asset('css/student/payment-confirmation.css') }}" />
 @endsection
 
 @section('script-file')
-    <script>
-        $('.carousel').carousel();
-
-
-        $("#receipt-image").on('click', function () {
-            $("input[name=receipt-image]").trigger('click');
-        });
-
-        $("input[name=receipt-image]").on('change', function () {
-            let file = $("input[name=receipt-image]")[0].files[0];
-            $("#receipt-image").val(file.name);
-        });
-
-
-        $(document).on("keypress", '.num-only', function(evt){
-            let charCode = (evt.which) ? evt.which : event.keyCode;
-            if ( charCode > 31 && (charCode < 48 || charCode > 57) ){
-                return false;
-            }
-            return true;
-        });
-    </script>
+    <script src="{{ asset('js/student/payment-confirmation.js') }}"></script>
 @endsection
 
 
 @section('content')
-
     <div class="container mb-5">
         <div class="row justify-content-center mt-lg-3 mt-2">
             <div class="col-lg-10">
                 <div class="row justify-content-center">
                     <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12 order-last text-right mb-4">
-
                         <div class="course-information-section">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <h2>{{ $reservation->appointment->course->title }}</h2>
                                 </div>
                             </div>
-
-
                             <div class="row justify-content-end">
                                 <div class="col-lg-12">
                                     <div class="main-info">
-                                        <div class="course-logo rounded-top" style="height: 300px; width: 100%; overflow: hidden">
-                                            <img src="/storage/course-images/{{ $reservation->appointment->course->image[0]->url }}" alt=""
-                                                 style="width: 100%; height: 100%; display: block; margin: auto;">
+                                        <div class="course-logo rounded-top">
+                                            <img src="/storage/course-images/{{ $reservation->appointment->course->image[0]->url }}" alt="{{ $reservation->appointment->course->title }}">
                                         </div>
                                         <div class="block rounded-bottom mt-0">
                                             <div class="row">
                                                 <div class="col-lg-9">
                                                     <h5 class="text-right rtl"><span>اسم المنظم:</span> <a
                                                                 href="{{ route('center.profile', $reservation->appointment->course->center->user->username) }}">{{ $reservation->appointment->course->center->user->name }}</a></h5>
-                                                    <div class="mt-4"
-                                                         style="position: absolute; bottom: 0; width: 92%; height: 40px; margin: auto; overflow: hidden;">
+                                                    <div class="social-media mt-4">
                                                         <div class="row justify-content-end">
                                                             <div class="col-lg-8 text-center h-100">
                                                                 <div class="row justify-content-center">
                                                                     <div class="col-lg mt-1">
                                                                         <i class="fab fa-facebook fa-2x"></i>
                                                                     </div>
-
                                                                     <div class="col-lg mt-1">
                                                                         <i class="fab fa-twitter fa-2x"></i>
                                                                     </div>
-
                                                                     <div class="col-lg mt-1">
                                                                         <i class="fab fa-snapchat fa-2x"></i>
                                                                     </div>
-
                                                                     <div class="col-lg mt-1">
                                                                         <i class="fab fa-instagram fa-2x"></i>
                                                                     </div>
@@ -93,19 +63,15 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-3">
-                                                    <div class="logo-holder" style="width: 90px; height: 90px; overflow: hidden; padding: 0;">
+                                                    <div class="logo-holder">
                                                         <img class="border"
                                                              src="/storage/center-images/{{ $reservation->appointment->course->center->logo }}"
-                                                             alt=""
-                                                             style="width: 100%; height: 100%; display: block; margin: auto; padding: 3px;">
+                                                             alt="{{ $reservation->appointment->course->title }}">
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-
-
                                         <div class="block rounded">
-
                                             <div class="row info">
                                                 <div class="col-lg-3 text-right rtl order-last">
                                                     <i class="fa fa-star labels-icon"></i>
@@ -115,7 +81,6 @@
                                                     {{ $reservation->appointment->course->title }}
                                                 </div>
                                             </div>
-
                                             <div class="row info">
                                                 <div class="col-lg-3 text-right rtl order-last">
                                                     <i class="fa fa-calendar-o labels-icon"></i>
@@ -125,7 +90,6 @@
                                                     {{ date('F d l', strtotime($reservation->appointment->start_date)) }}
                                                 </div>
                                             </div>
-
                                             <div class="row info">
                                                 <div class="col-lg-3 text-right rtl order-last">
                                                     <i class="fa fa-map-marker labels-icon"></i>
@@ -135,7 +99,6 @@
                                                     {{ $reservation->appointment->course->city->name.' - '.$reservation->appointment->course->address }}
                                                 </div>
                                             </div>
-
                                             <div class="row info">
                                                 <div class="col-lg-3 text-right rtl order-last">
                                                     <i class="fa fa-clock-o labels-icon"></i>
@@ -149,7 +112,6 @@
                                                     @endif
                                                 </div>
                                             </div>
-
                                             <div class="row info">
                                                 <div class="col-lg-3 text-right rtl order-last">
                                                     <i class="fa fa-calendar labels-icon"></i>
@@ -173,10 +135,7 @@
                                                     ?>
                                                 </div>
                                             </div>
-
                                         </div>
-
-
                                         <div class="block rounded mb-4">
                                             <div class="row">
                                                 <div class="col-lg-12">
@@ -185,24 +144,19 @@
                                                     </p>
                                                 </div>
                                             </div>
-
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <p class=""
-                                                       style="text-align: right; overflow-wrap: break-word;">{{ $reservation->appointment->course->description }}</p>
+                                                    <p class="course-description">{{ $reservation->appointment->course->description }}</p>
                                                     <hr>
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="col-lg-5">
-
                         <div class="payment-information-section">
                             <div class="coupon-section">
                                 <div class="row">
@@ -210,7 +164,6 @@
                                         <h4 class="text-right">معلومات الدفع</h4>
                                     </div>
                                 </div>
-
                                 <div class="block rounded mt-2 pb-0 pt-0">
                                    <form method="post" action="{{ route('student.payment.confirmation.confirm', $reservation->identifier) }}" enctype="multipart/form-data">
                                        {{ csrf_field() }}
@@ -225,7 +178,6 @@
                                                @endif
                                            </div>
                                        </div>
-
                                        <div class="form-group row mt-2">
                                            <div class="col-lg-12 text-right">
                                                <label class="col-form-label required-field rtl" for="account_number">رقم الحساب</label>
@@ -237,7 +189,6 @@
                                                @endif
                                            </div>
                                        </div>
-
                                        <div class="form-group row mt-2 mb-0">
                                            <div class="col-lg-12 text-right">
                                                <label class="col-form-label required-field rtl" for="receipt-image">صورة الإيصال بالتحويل</label>
@@ -248,10 +199,9 @@
                                                        <strong>{{ $errors->first('receipt-image') }}</strong>
                                                    </span>
                                                @endif
-                                               <input type="file" name="receipt-image" style="opacity: 0;" accept="image/png, image/jpg" required>
+                                               <input type="file" name="receipt-image" accept="image/png, image/jpg" required>
                                            </div>
                                        </div>
-
                                        <div class="form-group row mt-0">
                                            <div class="col-lg-12">
                                                <button class="btn btn-block custom-btn mt-0">تأكييد الدفع</button>
@@ -261,19 +211,16 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="notes-section">
                             <div class="row mt-4">
                                 <div class="col-lg-12">
                                     <h2 class="text-right">ملاحظات مهمة</h2>
                                 </div>
-
                                 <div class="col-lg-12">
                                     <div class="block rounded">
                                         <div class="row">
                                             <div class="col-lg-12">
-                                                <ul class="rtl text-right"
-                                                    style="list-style-type: none; margin-right: 0; width: 100%; padding-right: 0px;">
+                                                <ul class="custom-rules text-right rtl">
                                                     <li>
                                                         <span class="fas fa-arrow-alt-circle-left text-custom"></span>
                                                         <span>16 سنة أو أكبر</span>
@@ -311,8 +258,6 @@
                                 </div>
                             </div>
                         </div>
-
-
                         <div class="map-section">
                             <div class="row mt-4">
                                 <div class="col-lg-12">
@@ -320,9 +265,8 @@
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="map-location">
-                                        <div class="map rounded-top" style="height: 250px; width: 100%; overflow: hidden">
-                                            <img src="https://snazzy-maps-cdn.azureedge.net/assets/1243-xxxxxxxxxxx.png?v=20170626083204"
-                                                 style="width: 100%; height: 100%; display: block; margin: auto;">
+                                        <div class="map rounded-top">
+                                            <img src="https://snazzy-maps-cdn.azureedge.net/assets/1243-xxxxxxxxxxx.png?v=20170626083204">
                                         </div>
                                         <div class="block rounded-bottom mt-0 rtl">
                                             <p class="text-right">{{ $reservation->appointment->course->city->name.' - '.$reservation->appointment->course->address }}</p>
@@ -331,7 +275,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

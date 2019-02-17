@@ -8,7 +8,7 @@
 @endsection
 
 @section('style-file')
-
+    <link rel="stylesheet" href="{{ asset('css/student/show-course-details.css') }}" />
 @endsection
 
 @section('script-file')
@@ -23,30 +23,31 @@
     <div class="container mb-5">
         <div class="row justify-content-center mt-lg-3 mt-2">
             <div class="col-lg-10">
-                <?php $students = array(); ?>
-                @foreach($course->appointment->reservation as $reservation)
-                    @if($reservation->student_id == \Illuminate\Support\Facades\Auth::user()->student->id)
-                        <? array_push($students, $reservation->student_id); ?>
-                    @endif
-                @endforeach
-                @if(!empty($students))
-                    <div class="row justify-content-center">
-                        <div class="col-12">
-                            <div class="alert alert-success">
-                                <ul class="text-right mb-0 rtl">
-                                    <li>لقد قم بالتسجيل في هذه الدورة</li>
-                                </ul>
+                @if(\Illuminate\Support\Facades\Auth::check())
+                    <?php $students = array(); ?>
+                    @foreach($course->appointment->reservation as $reservation)
+                        @if($reservation->student_id == \Illuminate\Support\Facades\Auth::user()->student->id)
+                            <? array_push($students, $reservation->student_id); ?>
+                        @endif
+                    @endforeach
+                    @if(!empty($students))
+                        <div class="row justify-content-center">
+                            <div class="col-12">
+                                <div class="alert alert-success">
+                                    <ul class="text-right mb-0 rtl">
+                                        <li>لقد قم بالتسجيل في هذه الدورة</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
                 @endif
                 <div class="row justify-content-center">
                     <div class="col-lg-7 col-md-12 col-sm-12 col-12 text-right order-lg-last order-first mb-lg-4 mt-lg-0 mb-0 mt-4">
                         <h3>{{ $course->title }}</h3>
                         <div class="main-info">
-                            <div class="course-logo rounded-top" style="height: 300px; width: 100%; overflow: hidden">
-                                <img src="/storage/course-images/{{ $course->image[0]->url }}" alt=""
-                                     style="width: 100%; height: 100%; display: block; margin: auto;">
+                            <div class="course-logo rounded-top">
+                                <img src="/storage/course-images/{{ $course->image[0]->url }}" alt="{{ $course->title }}">
                             </div>
                             <div class="block rounded-bottom mt-0">
                                 <div class="row">
@@ -57,8 +58,7 @@
                                         <h5 class="text-right d-lg-none d-block rtl"><a
                                                     href="{{ route('center.profile', $course->center->user->username) }}">{{ $course->center->user->name }}</a>
                                         </h5>
-                                        <div class="mt-4"
-                                             style="position: absolute; bottom: 0; width: 92%; height: 40px; margin: auto; overflow: hidden;">
+                                        <div class="social-media mt-4">
                                             <div class="row justify-content-end">
                                                 <div class="col-lg-8 text-center h-100">
                                                     <div class="row justify-content-center">
@@ -83,12 +83,10 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-3 col-md-4 col-sm-4 col-4">
-                                        <div class="logo-holder"
-                                             style="width: 90px; height: 90px; overflow: hidden; padding: 0;">
+                                        <div class="logo-holder">
                                             <img class="border"
                                                  src="/storage/center-images/{{ $course->center->logo }}"
-                                                 alt=""
-                                                 style="width: 100%; height: 100%; display: block; margin: auto; padding: 3px;">
+                                                 alt="{{ $course->center->user->name }}">
                                         </div>
                                     </div>
                                 </div>
@@ -96,7 +94,6 @@
 
 
                             <div class="block rounded">
-
                                 <div class="row info">
                                     <div class="col-lg-3 col-md-3 col-sm-4 col-4 text-right order-last rtl">
                                         <i class="fa fa-star labels-icon"></i>
@@ -189,8 +186,7 @@
 
                                 <div class="row">
                                     <div class="col-lg-12">
-                                        <p class=""
-                                           style="text-align: right; overflow-wrap: break-word;">{{ $course->description }}</p>
+                                        <p class="course-description">{{ $course->description }}</p>
                                         <hr>
                                     </div>
                                 </div>
@@ -208,8 +204,7 @@
                                 <div class="block rounded mt-0">
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <ul class="rtl text-right"
-                                                style="list-style-type: none; margin-right: 0; width: 100%; padding-right: 0px;">
+                                            <ul class="custom-rules text-right rtl">
                                                 <li>
                                                     <span class="fas fa-arrow-alt-circle-left text-custom"></span>
                                                     <span>16 سنة أو أكبر</span>
@@ -255,9 +250,8 @@
 
                             <div class="col-12">
                                 <div class="map-location">
-                                    <div class="map rounded-top" style="height: 250px; width: 100%; overflow: hidden">
-                                        <img src="https://snazzy-maps-cdn.azureedge.net/assets/1243-xxxxxxxxxxx.png?v=20170626083204"
-                                             style="width: 100%; height: 100%; display: block; margin: auto;">
+                                    <div class="map rounded-top">
+                                        <img src="https://snazzy-maps-cdn.azureedge.net/assets/1243-xxxxxxxxxxx.png?v=20170626083204">
                                     </div>
                                     <div class="block rounded-bottom mt-0 rtl">
                                         <p class="text-right">{{ $course->city->name.' - '.$course->address }}</p>
@@ -271,13 +265,20 @@
 
                 <div class="row justify-content-lg-end justify-content-center">
                     <div class="col-lg-7 col-12">
-                        <?php $students = array(); ?>
-                        @foreach($course->appointment->reservation as $reservation)
-                            @if($reservation->student_id == \Illuminate\Support\Facades\Auth::user()->student->id)
-                                <?php array_push($students, $reservation->student_id); ?>
+                        @if(\Illuminate\Support\Facades\Auth::check())
+                            <?php $students = array(); ?>
+                            @foreach($course->appointment->reservation as $reservation)
+                                @if($reservation->student_id == \Illuminate\Support\Facades\Auth::user()->student->id)
+                                    <?php array_push($students, $reservation->student_id); ?>
+                                @endif
+                            @endforeach
+                            @if(empty($students))
+                                <form method="post" action="{{ route('account.course.booking', $course->identifier) }}">
+                                    {{ csrf_field() }}
+                                    <button type="submit" class="btn custom-btn">احجز الآن</button>
+                                </form>
                             @endif
-                        @endforeach
-                        @if(empty($students))
+                        @else
                             <form method="post" action="{{ route('account.course.booking', $course->identifier) }}">
                                 {{ csrf_field() }}
                                 <button type="submit" class="btn custom-btn">احجز الآن</button>

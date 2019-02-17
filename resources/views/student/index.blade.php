@@ -8,7 +8,7 @@
 @endsection
 
 @section('style-file')
-
+    <link rel="stylesheet" href="{{ asset('css/student/courses-index.css') }}" />
 @endsection
 
 @section('script-file')
@@ -39,35 +39,30 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-12 col-md-12 col-sm-12 col-12 p-0 d-none">
                         @if(count($courses) > 0)
-                            <div class="banner" style="min-height: 339px; width: 100%; overflow: hidden;">
+                            <div class="banner">
                                 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
-                                            <img src="/storage/course-images/{{ $courses[0]->image[0]->url }}" class=""
-                                                 alt="..."
-                                                 style="width: 100%; height: 330px;">
-                                            <div class="carousel-caption d-block d-md-block"
-                                                 style="width: 100%; background: #000000a6; bottom: 0; left: 0; right: 0; padding-top: 10px; padding-bottom: 0;">
+                                            <img src="/storage/course-images/{{ $courses[0]->image[0]->url }}" class="banner-img"
+                                                 alt="{{ $courses[0]->title }}">
+                                            <div class="carousel-caption d-block d-md-block">
                                                 <h5>{{ $courses[0]->title }}</h5>
                                                 <p>{{ $courses[0]->appointment->start_date }}</p>
                                             </div>
                                         </div>
                                         <div class="carousel-item">
-                                            <img src="/storage/course-images/{{ $courses[0]->image[0]->url }}" class=""
-                                                 alt="..."
-                                                 style="width: 100%; height: 330px;">
-                                            <div class="carousel-caption d-block d-md-block"
-                                                 style="width: 100%; background: #000000a6; bottom: 0; left: 0; right: 0; padding-top: 10px; padding-bottom: 0;">
+                                            <img src="/storage/course-images/{{ $courses[0]->image[0]->url }}" class="banner-img"
+                                                 alt="{{ $courses[0]->title }}">
+                                            <div class="carousel-caption d-block d-md-block">
                                                 <h5>{{ $courses[0]->title }}</h5>
                                                 <p>{{ $courses[0]->appointment->date }}</p>
                                             </div>
                                         </div>
                                         <div class="carousel-item">
                                             <img src="/storage/course-images/{{ $courses[0]->image[0]->url }}" class=""
-                                                 alt="..."
-                                                 style="width: 100%; height: 330px;">
-                                            <div class="carousel-caption d-block d-md-block"
-                                                 style="width: 100%; background: #000000a6; bottom: 0; left: 0; right: 0; padding-top: 10px; padding-bottom: 0;">
+                                                 alt="{{ $courses[0]->title }}"
+                                                 >
+                                            <div class="carousel-caption d-block d-md-block">
                                                 <h5>{{ $courses[0]->title }}</h5>
                                                 <p>{{ $courses[0]->appointment->date }}</p>
                                             </div>

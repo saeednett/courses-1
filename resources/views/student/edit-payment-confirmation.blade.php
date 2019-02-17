@@ -8,32 +8,11 @@
 @endsection
 
 @section('style-file')
-
+    <link rel="stylesheet" href="{{ asset('css/student/edit-payment-confirmation.css') }}" />
 @endsection
 
 @section('script-file')
-    <script>
-        $('.carousel').carousel();
-
-
-        $("#receipt-image").on('click', function () {
-            $("input[name=receipt-image]").trigger('click');
-        });
-
-        $("input[name=receipt-image]").on('change', function () {
-            let file = $("input[name=receipt-image]")[0].files[0];
-            $("#receipt-image").val(file.name);
-        });
-
-
-        $(document).on("keypress", '.num-only', function (evt) {
-            let charCode = (evt.which) ? evt.which : event.keyCode;
-            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                return false;
-            }
-            return true;
-        });
-    </script>
+    <script src="{{ asset('js/student/edit-payment-confirmation.js') }}"></script>
 @endsection
 
 
@@ -79,11 +58,9 @@
 
                                     <div class="col-12">
                                         <div class="main-info">
-                                            <div class="course-logo rounded-top"
-                                                 style="height: 300px; width: 100%; overflow: hidden">
+                                            <div class="course-logo rounded-top">
                                                 <img src="/storage/course-images/{{ $reservation->course->image[0]->url }}"
-                                                     alt=""
-                                                     style="width: 100%; height: 100%; display: block; margin: auto;">
+                                                     alt="$reservation->course->title">
                                             </div>
                                             <div class="block rounded-bottom mt-0">
                                                 <div class="row">
@@ -95,8 +72,7 @@
                                                         <h5 class="text-right d-lg-none d-block rtl"><a
                                                                     href="{{ route('center.profile', $reservation->course->center->user->username) }}">{{ $reservation->course->center->user->name }}</a>
                                                         </h5>
-                                                        <div class="mt-4"
-                                                             style="position: absolute; bottom: 0; width: 92%; height: 40px; margin: auto; overflow: hidden;">
+                                                        <div class="social-media mt-4">
                                                             <div class="row justify-content-end">
                                                                 <div class="col-lg-8 text-center h-100">
                                                                     <div class="row justify-content-center">
@@ -121,12 +97,10 @@
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-3 col-md-3 col-sm-3 col-3 p-0">
-                                                        <div class="logo-holder"
-                                                             style="width: 90px; height: 90px; overflow: hidden; padding: 0;">
+                                                        <div class="logo-holder">
                                                             <img class="border col-10"
                                                                  src="/storage/center-images/{{ $reservation->course->center->logo }}"
-                                                                 alt=""
-                                                                 style="width: 100%; height: 100%; display: block; margin: auto;  padding: 3px;">
+                                                                 alt="{{ $reservation->course->center->user->name }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -227,8 +201,7 @@
 
                                                 <div class="row">
                                                     <div class="col-lg-12">
-                                                        <p class=""
-                                                           style="text-align: right; overflow-wrap: break-word;">{{ $reservation->course->description }}</p>
+                                                        <p class="course-description">{{ $reservation->course->description }}</p>
                                                         <hr>
                                                     </div>
                                                 </div>
@@ -310,7 +283,7 @@
                                                        <strong>{{ $errors->first('receipt-image') }}</strong>
                                                    </span>
                                                         @endif
-                                                        <input type="file" name="receipt-image" style="opacity: 0;"
+                                                        <input type="file" class="receipt-image" name="receipt-image"
                                                                accept="image/png, image/jpg">
                                                     </div>
                                                 </div>
@@ -337,8 +310,7 @@
                                         <div class="block rounded">
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <ul class="rtl text-right"
-                                                        style="list-style-type: none; margin-right: 0; width: 100%; padding-right: 0px;">
+                                                    <ul class="custom-rules text-right rtl">
                                                         <li>
                                                             <span class="fa fa-arrow-circle-o-left text-custom"></span>
                                                             <span>16 سنة أو أكبر</span>
@@ -385,10 +357,8 @@
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="map-location">
-                                            <div class="map rounded-top"
-                                                 style="height: 250px; width: 100%; overflow: hidden">
-                                                <img src="https://snazzy-maps-cdn.azureedge.net/assets/1243-xxxxxxxxxxx.png?v=20170626083204"
-                                                     style="width: 100%; height: 100%; display: block; margin: auto;">
+                                            <div class="map rounded-top">
+                                                <img src="https://snazzy-maps-cdn.azureedge.net/assets/1243-xxxxxxxxxxx.png?v=20170626083204">
                                             </div>
                                             <div class="block rounded-bottom mt-0 rtl">
                                                 <p class="text-right">{{ $reservation->course->city->name.' - '.$reservation->course->address }}</p>

@@ -2,25 +2,25 @@ body {
     background: #f7fbf2;
     font-family: 'Tajawal', sans-serif;
 }
-
+/* The Wrap For The Master Page*/
 .wrap {
     min-height: 100%;
     min-width: 100%;
 }
-
+/* header For The Master Page */
 .header {
     padding-top: 5px;
     padding-bottom: 5px;
     direction: rtl;
     background: #ecf4e0;
 }
-
+/* To Center Text In Select Input */
 select {
     direction: rtl;
     text-align: center !important;
     text-align-last: center !important;
 }
-
+/* The Second Section Of The Header */
 .menu-section {
     min-height: 65px;
     max-height: 100%;
@@ -30,11 +30,11 @@ select {
     -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, 0.1);
     border-bottom: 1px solid #a2d55e;
 }
-
+/* Custom Background Color */
 .bg-custom {
     background: #ecf4e0;
 }
-
+/* The Footer In The Master Page */
 .footer {
     height: 420px;
     margin-top: 0;
@@ -45,7 +45,7 @@ select {
     font-weight: 400;
     color: #ecf4e0;
 }
-
+/* The Block For Any Section In All Pages */
 .block {
     background: #FFF;
     border: 1px solid #ccc;
@@ -53,21 +53,21 @@ select {
     margin-top: 15px;
     padding: 20px;
 }
-
+/* To Over View The Dropdown Menu */
 .dropdown-menu {
     z-index: 1500;
 }
-
+/* To Show The Required Sign In Front Of Any Input Label */
 .required-field:after {
     color: #ff6771;
     content: " *";
     text-align: right;
 }
-
+/* For Change Text Direction Right To Left */
 .rtl {
     direction: rtl;
 }
-
+/* This Custom Button Is Used In All Pages That Have Submit Button */
 .custom-btn {
     margin-top: 10px;
     width: 100%;
@@ -80,7 +80,7 @@ select {
     color: #fff;
     border: 1px solid #00bdac;
 }
-
+/* This Tabs To Select The Data Type That You Want To Be Shown */
 .filter-tabs {
     background: #fff;
     margin-left: 15px;
@@ -91,24 +91,24 @@ select {
     color: #6c757d;
     cursor: pointer;
 }
-
+/* When The User Select One Tab This Active Class Should Assign To It */
 .custom-active {
     background: #a2d45e !important;
     color: #FFFFFF !important;
 }
-
+/* When The User Hover The Tab Without Selecting It */
 .filter-tabs:hover {
     background: #a2d45e;
     color: #FFFFFF;
 }
-
+/* This For The Course Card Footer */
 .adv-footer {
     width: 100%;
     padding-top: 15px;
     margin-top: 10px;
     border-top: 1px dotted #f2f2f2;
 }
-
+/* To Show Course Price */
 .adv-price {
     color: #999;
     font-size: 13px;
@@ -117,7 +117,7 @@ select {
     padding: 3px 20px;
     margin-right: 5px;
 }
-
+/* To Show The Course City Or Place */
 .adv-place {
     color: #999;
     font-size: 13px;
@@ -126,23 +126,21 @@ select {
     padding: 3px 20px;
     margin-left: 5px;
 }
-
+/* The NavBar ul */
 ul.navbar-nav {
     width: 100%;
     padding: 0;
     text-align: center;
 }
-
 ul.navbar-nav li {
     width: auto;
     font-size: 20px;
     text-align: center;
 }
-
 ul.navbar-nav li:hover {
     border-bottom: 2px solid #a2d45e;
 }
-
+/* This Well Used In Edit Account Page The Header */
 .well {
     min-height: 20px;
     padding: 19px;
@@ -153,29 +151,16 @@ ul.navbar-nav li:hover {
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
 }
-
-.booked-tickets {
-    background: #fff;
-    cursor: pointer;
-    padding: 10px 20px;
-    border: 1px solid black;
-    /*box-shadow: 5px 8px 8px 8px #888888;*/
-}
-
-.booked-tickets:hover {
-    box-shadow: 5px 8px 8px 8px #888888;
-}
-
-.payment-verfiy {
-    font-size: 12px;
-    padding: 7px;
-    background-color: #00bdac;
-    border: 1px solid #00bdac;
-    color: #FFF;
-    font-weight: 700;
-    display: inline-block;
-}
-
+/*.payment-verfiy {*/
+    /*font-size: 12px;*/
+    /*padding: 7px;*/
+    /*background-color: #00bdac;*/
+    /*border: 1px solid #00bdac;*/
+    /*color: #FFF;*/
+    /*font-weight: 700;*/
+    /*display: inline-block;*/
+/*}*/
+/* This Class To Show The Red Circle Around The Number Of Unconfirmed Courses  */
 .count-booking-tickets {
     background-color: #ff6771;
     border-radius: 50%;
@@ -187,48 +172,43 @@ ul.navbar-nav li:hover {
     text-align: center;
     width: 23px;
 }
-
+/* To Clear Above The Div */
 .clear {
     clear: both;
 }
-
+/* For The Center Profile Image */
 .profile-wall {
     border-bottom: 4px solid #f2f2f2;
     position: relative;
     width: 100%;
 }
-
+/* The Profile Cover */
 .profile-wall img {
     margin: auto 0;
     width: 100%;
     height: 100%;
 }
-
 .h-30 {
     height: 30% !important;
 }
-
-.custom-sticky-lg-top {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 0;
-    z-index: 1020;
-}
-
+/*.custom-sticky-lg-top {*/
+    /*position: -webkit-sticky;*/
+    /*position: sticky;*/
+    /*top: 0;*/
+    /*z-index: 1020;*/
+/*}*/
+ /* This Class For The Icons Of Rules */
 .labels-icon {
     color: #00bdac;
     font-size: 18px;
     width: 24px;
     text-align: center;
 }
-
+/* Custom Text Color */
 .text-custom {
     color: #00bdac;
 }
-
-
 /* Custom CheckBox */
-
 .checkbox-container {
     margin-top: 28px;
     display: block;
@@ -298,9 +278,8 @@ ul.navbar-nav li:hover {
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
 }
-
 /* End Custom CheckBox */
-
+/* Large View Point */
 @media (min-width: 992px) {
     .custom-sticky-lg-top {
         position: -webkit-sticky;
@@ -308,80 +287,80 @@ ul.navbar-nav li:hover {
         top: 0;
         z-index: 1020;
     }
-
     .h-lg-10 {
         height: 10% !important;
     }
-
     .h-lg-15 {
         height: 15% !important;
     }
-
     .h-lg-20 {
         height: 20% !important;
     }
-
     .h-lg-25 {
         height: 25% !important;
     }
-
     .h-lg-30 {
         height: 30% !important;
     }
-
     .h-lg-40 {
         height: 40% !important;
     }
-
     .h-lg-45 {
         height: 45% !important;
     }
-
     .h-lg-50 {
         height: 50% !important;
     }
-
     .h-lg-75 {
         height: 75% !important;
     }
-
+    /* The Center Profile */
+    .profile-content-wraper {
+        margin-top: 60px;
+    }
+    /* The Tab In The NavBar */
     .tap-link {
         width: 120px !important;
         display: block;
     }
 }
-
+/* Medium View Point */
 @media (min-width: 768px) {
-
     .custom-sticky-md-top {
         position: -webkit-sticky;
         position: sticky;
         top: 0;
         z-index: 1020;
     }
-
     .h-md-25 {
         height: 25% !important;
     }
-
     .h-md-30 {
         height: 30% !important;
     }
-
     .h-md-45 {
         height: 45% !important;
     }
-
+    .h-md-50 {
+        height: 50% !important;
+    }
+    .h-md-55 {
+        height: 55% !important;
+    }
     .h-md-75 {
         height: 75% !important;
     }
-
+    /* The Center Profile */
+    .profile-content-wraper {
+        margin-top: 60px;
+    }
+    /* The Tab In The NavBar */
     .tap-link {
         width: 120px !important;
         display: block;
     }
 }
-
+/* Small View Point */
 @media (min-width: 576px) {
     .custom-sticky-sm-top {
         position: -webkit-sticky;
@@ -389,39 +368,33 @@ ul.navbar-nav li:hover {
         top: 0;
         z-index: 1020;
     }
-
     .h-sm-25 {
         height: 25% !important;
     }
-
     .h-sm-45 {
         height: 45% !important;
     }
-
     .h-sm-50 {
         height: 50% !important;
     }
-
     .h-sm-75 {
         height: 75% !important;
     }
-
+    /* The Tab In The NavBar */
     .tap-link {
         width: 100% !important;
         display: block;
     }
 }
-
-/* card  */
-
+/* For The Center Profile */
 .profile-info {
     border-right: none;
     margin-top: 60px;
-    min-height: 410px;
-    margin-bottom: 40px;
+    min-height: auto;
+    padding-top: 15px;
     border-left: 1px solid #ccc;
 }
-
+/* The Div Of The Logo Of The Center */
 .profile-info .profile-avatar {
     position: absolute;
     background: #fff;
@@ -433,45 +406,41 @@ ul.navbar-nav li:hover {
     -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
     border: 5px solid #fff;
 }
-
+/* The Logo Of tThe Center */
 .profile-info .profile-avatar img {
     width: 100%;
     height: 100%;
 }
-
+/* The Title Of The Center */
 .profile-info .profile-title {
     color: #999;
     font-size: 20px;
     font-weight: 700;
     margin-bottom: 5px;
 }
-
+/* The Link Of The Center */
 .profile-info .profile-site {
     margin-bottom: 15px;
     word-wrap: break-word;
 }
-
+/* The Description Of The Center */
 .profile-info .profile-description {
     color: #999;
     margin-bottom: 15px;
 }
-
+/* For Social Media Account */
 .social {
     display: block;
     width: 32px;
     height: 32px;
     margin: 5px;
 }
-
-.profile-content-wraper {
-    margin-top: 60px;
-}
-
+/* The Tab In The NavBar */
 .tap-link {
     width: 100% !important;
     display: block;
 }
-
+/* The Tab In The NavBar */
 @media (max-width: 575.98px) {
     .tap-link {
         width: 100% !important;
@@ -479,29 +448,28 @@ ul.navbar-nav li:hover {
     }
 }
 
-
+/* The Tab In The NavBar */
 @media (min-width: 576px) and (max-width: 767.98px) {
     .tap-link {
         width: 100% !important;
         display: block;
     }
 }
-
+/* The Tab In The NavBar */
 @media (min-width: 768px) and (max-width: 991.98px) {
     .tap-link {
         width: 120px !important;
         display: block;
     }
 }
-
+/* The Tab In The NavBar */
 @media (min-width: 992px) and (max-width: 1199.98px) {
     .tap-link {
         width: 120px !important;
         display: block;
     }
 }
-
-
+/* The Tab In The NavBar */
 @media (min-width: 1200px) {
     .tap-link {
         width: 120px !important;
