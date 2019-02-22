@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -37,6 +38,17 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    protected function logout()
+    {
+        $role = Auth::user()->role_id;
+        Auth::logout();
+        if( $role < 5 ){
+            return redirect()->route('center.login');
+        }elseif ($role == 5){
+            return redirect()->route('center.index');
+        }
+    }
+
     public function username()
     {
         return 'username';
@@ -44,7 +56,7 @@ class LoginController extends Controller
 
     protected function redirectTo()
     {
-        if ( Auth::user()->role_id == 2){
+        if ( Auth::user()->role_id < 5){
             redirect()->route('center.index', Auth::user()->username);
         }
         if ( Auth::user()->role_id == 5){

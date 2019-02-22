@@ -989,7 +989,6 @@ class CenterController extends Controller
     {
         $admin = Admin::find($id);
 
-
         $counter = 0;
 
         if ($admin->user->name != $request->name) {
