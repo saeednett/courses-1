@@ -22,7 +22,7 @@
                         <table class="table table-striped table-bordered table-hover dataTables-example">
                             <thead>
                             <tr>
-                                <th class="text-center" colspan="5"><h4> {{ $course->title }} </h4></th>
+                                <th class="text-center" colspan="6"><h4> {{ $course->title }} </h4></th>
                             </tr>
                             <tr>
                                 <th class="text-center">اسم الطالب</th>
@@ -36,8 +36,11 @@
                             @if(count($course->appointment->reservation) > 0)
                                 @foreach($course->appointment->reservation as $reservation)
                                     <tr class="gradeX">
+                                        <td>{{ $reservation->student->user->name }}</td>
                                         <td class="ltr">{{ date( 'Y-M-D h:i' ,strtotime($course->created_at)) }}</td>
-                                        <td>{{ count($course->appointment->reservation) }}</td>
+                                        <td>{{ $reservation->payment->account_owner }}</td>
+
+                                        <td>{{ $reservation->payment->account_number }}</td>
 
                                         <td>
                                             <a href="#">تم الدفع</a>
