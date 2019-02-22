@@ -17,7 +17,6 @@
     <script src="{{ asset('js/student/payment-confirmation.js') }}"></script>
 @endsection
 
-
 @section('content')
     <div class="container mb-5">
         <div class="row justify-content-center mt-lg-3 mt-2">
@@ -46,16 +45,16 @@
                                                             <div class="col-lg-8 text-center h-100">
                                                                 <div class="row justify-content-center">
                                                                     <div class="col-lg mt-1">
-                                                                        <i class="fab fa-facebook fa-2x"></i>
+                                                                        <i class="fa fa-facebook fa-2x"></i>
                                                                     </div>
                                                                     <div class="col-lg mt-1">
-                                                                        <i class="fab fa-twitter fa-2x"></i>
+                                                                        <i class="fa fa-twitter fa-2x"></i>
                                                                     </div>
                                                                     <div class="col-lg mt-1">
-                                                                        <i class="fab fa-snapchat fa-2x"></i>
+                                                                        <i class="fa fa-snapchat fa-2x"></i>
                                                                     </div>
                                                                     <div class="col-lg mt-1">
-                                                                        <i class="fab fa-instagram fa-2x"></i>
+                                                                        <i class="fa fa-instagram fa-2x"></i>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -199,7 +198,7 @@
                                                        <strong>{{ $errors->first('receipt-image') }}</strong>
                                                    </span>
                                                @endif
-                                               <input type="file" name="receipt-image" accept="image/png, image/jpg" required>
+                                               <input type="file" class="receipt-image" name="receipt-image" accept="image/png, image/jpg" required>
                                            </div>
                                        </div>
                                        <div class="form-group row mt-0">

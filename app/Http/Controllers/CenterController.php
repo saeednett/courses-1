@@ -132,9 +132,6 @@ class CenterController extends Controller
             $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
             $students = Reservation::find($course_id);
 
-            $course_admin = CourseAdmin::where('course_id', 3)->first();
-//            dd($course_admin);
-
             $total_students = array();
 
             for ($i = 0; $i < count($students); $i++) {
@@ -147,7 +144,7 @@ class CenterController extends Controller
                 }
             }
             $total_students = count($total_students);
-            return view('center.index', compact('courses', 'trainers', 'admins', 'students', 'total_students'));
+            return view('center.index', compact('courses', 'trainers', 'course', 'admins', 'students', 'total_students'));
         } else {
             return abort(404);
         }
@@ -255,8 +252,8 @@ class CenterController extends Controller
         $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
         // To Filter The Reservation That Is Not Confirmed
         $tickets_data = array();
-        foreach ($reservations as $reservation){
-            if ( $reservation->appointment->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+        foreach ($reservations as $reservation) {
+            if ($reservation->appointment->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
                 array_push($tickets_data, $reservation->id);
             }
         }
@@ -426,6 +423,7 @@ class CenterController extends Controller
         return redirect()->route('center.edit')->with('success', 'تم تعديل البيانات بنجاح');
     }
 
+    // Unused Function
     public function destroy($id)
     {
 
@@ -447,10 +445,23 @@ class CenterController extends Controller
         $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
         $admins = Admin::where('center_id', Auth::user()->center->id)->get();
 
-        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
-        $students = Reservation::find($course_id)->count();
 
-        return view('center.create-trainer', compact('nationalities', 'titles', 'courses', 'trainers', 'admins', 'students'));
+        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
+        $students = Reservation::find($course_id);
+
+        $total_students = array();
+
+        for ($i = 0; $i < count($students); $i++) {
+            if ($i == 0) {
+                array_push($total_students, $students[$i]->student_id);
+            } else {
+                if (!in_array($students[$i]->student_id, $total_students)) {
+                    array_push($total_students, $students[$i]->student_id);
+                }
+            }
+        }
+        $total_students = count($total_students);
+        return view('center.create-trainer', compact('nationalities', 'titles', 'courses', 'trainers', 'admins', 'students', 'total_students'));
     }
 
     // The Data Of Storing New Trainer Goes Here And The Process Happens Here
@@ -494,12 +505,10 @@ class CenterController extends Controller
 
             DB::commit();
 
-
         } catch (Exception $e) {
             DB::rollback();
             return redirect()->route('center.trainer.create')->withErrors(['لم يتم إضافة المدرب', 'الرجاء المحاولة مجددا']);
         }
-
         return redirect()->route('center.trainer.create')->with('success', 'تم إضافة المدرب بنجاح');
     }
 
@@ -874,13 +883,26 @@ class CenterController extends Controller
     // To Show The Form Of Creating New Admin
     public function create_admin()
     {
-        $courses = Course::where('center_id', Auth::user()->id)->get();
-        $trainers = Trainer::where('center_id', Auth::user()->id)->get();
-        $admins = Admin::where('center_id', Auth::user()->id)->get();
-        $course_id = Course::select('id')->where('center_id', Auth::user()->id)->get();
-        $students = Reservation::find($course_id)->count();
+        $courses = Course::where('center_id', Auth::user()->center->id)->get();
+        $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+        $admins = Admin::where('center_id', Auth::user()->center->id)->get();
 
-        return view('center.create-admin', compact('courses', 'trainers', 'admins', 'students'));
+        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
+        $students = Reservation::find($course_id);
+
+        $total_students = array();
+
+        for ($i = 0; $i < count($students); $i++) {
+            if ($i == 0) {
+                array_push($total_students, $students[$i]->student_id);
+            } else {
+                if (!in_array($students[$i]->student_id, $total_students)) {
+                    array_push($total_students, $students[$i]->student_id);
+                }
+            }
+        }
+        $total_students = count($total_students);
+        return view('center.create-admin', compact('courses', 'trainers', 'admins', 'students', 'total_students'));
     }
 
     // The Data Of Storing New Admin Goes Here And The Process Happens Here
@@ -1106,12 +1128,100 @@ class CenterController extends Controller
         return redirect()->route('center.course.admin.assign')->with('success', 'تم تعيين المسؤول بنجاح');
     }
 
-    public function contact_us(){
+    public function contact_us()
+    {
 
     }
 
-    public function about_us(){
+    public function about_us()
+    {
 
+    }
+    // To Show The Form Of Resetting Password
+    public function reset_password()
+    {
+        $courses = Course::where('center_id', Auth::user()->center->id)->get();
+        $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+        $admins = Admin::where('center_id', Auth::user()->center->id)->get();
+
+        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
+        $students = Reservation::find($course_id);
+
+        $total_students = array();
+
+        for ($i = 0; $i < count($students); $i++) {
+            if ($i == 0) {
+                array_push($total_students, $students[$i]->student_id);
+            } else {
+                if (!in_array($students[$i]->student_id, $total_students)) {
+                    array_push($total_students, $students[$i]->student_id);
+                }
+            }
+        }
+        $total_students = count($total_students);
+
+        // Getting Center Information
+        $center = User::find(Auth::user()->id);
+        return view('center.reset-password', compact('center', 'courses', 'trainers', 'admins', 'total_students'));
+    }
+    // The Data Of Resetting Password Goes Here And The Process Happens Here
+    public function reset_password_confirm(Request $request)
+    {
+        $center = User::find(Auth::user()->id);
+        $request->validate([
+            'old_password' => 'required|string|max:32|min:8',
+            'password' => 'required|string|max:32|min:8',
+            'password_confirmation' => 'required|string|max:32|min:8|same:password',
+        ]);
+        // Checking If The Old Password Is True
+        if (!Hash::check($request->old_password, $center->password)) {
+            return redirect()->route('center.reset.password')->withErrors(['old_password' => 'كلمة المرور القديمة غير صحيحة']);
+        } else {
+            // Checking If The New Password Equal The Old Password
+            if (Hash::check($request->password, $center->password)){
+                return redirect()->route('center.reset.password')->withErrors(['password' => 'لايمكنك تغير كلمة المرور بكلمة مرورك الحالية']);
+            }else{
+                $center->password = Hash::make($request->password);
+                $center->update();
+                return redirect()->route('center.reset.password')->with('success', 'تم تغير كلمة المرور بنجاح');
+            }
+        }
+    }
+    // To Show The Form Of Editing And Adding Bank Account
+    public function edit_bank_account(){
+        $courses = Course::where('center_id', Auth::user()->center->id)->get();
+        $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+        $admins = Admin::where('center_id', Auth::user()->center->id)->get();
+
+        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
+        $students = Reservation::find($course_id);
+
+        $total_students = array();
+
+        for ($i = 0; $i < count($students); $i++) {
+            if ($i == 0) {
+                array_push($total_students, $students[$i]->student_id);
+            } else {
+                if (!in_array($students[$i]->student_id, $total_students)) {
+                    array_push($total_students, $students[$i]->student_id);
+                }
+            }
+        }
+        $total_students = count($total_students);
+        $banks = Bank::all();
+        $accounts = CenterAccount::where('center_id', Auth::user()->center->id)->get();
+        return view('center.edit-bank-account', compact('courses', 'trainers', 'admins', 'total_students', 'accounts', 'banks'));
+    }
+    //
+    public function update_bank_account(Request $request){
+        $request->validate([
+            'account_owner' => 'required|array|max:20',
+            'account_owner.*' => 'required|string|max:50|min:10|distinct',
+            'account_number' => 'required|array|size:'.count($request->account_owner),
+            'account_number.*' => 'required|digits_between:10,20|distinct',
+            'bank' => 'required|array|max:20|',
+            'bank.*' => 'required|digits_between:1,30|distinct',
+        ]);
     }
 
 }

@@ -177,14 +177,14 @@ class StudentController extends Controller
         } else {
             Reservation::create([
                 'student_id' => Auth::user()->student->id,
-                'course_id' => $course->id,
+//                'course_id' => $course->id,
                 'coupon_id' => $coupon->id,
                 'identifier' => Str::random(10),
                 'appointment_id' => $course->appointment->id,
             ]);
         }
         // Redirect To The Page That Show All Tickets Of The User | Student
-        return redirect()->route('account.tickets')->with('success', 'تم حجز دورة ' . $course->title . ' بنجاح قم بتسديد المبلغ لكي يتم إصدار البطاقة');
+        return redirect()->route('account.ticket')->with('success', 'تم حجز دورة ' . $course->title . ' بنجاح قم بتسديد المبلغ لكي يتم إصدار البطاقة');
     }
     // To Edit The Information Of The Student
     public function edit()

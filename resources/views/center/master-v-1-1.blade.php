@@ -68,8 +68,7 @@
 
             <!-- Site header  -->
             <header class="site-header">
-                <div class="site-logo"><a href="{{ route('center.index', Auth::user()->username) }}"><img src="{{ asset('img/center/logo.png') }}" alt="Mouldifi"
-                                                                 title="Mouldifi"></a></div>
+                <div class="site-logo"><a href="{{ route('center.index', Auth::user()->username) }}"><img src="{{ asset('img/center/logo.png') }}" alt="Logo" title="الشعار" style="height: 40px; width: 50px; display: block; margin: auto;"></a></div>
                 <div class="sidebar-collapse hidden-xs"><a class="sidebar-collapse-icon" href="#"><i
                                 class="icon-menu"></i></a></div>
                 <div class="sidebar-mobile-menu visible-xs"><a data-target="#side-nav" data-toggle="collapse"
@@ -115,10 +114,10 @@
 
                 <li class="has-sub"><a href="form-basic.html"><i class="icon-doc-text"></i><span class="title">الملف الاشخصي</span></a>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('center.edit') }}"><span class="title">كلمة المرور</span></a></li>
+                        <li><a href="{{ route('center.reset.password') }}"><span class="title">كلمة المرور</span></a></li>
                     </ul>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('center.edit') }}"><span class="title">بياناتي البنكية</span></a></li>
+                        <li><a href="{{ route('center.bank.account.edit') }}"><span class="title">بياناتي البنكية</span></a></li>
                     </ul>
                     <ul class="nav collapse">
                         <li><a href="{{ route('center.edit') }}"><span class="title">بيانات التواصل</span></a></li>

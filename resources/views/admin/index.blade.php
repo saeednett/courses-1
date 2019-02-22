@@ -1,15 +1,12 @@
 @extends('admin.layouts.master')
 
 @section('content')
-
     <!-- Main content -->
-
     <style>
         .warning-color {
             color: #fff466;
         }
     </style>
-
     <div class="row">
         <div class="col-lg-12 animatedParent animateOnce z-index-50">
             <div class="panel panel-default animated fadeInUp">
@@ -29,7 +26,7 @@
                                 <th class="text-center">تاريخ الدورة</th>
                                 <th class="text-center">عدد الطلاب</th>
                                 <th class="text-center">الصلاحيات</th>
-                                <th class="text-center">خيارات</th>
+                                <th class="text-center" colspan="3">خيارات</th>
                             </tr>
                             </thead>
                             <tbody class="text-center">
@@ -38,50 +35,62 @@
                                     <tr class="gradeX">
                                         <td>{{ $course->course->title }}</td>
                                         <td class="ltr">{{ date( 'Y-M-D h:i' ,strtotime($course->course->created_at)) }}</td>
-                                        <td>{{ count($course->course->reservation) }}</td>
+                                        <td>{{ count($course->course->appointment->reservation) }}</td>
                                         @if($course->role_id == 1)
                                             <td>مسؤول الدور</td>
-                                            <td class="size-80 text-center">
-                                                <div class="dropdown">
-                                                    <a class="more-link" data-toggle="dropdown" href="#/"><i class="icon-dot-3 ellipsis-icon"></i></a>
-                                                    <ul class="dropdown-menu dropdown-menu-right">
-                                                        <li>
-                                                            <a href="">
-                                                                <span>تأكيد الدفع</span>
-                                                                <i class="icon-thumbs-up pull-right text-success"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#">
-                                                                <span>تعديل الدورة</span>
-                                                                <i class="fa fa-pencil-square pull-right text-primary"></i>
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="#" class="center-block">
-                                                                <span>منح الشهادات</span>
-                                                                <i class="icon-minus-circled pull-right text-warning"></i>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
+                                            {{--<td class="size-80 text-center">--}}
+                                                {{--<div class="dropdown">--}}
+                                                    {{--<a class="more-link" data-toggle="dropdown" href="#/"><i class="icon-dot-3 ellipsis-icon"></i></a>--}}
+                                                    {{--<ul class="dropdown-menu dropdown-menu-right">--}}
+                                                        {{--<li>--}}
+                                                            {{--<a href="">--}}
+                                                                {{--<span>تأكيد الدفع</span>--}}
+                                                                {{--<i class="icon-thumbs-up pull-right text-success"></i>--}}
+                                                            {{--</a>--}}
+                                                        {{--</li>--}}
+                                                        {{--<li>--}}
+                                                            {{--<a href="#">--}}
+                                                                {{--<span>تعديل الدورة</span>--}}
+                                                                {{--<i class="fa fa-pencil-square pull-right text-primary"></i>--}}
+                                                            {{--</a>--}}
+                                                        {{--</li>--}}
+                                                        {{--<li>--}}
+                                                            {{--<a href="#" class="center-block">--}}
+                                                                {{--<span>منح الشهادات</span>--}}
+                                                                {{--<i class="icon-minus-circled pull-right text-warning"></i>--}}
+                                                            {{--</a>--}}
+                                                        {{--</li>--}}
+                                                    {{--</ul>--}}
+                                                {{--</div>--}}
+                                            {{--</td>--}}
                                         @else
                                             <td>محضر الدور</td>
-                                            <td class="size-80 text-center">
-                                                <div class="dropdown">
-                                                    <a class="more-link" data-toggle="dropdown" href="#/"><i class="icon-dot-3 ellipsis-icon"></i></a>
-                                                    <ul class="dropdown-menu dropdown-menu-right">
-                                                        <li>
-                                                            <a href="">
-                                                                <span>تحضير الطلاب</span>
-                                                                <i class="icon-check pull-right text-success"></i>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
+                                            {{--<td class="size-80 text-center">--}}
+                                                {{--<div class="dropdown">--}}
+                                                    {{--<a class="more-link" data-toggle="dropdown" href="#/"><i class="icon-dot-3 ellipsis-icon"></i></a>--}}
+                                                    {{--<ul class="dropdown-menu dropdown-menu-right">--}}
+                                                        {{--<li>--}}
+                                                            {{--<a href="">--}}
+                                                                {{--<span>تحضير الطلاب</span>--}}
+                                                                {{--<i class="icon-check pull-right text-success"></i>--}}
+                                                            {{--</a>--}}
+                                                        {{--</li>--}}
+                                                    {{--</ul>--}}
+                                                {{--</div>--}}
+                                            {{--</td>--}}
                                         @endif
+                                        <td>
+                                            <a href="#">تعديل</a>
+                                        </td>
+
+                                        <td>
+                                            <a href="{{ route('admin.courses.payment', $course->course->identifier) }}">تأكيد الدفع</a>
+                                        </td>
+
+                                        <td>
+                                            <a href="#">منح الشهادات</a>
+                                        </td>
+
                                     </tr>
                                 @endforeach
                             @else
@@ -92,14 +101,14 @@
                                 </tr>
                             @endif
                             </tbody>
-                            @if(count($admin_courses) > 0)
+                            @if(count($admin_courses) > 2)
                                 <tfoot>
                                 <tr>
                                     <th class="text-center">اسم الكورس</th>
                                     <th class="text-center">التاريخ</th>
                                     <th class="text-center">عدد المدربين</th>
                                     <th class="text-center">عدد الطلاب</th>
-                                    <th class="text-center">الحالة</th>
+                                    <th class="text-center" colspan="3">الحالة</th>
                                 </tr>
                                 </tfoot>
                             @endif
@@ -110,6 +119,4 @@
         </div>
     </div>
     <!-- /main content -->
-
-
 @endsection

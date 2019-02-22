@@ -100,6 +100,14 @@ Route::get('center/sign-in', 'CenterController@create_sign_in')->name('center.lo
 Route::get('contact/contact-us', 'CenterController@contact_us')->name('contact.us');
 // To Show About Us Information Of The Site
 Route::get('contact/about-us', 'CenterController@about_us')->name('about.us');
+// To Show The Form Of Resetting Password
+Route::get('center/reset-password', 'CenterController@reset_password')->name('center.reset.password')->middleware('auth-center');
+// The Data Of Resetting Password Goes Here And The Process Happens Here
+Route::post('center/reset-password', 'CenterController@reset_password_confirm')->name('center.reset.password.confirm')->middleware('auth-center');
+// To Show The Form Of Editing Or Adding Bank Account
+Route::get('center/bank-accounts', 'CenterController@edit_bank_account')->name('center.bank.account.edit')->middleware('auth-center');
+// The Data Of Editing Or Adding Bank Account Goes Here And The Process Happens Here
+Route::post('center/reset-password', 'CenterController@update_bank_account')->name('center.bank.account.update')->middleware('auth-center');
 /*  End Of Center Routes Part */
 
 
@@ -107,6 +115,7 @@ Route::get('contact/about-us', 'CenterController@about_us')->name('about.us');
 
 Route::get('admin/{admin}', 'AdminController@index')->name('admin.index')->middleware('auth-center');
 Route::get('admin/show-courses', 'AdminController@index')->name('admin.courses.show')->middleware('auth-center');
+Route::get('admin/{course}/payments', 'AdminController@payment_confirmation')->name('admin.courses.payment')->middleware('auth-center');
 
 /*  End Of Admin Routes Part */
 

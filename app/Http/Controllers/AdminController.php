@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-
+    // To Show The Main Page Of The Admin
     public function index($admin)
     {
 
@@ -27,7 +27,6 @@ class AdminController extends Controller
             $students = Reservation::find($course_id);
 
             $course_admin = CourseAdmin::where('course_id', 3)->first();
-//            dd($course_admin);
 
             $total_students = array();
 
@@ -42,7 +41,6 @@ class AdminController extends Controller
             }
             $total_students = count($total_students);
             $admin_courses = CourseAdmin::where('admin_id', auth()->user()->admin->id)->get();
-//            dd($admin_courses[0]->course->title);
             return view('admin.index', compact('admin_courses','courses', 'trainers', 'admins', 'students','total_students'));
         } else {
 //            return abort(404);
@@ -50,6 +48,16 @@ class AdminController extends Controller
 
 
 //        return view('admin.index', compact('courses'));
+    }
+
+    public function payment_confirmation($identifier){
+        $course = Course::where('identifier', $identifier)->first();
+        if ( count($identifier) <= 0 ){
+            abort(404);
+        }
+        $courses  = 1;
+        $trainers = 2;
+        return view('admin.confirm-payment', compact('course', 'courses', 'trainers'));
     }
 
     public function create()
@@ -76,7 +84,6 @@ class AdminController extends Controller
     {
         //
     }
-
 
     public function destroy($id)
     {

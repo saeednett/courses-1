@@ -5,7 +5,7 @@
             <div class="row justify-content-center">
                 <div class="col-md-8 col-sm-12 col-12 text-right">
                     <a class="navbar-brand" href="#">
-                        <img src="{{ asset('img/logo2.png') }}" alt="" height="70">
+                        <img src="{{ asset('logo.png') }}" alt="" height="70">
                     </a>
                 </div>
                 <div class="col-md-4 col-sm-12 col-12 text-center">

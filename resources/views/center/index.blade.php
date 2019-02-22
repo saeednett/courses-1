@@ -35,50 +35,49 @@
                             <tbody class="text-center">
                             @if(count($courses) > 0)
                                 @foreach($courses as $course)
-                                    @foreach($course->appointment as $appointment)
-                                        <tr class="gradeX">
+                                    <tr class="gradeX">
 
+                                        <td class="ltr">
+                                            {{ $course->title }}
+                                        </td>
+
+                                        @if($course->appointment->start_date > date('Y-m-d'))
                                             <td class="ltr">
-                                                {{ $course->title }}
+                                                <i class="icon-check icon-larger green-color" title="بقي لها"></i>
+                                                {{ date( 'Y-M-d h:i' ,strtotime($course->appointment->strat_date." ".$course->appointment->strat_time)) }}
                                             </td>
+                                        @elseif($course->appointment->start_date == date('Y-m-d'))
+                                            <td class="ltr">
+                                                <i class="icon-check icon-larger warning-color" title="اليوم"></i>
+                                                {{ date( 'Y-M-d h:i' ,strtotime($course->appointment->strat_date." ".$course->appointment->start_time)) }}
+                                            </td>
+                                        @else
+                                            <td class="ltr">
+                                                <i class="icon-cancel icon-larger red-color" title="منهية"></i>
+                                                {{ date( 'Y-M-d h:i' ,strtotime($course->start_date." ".$course->start_time)) }}
+                                            </td>
+                                        @endif
+                                        <td>{{ count($course->trainer) }}</td>
+                                        <td>{{ count($course->appointment->reservation) }}</td>
 
-                                            @if($appointment->date > date('Y-m-d'))
-                                                <td class="ltr">
-                                                    <i class="icon-check icon-larger green-color" title="بقي لها"></i>
-                                                    {{ date( 'Y-M-d h:i' ,strtotime($appointment->date." ".$appointment->time)) }}
-                                                </td>
-                                            @elseif($appointment->date == date('Y-m-d'))
-                                                <td class="ltr">
-                                                    <i class="icon-check icon-larger warning-color" title="اليوم"></i>
-                                                    {{ date( 'Y-M-d h:i' ,strtotime($appointment->date." ".$appointment->time)) }}
-                                                </td>
-                                            @else
-                                                <td class="ltr">
-                                                    <i class="icon-cancel icon-larger red-color" title="منهية"></i>
-                                                    {{ date( 'Y-M-d h:i' ,strtotime($appointment->date." ".$appointment->time)) }}
-                                                </td>
-                                            @endif
-                                            <td>{{ count($appointment->course->trainer) }}</td>
-                                            <td>{{ count($appointment->reservation) }}</td>
+                                        @if($course->validation == 1)
+                                            <td>
+                                                <span>مؤكدة</span>
+                                                <i class="icon-check icon-larger green-color" title="مؤكدة"></i>
+                                            </td>
+                                        @else
+                                            <td>
+                                                <span>غير مؤكدة</span>
+                                                <i class="icon-cancel icon-larger red-color" title="غير مؤكدة"></i>
+                                            </td>
+                                        @endif
 
-                                            @if($appointment->course->validation == 1)
-                                                <td>
-                                                    <span>مؤكدة</span>
-                                                    <i class="icon-check icon-larger green-color" title="مؤكدة"></i>
-                                                </td>
-                                            @else
-                                                <td>
-                                                    <span>غير مؤكدة</span>
-                                                    <i class="icon-cancel icon-larger red-color" title="غير مؤكدة"></i>
-                                                </td>
-                                            @endif
-
-                                        </tr>
-                                    @endforeach
+                                    </tr>
                                 @endforeach
                             @else
                                 <tr class="gradeX">
-                                    <td class="text-danger" colspan="5"><h3 style="margin-top: 15px">لا توجد دورات مسجلة في النظام</h3></td>
+                                    <td class="text-danger" colspan="5"><h3 style="margin-top: 15px">لا توجد دورات مسجلة
+                                            في النظام</h3></td>
                                 </tr>
                             @endif
                             </tbody>
@@ -125,8 +124,8 @@
                             </thead>
                             <tbody class="text-center">
                             <?php
-                                    $course_admin = 0;
-                                    $course_attendance = 0;
+                            $course_admin = 0;
+                            $course_attendance = 0;
                             ?>
                             @if(count($admins) > 0)
                                 @foreach($admins as $admin)
@@ -212,7 +211,8 @@
                                 @endforeach
                             @else
                                 <tr class="gradeX">
-                                    <td class="text-danger" colspan="5"><h3 style="margin-top: 15px">لا يوجد مدربين مسجلين في النظام</h3></td>
+                                    <td class="text-danger" colspan="5"><h3 style="margin-top: 15px">لا يوجد مدربين
+                                            مسجلين في النظام</h3></td>
                                 </tr>
                             @endif
                             </tbody>
