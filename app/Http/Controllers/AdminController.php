@@ -19,45 +19,66 @@ class AdminController extends Controller
 
         if ($admin == Auth::user()->username) {
 
-            $courses = Course::where('center_id', Auth::user()->admin->center->id)->get();
-            $trainers = Trainer::where('center_id', Auth::user()->admin->center->id)->get();
-            $admins = Admin::where('center_id', Auth::user()->admin->center->id)->get();
+            $courses = CourseAdmin::where('admin_id', auth()->user()->admin->id)->get();
 
-            $course_id = Course::select('id')->where('center_id', Auth::user()->admin->center->id)->get();
-            $students = Reservation::find($course_id);
 
-            $course_admin = CourseAdmin::where('course_id', 3)->first();
+            $course_admin = array();
+            $course_attender = array();
 
-            $total_students = array();
+            $courses_data = Course::select('id')->where('center_id', Auth::user()->admin->center->id)->get();
 
-            for ($i = 0; $i < count($students); $i ++){
-                if ( $i == 0 ){
-                    array_push($total_students, $students[$i]->student_id);
-                }else{
-                    if( !in_array($students[$i]->student_id, $total_students) ){
-                        array_push($total_students, $students[$i]->student_id);
+            for ($i = 0; $i < count($courses_data); $i++) {
+
+                $course_admin_data = CourseAdmin::where('admin_id', Auth::user()->admin->id)->where('course_id', $courses_data[$i]->id)->first();
+
+                if ( count($course_admin_data) > 0 ){
+
+                    if ($course_admin_data->role_id == 1) {
+                        array_push($course_admin, $course_admin_data->course_id);
+                    } else {
+                        array_push($course_attender, $course_admin_data->course_id);
                     }
+
                 }
+
             }
-            $total_students = count($total_students);
-            $admin_courses = CourseAdmin::where('admin_id', auth()->user()->admin->id)->get();
-            return view('admin.index', compact('admin_courses','courses', 'trainers', 'admins', 'students','total_students'));
+
+            $course_admin = count($course_admin);
+            $course_attender = count($course_attender);
+            return view('admin.index', compact('courses', 'course_admin', 'course_attender'));
         } else {
-//            return abort(404);
+            return abort(404);
         }
 
 
 //        return view('admin.index', compact('courses'));
     }
 
-    public function payment_confirmation($identifier){
+    public function payment_confirmation($identifier)
+    {
         $course = Course::where('identifier', $identifier)->first();
-        if ( count($identifier) <= 0 ){
+        if (count($identifier) <= 0) {
             abort(404);
         }
-        $courses  = 1;
-        $trainers = 2;
-        return view('admin.confirm-payment', compact('course', 'courses', 'trainers'));
+
+        $course_admin = array();
+        $course_attender = array();
+
+        $courses = Course::select('id')->where('center_id', Auth::user()->admin->center->id)->get();
+
+        for ($i = 0; $i < count($courses); $i++) {
+            $course_admin_data = CourseAdmin::where('admin_id', $courses[$i]->id)->get();
+
+            if ($course_admin_data[$i]->role_id == 1) {
+                array_push($course_admin, $course_admin_data[$i]->course_id);
+            } else {
+                array_push($course_attender, $course_admin_data[$i]->course_id);
+            }
+        }
+
+        $course_admin = count($course_admin);
+        $course_attender = count($course_attender);
+        return view('admin.confirm-payment', compact('course', 'course_admin', 'course_attender'));
     }
 
     public function create()

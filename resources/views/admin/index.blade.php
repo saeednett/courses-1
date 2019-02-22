@@ -30,8 +30,8 @@
                             </tr>
                             </thead>
                             <tbody class="text-center">
-                            @if(count($admin_courses) > 0)
-                                @foreach($admin_courses as $course)
+                            @if(count($courses) > 0)
+                                @foreach($courses as $course)
                                     <tr class="gradeX">
                                         <td>{{ $course->course->title }}</td>
                                         <td class="ltr">{{ date( 'Y-M-D h:i' ,strtotime($course->course->created_at)) }}</td>
@@ -101,7 +101,7 @@
                                 </tr>
                             @endif
                             </tbody>
-                            @if(count($admin_courses) > 2)
+                            @if(count($courses) > 2)
                                 <tfoot>
                                 <tr>
                                     <th class="text-center">اسم الكورس</th>

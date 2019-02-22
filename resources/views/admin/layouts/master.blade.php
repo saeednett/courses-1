@@ -69,7 +69,7 @@
             <!-- Site header  -->
             <header class="site-header">
                 <div class="site-logo"><a href="{{ route('center.index', Auth::user()->username) }}"><img src="{{ asset('img/center/logo.png') }}" alt="Mouldifi"
-                                                                                                          title="Mouldifi"></a></div>
+                                                                                                          title="Mouldifi" style="height: 40px; width: 50px; display: block; margin: auto;"></a></div>
                 <div class="sidebar-collapse hidden-xs"><a class="sidebar-collapse-icon" href="#"><i
                                 class="icon-menu"></i></a></div>
                 <div class="sidebar-mobile-menu visible-xs"><a data-target="#side-nav" data-toggle="collapse"
@@ -332,7 +332,7 @@
                         <!-- panel body -->
                         <div class="panel-body">
                             <div class="stack-order">
-                                <h1 class="no-margins">{{ count($courses) }}</h1>
+                                <h1 class="no-margins">{{ $course_admin }}</h1>
                                 <small>صلاحياتك كمسؤول</small>
                             </div>
                             <div class="bar-chart-icon"></div>
@@ -357,7 +357,7 @@
                         <!-- panel body -->
                         <div class="panel-body">
                             <div class="stack-order">
-                                <h1 class="no-margins">{{ count($trainers) }}</h1>
+                                <h1 class="no-margins">{{ $course_attender }}</h1>
                                 <small>صلاحياتك كمحضر</small>
                             </div>
                             <div class="bar-chart-icon"></div>
