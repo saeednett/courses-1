@@ -59,4 +59,9 @@ class Course extends Model
         return $this->hasOne('App\Appointment');
     }
 
+    public function coupon()
+    {
+        return $this->hasMany('App\Coupon');
+    }
+
 }

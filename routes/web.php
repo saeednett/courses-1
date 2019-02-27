@@ -22,7 +22,7 @@ Route::get('account/sign-up', 'StudentController@create')->name('account.registe
 Route::post('account/sign-up', 'StudentController@store')->name('account.store')->middleware('guest');
 // To Login For Student Who Has An Account
 Route::get('account/sign-in', 'StudentController@create_sign_in')->name('account.login')->middleware('guest');
-// To Reset The Password For The STudent Who Has An Account
+// To Reset The Password For The Student Who Has An Account
 Route::get('account/account-password', 'StudentController@create_reset_password')->name('account.password')->middleware('auth');
 // the Data Of Resetting Password Goes Here
 Route::post('account/account-password', 'StudentController@reset_password')->name('account.password')->middleware('auth');
@@ -112,10 +112,36 @@ Route::post('center/reset-password', 'CenterController@update_bank_account')->na
 
 
 /*  Admin Routes Part */
-
+// The Index Page Of The Admin
 Route::get('admin/{admin}', 'AdminController@index')->name('admin.index')->middleware('auth-center');
-Route::get('admin/show-courses', 'AdminController@index')->name('admin.courses.show')->middleware('auth-center');
+// To Show All Courses Of The Admin
+Route::get('admin/courses/show', 'AdminController@show_courses')->name('admin.courses.show')->middleware('auth-center');
+// To Show The Course That Will Confirm Payment For One Course
 Route::get('admin/{course}/payments', 'AdminController@payment_confirmation')->name('admin.courses.payment')->middleware('auth-center');
+// The Data Of Confirming Payment Goes Here And The Process Happens Here
+Route::post('admin/{course}/payments', 'AdminController@payment_confirmation_confirm')->name('admin.courses.payment.confirm')->middleware('auth-center');
+// To Show All Courses To Confirm Payment
+Route::get('admin/courses/payment', 'AdminController@courses_payment_show')->name('admin.courses.payment.show')->middleware('auth-center');
+// To Show All Student Of Course
+Route::get('admin/courses/student', 'AdminController@courses_student_show')->name('admin.courses.student.show')->middleware('auth-center');
+// To Show One Course Students
+Route::get('admin/{course}/student', 'AdminController@course_student_show')->name('admin.course.students.show')->middleware('auth-center');
+
+// To Show The Form Of Editing A Course
+Route::get('admin/course/edit/{course}', 'AdminController@edit_course')->name('admin.course.edit')->middleware('auth-center');
+// The Data Of Editing Goes Here And The Process Happens Here
+Route::put('admin/course/update', 'AdminController@edit_course_update')->name('admin.course.update')->middleware('auth-center');
+// To Show The Form Of Editing The Admin Information
+Route::get('admin/profile/edit', 'AdminController@edit')->name('admin.edit')->middleware('auth-center');
+// The Editing Data Goes Here And The Process Happens Here
+Route::put('admin/profile/update', 'AdminController@update')->name('admin.update')->middleware('auth-center');
+// To Show The Form Of Resetting Password Of Admin
+Route::get('admin/password/reset', 'AdminController@reset_password')->name('admin.reset.password')->middleware('auth-center');
+// The Data Of Resetting Password Goes Here And The Process Happens Here
+Route::post('admin/password/reset', 'AdminController@reset_password_confirm')->name('admin.reset.password.confirm')->middleware('auth-center');
+
+// The Data Of Resetting Password Goes Here And The Process Happens Here
+Route::get('admin/courses/attendance', 'AdminController@show_courses_attendance')->name('admin.courses.attendance')->middleware('auth-center');
 
 /*  End Of Admin Routes Part */
 

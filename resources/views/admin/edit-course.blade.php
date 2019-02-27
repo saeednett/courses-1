@@ -1,11 +1,12 @@
-@extends('center.master-v-1-1')
+@extends('admin.layouts.master')
 
-@section('main-title', "إضافة دورة جديدة")
+@section('main-title', "تعديل دورة")
 
 @section('page-links')
-    <li><a href="{{ route('center.index', Auth::user()->username) }}"><i class="fa fa-users"></i>الدورات</a></li>
-    <li class="active"><a href="{{ route('center.course.create', Auth::user()->id) }}"><i
-                    class="fa fa-pencil-square"></i>إضافة دورة</a></li>
+    <li><a href="{{ route('admin.index', Auth::user()->username) }}"><i class="fa fa-users"></i>الدورات</a></li>
+    <li><a href="{{ route('admin.index', Auth::user()->username) }}"><i class="fa fa-users"></i>عرض الدورات</a></li>
+    <li class="active"><a href="{{ route('admin.course.edit', Auth::user()->id) }}"><i
+                    class="fa fa-pencil-square"></i>تعديل دورة</a></li>
 @endsection
 
 
@@ -129,7 +130,7 @@
         <div class="col-lg-12 animatedParent animateOnce z-index-49">
             <div class="panel panel-default animated fadeInUp">
                 <div class="panel-heading clearfix">
-                    <h3 class="panel-title">إضافة دورة تدربية جديدة</h3>
+                    <h3 class="panel-title">تعديل دورة تدربية</h3>
                     <ul class="panel-tool-options">
                         <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
                         <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
@@ -157,15 +158,33 @@
                             <div class="tab-pane active" id="tab2-1">
 
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="required-field" for="title">عنوان الدورة</label>
+                                            <input type="text"
+                                                   class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }} custom-input text-center ltr"
+                                                   name="title" id="title" value="{{ $course->title }}"
+                                                   placeholder="عنوان الدورة" minlength="10"
+                                                   autocomplete="off" required>
+                                            @if ($errors->has('title'))
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('title') }}</strong>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="category">تصنيف الدورة</label>
                                             <select class="form-control select2-placeholer {{ $errors->has('category') ? 'is-invalid' : '' }}"
                                                     name="category" required>
                                                 @foreach($categories as $category)
-                                                    @if(old('category') == $category->id)
-                                                        <option value="{{ $category->id }}"
-                                                                selected>{{ $category->name }}</option>
+                                                    @if($course->category_id) == $category->id)
+                                                    <option value="{{ $category->id }}"
+                                                            selected>{{ $category->name }}</option>
                                                     @else
                                                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                                                     @endif
@@ -179,116 +198,68 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="required-field" for="title">عنوان الدورة</label>
-                                            <input type="text"
-                                                   class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }} custom-input text-center ltr"
-                                                   name="title" id="title" value="{{ old('title') }}"
-                                                   placeholder="عنوان الدورة" minlength="10"
-                                                   autocomplete="off" required>
-                                            @if ($errors->has('title'))
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $errors->first('title') }}</strong>
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </div>
-
                                 </div>
 
-
                                 <div class="row">
-
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="template">قالب الشهادة</label>
                                             <select class="form-control select2-placeholer {{ $errors->has('template') ? 'is-invalid' : '' }} custom-input"
                                                     name="template" required>
-                                                @if(old('template') == 1)
+                                                @if($course->template_id == 1)
                                                     <option value="1" selected>القالب الأول</option>
                                                     <option value="2">القالب الثاني</option>
                                                     <option value="3">القالب الثالث</option>
-                                                @elseif(old('template') == 2)
+                                                @elseif($course->template_id == 2)
                                                     <option value="1">القالب الأول</option>
                                                     <option value="2" selected>القالب الثاني</option>
                                                     <option value="3">القالب الثالث</option>
-                                                @elseif(old('template') == 3)
+                                                @elseif($course->template_id == 3)
                                                     <option value="1">القالب الأول</option>
                                                     <option value="2">القالب الثاني</option>
                                                     <option value="3" selected>القالب الثالث</option>
-                                                @else
-                                                    <option value="1">القالب الأول</option>
-                                                    <option value="2">القالب الثاني</option>
-                                                    <option value="3">القالب الثالث</option>
                                                 @endif
                                             </select>
                                             @if ($errors->has('template'))
                                                 <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('template') }}</strong>
-                                        </span>
+                                                    <strong>{{ $errors->first('template') }}</strong>
+                                                </span>
                                             @endif
                                         </div>
                                     </div>
-
-                                    <div class="col-lg-6">
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="visible">ظهور الدورة</label>
                                             <select id="visible"
                                                     class="form-control select2-placeholer {{ $errors->has('visible') ? 'is-invalid' : '' }}"
                                                     name="visible" required>
-                                                @if(old('visible') == 1)
+                                                @if($course->visible == 1)
                                                     <option value="1" selected>عامة</option>
                                                     <option value="2">خاصة</option>
-                                                @elseif(old('visible') == 2)
+                                                @elseif($course->visible == 2)
                                                     <option value="1">عامة</option>
                                                     <option value="2" selected>خاصة</option>
-                                                @else
-                                                    <option value="1">عامة</option>
-                                                    <option value="2">خاصة</option>
                                                 @endif
                                             </select>
                                             @if ($errors->has('visible'))
                                                 <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('visible') }}</strong>
-                                        </span>
+                                                    <strong>{{ $errors->first('visible') }}</strong>
+                                                </span>
                                             @endif
                                         </div>
                                     </div>
-
                                 </div>
 
                                 <div class="row">
-
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="required-field" for="city">المدينة</label>
-                                            <select class="form-control select2-placeholer {{ $errors->has('city') ? 'is-invalid' : '' }}"
-                                                    name="city" required>
-                                                @foreach($cities as $city)
-                                                    @if(old('city') == $city->id)
-                                                        <option value="{{ $city->id }}"
-                                                                selected>{{ $city->name }}</option>
-                                                    @else
-                                                        <option value="{{ $city->id }}">{{ $city->name }}</option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('city'))
-                                                <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('city') }}</strong>
-                                        </span>
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="country">الدولة</label>
                                             <select class="form-control select2-placeholer {{ $errors->has('country') ? 'is-invalid' : '' }}"
                                                     name="country" required>
                                                 @foreach($countries as $country)
-                                                    @if(old('country') == $country->id)
+                                                    @if($course->country == $country->id)
                                                         <option value="{{ $country->id }}"
                                                                 selected>{{ $country->name }}</option>
                                                     @else
@@ -298,23 +269,45 @@
                                             </select>
                                             @if ($errors->has('country'))
                                                 <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('country') }}</strong>
-                                        </span>
+                                                    <strong>{{ $errors->first('country') }}</strong>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="required-field" for="city">المدينة</label>
+                                            <select class="form-control select2-placeholer {{ $errors->has('city') ? 'is-invalid' : '' }}"
+                                                    name="city" required>
+                                                @foreach($cities as $city)
+                                                    @if($course->city_id == $city->id)
+                                                        <option value="{{ $city->id }}"
+                                                                selected>{{ $city->name }}</option>
+                                                    @else
+                                                        <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('city'))
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('city') }}</strong>
+                                                </span>
                                             @endif
                                         </div>
                                     </div>
 
                                 </div>
 
-
                                 <div class="row">
-
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="address">وصف عنوان إقامة الدورة</label>
                                             <input type="text"
                                                    class="form-control {{ $errors->has('address') ? 'is-invalid' : '' }} custom-input text-center ltr"
-                                                   name="address" id="address" value="{{ old('address') }}"
+                                                   name="address" id="address" value="{{ $course->address }}"
                                                    placeholder="وصف عنوان إقامة الدورة" minlength="10"
                                                    autocomplete="off" required>
                                             @if ($errors->has('address'))
@@ -325,13 +318,15 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6">
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="location">عنوان إقامة الدورة في
                                                 الخرائط</label>
                                             <input type="text"
                                                    class="form-control {{ $errors->has('location') ? 'is-invalid' : '' }} custom-input text-center ltr"
-                                                   name="location" id="location" value="{{ old('location') }}"
+                                                   name="location" id="location" value="{{ $course->location }}"
                                                    placeholder="عنوان إقامة الدورة في الخرائط" minlength="10"
                                                    autocomplete="off" required>
                                             @if ($errors->has('location'))
@@ -345,69 +340,99 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="required-field" for="personal-profile">غلاف الدورة</label>
-                                            <input type="text" id="course-poster-1"
-                                                   class="form-control custom-input text-center"
-                                                   placeholder='اختر غلاف الدورة' readonly required/>
-                                            <input type="file" name="course-poster-1" style="opacity: 0;"
-                                                   accept="image/png, image/jpg" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="required-field" for="personal-profile">غلاف الدورة -
-                                                02 </label>
-                                            <input type="text" id="course-poster-2"
-                                                   class="form-control custom-input text-center"
-                                                   placeholder='اختر غلاف الدورة - 02' readonly required/>
-                                            <input type="file" name="course-poster-2" style="opacity: 0;"
-                                                   accept="image/png, image/jpg" required>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="description">وصف الدورة</label>
                                             <textarea id="description" class="form-control text-center required"
                                                       name="description"
                                                       minlength="10" placeholder="وصف الدورة" rows="10"
-                                                      style="resize: none;" required>{{ old('description') }}</textarea>
+                                                      style="resize: none;"
+                                                      required>{{ $course->description }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
+
+                                        <div style="padding: 10px; width: 100%;">
+                                            <img class="img-rounded img-thumbnail" src="/storage/course-images/{{ $course->image[0]->url }}" style="width: 100%; height: 50%;">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="required-field" for="personal-profile">غلاف الدورة</label>
+                                            <input type="text" id="course-poster-1"
+                                                   class="form-control custom-input text-center"
+                                                   placeholder='اختر غلاف الدورة' readonly/>
+                                            <input type="file" name="course-poster-1" style="opacity: 0;"
+                                                   accept="image/png, image/jpg">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
+
+                                        <div style="padding: 10px; width: 100%;">
+                                            <img class="img-rounded img-thumbnail" src="/storage/course-images/{{ $course->image[1]->url }}" style="width: 100%; height: 50%;">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="required-field" for="personal-profile">غلاف الدورة -
+                                                02 </label>
+                                            <input type="text" id="course-poster-2"
+                                                   class="form-control custom-input text-center"
+                                                   placeholder='اختر غلاف الدورة - 02' readonly/>
+                                            <input type="file" name="course-poster-2" style="opacity: 0;"
+                                                   accept="image/png, image/jpg">
                                         </div>
                                     </div>
                                 </div>
 
                             </div>
                             <div class="tab-pane" id="tab2-2">
-                                <div class="row">
-                                    <div class="col-lg-10">
-                                        <div class="form-group">
-                                            <label class="required-field" for="trainer">المدرب</label>
-                                            <select class="form-control select2-placeholer {{ $errors->has('trainer') ? 'is-invalid' : '' }}"
-                                                    name="trainer[]" id="not here" required>
-                                                @foreach($trainers as $trainer)
-                                                    <option value="{{ $trainer->user->id }}">{{ $trainer->user->name }}</option>
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('trainer'))
-                                                <span class="invalid-feedback" role="alert">
+                                <?php $counter = 0; ?>
+                                @foreach($course->trainer as $course_trainer)
+                                    <div class="row">
+                                        <div class="col-lg-10">
+                                            <div class="form-group">
+                                                <label class="required-field" for="trainer">المدرب</label>
+                                                <select class="form-control select2-placeholer {{ $errors->has('trainer') ? 'is-invalid' : '' }}"
+                                                        name="trainer[]" id="not here" required>
+                                                    @foreach($trainers as $trainer)
+                                                        @if($course_trainer->trainer_id == $trainer->id)
+                                                            <option value="{{ $trainer->user->id }}"
+                                                                    selected>{{ $trainer->user->name }}</option>
+                                                        @else
+                                                            <option value="{{ $trainer->user->id }}">{{ $trainer->user->name }}</option>
+                                                        @endif
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('trainer'))
+                                                    <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $errors->first('trainer') }}</strong>
                                                 </span>
-                                            @endif
+                                                @endif
+                                            </div>
                                         </div>
+                                        @if($counter == 0)
+                                            <div class="col-lg-2">
+                                                <label for="trainer"></label>
+                                                <button type="button" class="btn btn-success btn-block custom-input"
+                                                        id="add-trainer"><i class="fa fa-plus-circle"></i></button>
+                                            </div>
+                                        @else
+                                            <div class="col-lg-2">
+                                                <label for="trainer"></label>
+                                                <button type='button'
+                                                        class='btn btn-danger btn-block custom-input remove'><i
+                                                            class='fa fa-trash'></i></button>
+                                            </div>
+                                        @endif
                                     </div>
-
-                                    <div class="col-lg-2">
-                                        <label for="trainer"></label>
-                                        <button type="button" class="btn btn-success btn-block custom-input"
-                                                id="add-trainer"><i class="fa fa-plus-circle"></i></button>
-                                    </div>
-
-                                </div>
+                                    <?php $counter++; ?>
+                                @endforeach
                             </div>
                             <div class="tab-pane" id="tab2-3">
                                 <div class="row">
@@ -416,15 +441,12 @@
                                             <label class="required-field" for="type">نوع الدورة</label>
                                             <select class="form-control select2-placeholer {{ $errors->has('type') ? 'is-invalid' : '' }}"
                                                     name="type" required>
-                                                @if(old('type') == 1)
+                                                @if($course->appointment->price == 0)
                                                     <option value="1" selected>مجانية</option>
                                                     <option value="2">مدفوعة</option>
-                                                @elseif(old('type') == 2)
+                                                @elseif($course->appointment->price > 0)
                                                     <option value="1">مجانية</option>
                                                     <option value="2" selected>مدفوعة</option>
-                                                @else
-                                                    <option value="1">مجانية</option>
-                                                    <option value="2">مدفوعة</option>
                                                 @endif
                                             </select>
                                             @if ($errors->has('type'))
@@ -435,6 +457,74 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                @if($course->appointment->price > 0)
+                                    <div class='row'>
+                                        <div class='col-lg-6 col-lg-offset-3'>
+                                            <div class='form-group'>
+                                                <label class='required-field' for='price'>قيمة الدورة</label>
+                                                <input type='text'
+                                                       class='form-control custom-input text-center num-only ltr'
+                                                       value="{{ $course->appointment->price }}" name='price'
+                                                       autocomplete='off' required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class='row'>
+                                        <div class='col-lg-6 col-lg-offset-3'>
+                                            <div class='form-group'>
+                                                <label class='required-field' for='coupon'>كوبونات الخصم</label>
+                                                <select class='form-control select2-placeholer {{ $errors->has('coupon') ? 'is-invalid' : '' }}'
+                                                        name='coupon' id='coupon'>
+                                                    @if(count($course->coupon) > 0)
+                                                        <option value='1'> لا يوجد كوبونات خصم</option>
+                                                        <option value='2' selected>يوجد كوبونات خصم</option>
+                                                    @else
+                                                        <option value='1' selected> لا يوجد كوبونات خصم</option>
+                                                        <option value='2'>يوجد كوبونات خصم</option>
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @if(count($course->coupon) > 0)
+
+                                        <div class='row'>
+                                            <div class='col-lg-6 col-lg-offset-3'>
+                                                <label></label>
+                                                <button type='button' class='btn btn-success btn-block custom-input' id='add-coupon'>
+                                                    <i class='fa fa-plus-circle'></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        @foreach($course->coupon as $coupon)
+                                            <div class='row' style='margin-top:20px;'>
+                                                <div class='col-lg-4'>
+                                                    <div class='form-group'>
+                                                        <label class='required-field' for='coupon'>كود الخصم</label>
+                                                        <input type='text' class='form-control custom-input text-center ltr' name='coupon_code[]'  value="{{ $coupon->code }}" autocomplete='off' required>
+                                                    </div>
+                                                </div>
+                                                <div class='col-lg-4'>
+                                                    <div class='form-group'>
+                                                        <label class='required-field' for='coupon'>قيمة الخصم</label>
+                                                        <input type='text' class='form-control custom-input text-center num-only ltr' name='coupon_discount[]'  value="{{ $coupon->discount }}" autocomplete='off' required>
+                                                    </div>
+                                                </div>
+                                                <div class='col-lg-4'>
+                                                    <label for='trainer'></label>
+                                                    <button type='button' class='btn btn-danger btn-block custom-input remove'>
+                                                        <i class='fa fa-trash'></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    @endif
+                                @endif
+
                             </div>
                             <div class="tab-pane" id="tab2-4">
 
@@ -444,7 +534,7 @@
                                             <label class="required-field" for="start_date">تاريخ بدء الدورة</label>
                                             <input type="text"
                                                    class="form-control {{ $errors->has('start_date') ? 'is-invalid' : '' }} custom-input text-center ltr"
-                                                   name="start_date" id="start_date" value="{{ old('start_date') }}"
+                                                   name="start_date" id="start_date" value="{{ $course->appointment->start_date }}"
                                                    placeholder="تاريخ بدء الدورة"
                                                    autocomplete="off" required>
                                             @if ($errors->has('start_date'))
@@ -462,8 +552,7 @@
                                             <label class="required-field" for="start_time">وقت بدء الدورة</label>
                                             <input type="text"
                                                    class="form-control {{ $errors->has('start_time') ? 'is-invalid' : '' }} custom-input text-center"
-                                                   name="start_time" id="start_time" value="{{ old('start_time') }}"
-                                                   placeholder="وقت بدء الدورة"
+                                                   name="start_time" id="start_time" value="{{ $course->appointment->start_time }}"
                                                    autocomplete="off" required>
                                             @if ($errors->has('start_time'))
                                                 <span class="invalid-feedback" role="alert">
@@ -481,7 +570,7 @@
                                             <input type="text"
                                                    class="form-control {{ $errors->has('attendance') ? 'is-invalid' : '' }} custom-input text-center num-only ltr"
                                                    name="attendance" id="attendance"
-                                                   value="{{ old('attendance') }}"
+                                                   value="{{ $course->appointment->attendance }}"
                                                    placeholder="عدد المقاعد"
                                                    autocomplete="off" maxlength="4" required>
                                             @if ($errors->has('attendance'))
@@ -493,10 +582,6 @@
                                     </div>
                                 </div>
 
-                                {{--البرمجة بإستخدام لارافيل--}}
-                                {{--الشوقية خلف حلويات زمان--}}
-                                {{--سوف تتعلم في هذه الدورة اساسيات البرمجة بإستخدام لارافيل ومن ثم سوف ننتقل للتعمق قليلا ولنحول كل ما مررنا به الى تطبيق عملي--}}
-
                                 <div class="row">
                                     <div class="col-lg-6 col-lg-offset-3">
                                         <div class="form-group">
@@ -504,22 +589,18 @@
                                             <select id="gender"
                                                     class="form-control select2-placeholer {{ $errors->has('gender') ? 'is-invalid' : '' }}"
                                                     name="gender" required>
-                                                @if(old('gender') == 1)
+                                                @if($course->appointment->gender == 1)
                                                     <option value="1" selected>رجال</option>
                                                     <option value="2">نساء</option>
                                                     <option value="3">رجال ونساء</option>
-                                                @elseif(old('gender') == 2)
+                                                @elseif($course->appointment->gender == 2)
                                                     <option value="1">رجال</option>
                                                     <option value="2" selected>نساء</option>
                                                     <option value="3">رجال ونساء</option>
-                                                @elseif(old('gender') == 3)
+                                                @elseif($course->appointment->gender == 3)
                                                     <option value="1">رجال</option>
                                                     <option value="2">نساء</option>
                                                     <option value="3" selected>رجال ونساء</option>
-                                                @else
-                                                    <option value="1">رجال</option>
-                                                    <option value="2">نساء</option>
-                                                    <option value="3">رجال ونساء</option>
                                                 @endif
                                             </select>
                                             @if ($errors->has('gender'))
@@ -537,9 +618,8 @@
                                             <label class="required-field" for="start_date">تاريخ انتهاء الدورة</label>
                                             <input type="text"
                                                    class="form-control {{ $errors->has('finish_date') ? 'is-invalid' : '' }} custom-input text-center ltr"
-                                                   name="finish_date" id="finish_date" value="{{ old('finish_date') }}"
-                                                   placeholder="تاريخ انتهاء الدورة"
-                                                   autocomplete="off" readonly disabled required>
+                                                   name="finish_date" id="finish_date" value="{{ $course->appointment->finish_date }}"
+                                                   autocomplete="off" required>
                                             @if ($errors->has('finish_date'))
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $errors->first('finish_date') }}</strong>
@@ -557,9 +637,8 @@
                                             <input type="text"
                                                    class="form-control {{ $errors->has('end_reservation') ? 'is-invalid' : '' }} custom-input text-center ltr"
                                                    name="end_reservation" id="start_date"
-                                                   value="{{ old('end_reservation') }}"
-                                                   placeholder="تاريخ انتهاء التسجيل"
-                                                   autocomplete="off" readonly disabled required>
+                                                   value="{{ $course->appointment->end_reservation }}"
+                                                   autocomplete="off" required>
                                             @if ($errors->has('end_reservation'))
                                                 <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $errors->first('end_reservation') }}</strong>
@@ -759,7 +838,7 @@
                 }
             });
 
-            $(document).on('click', '.add-trainer', function () {
+            $(document).on('click', '.remove', function () {
                 $(this).parent().parent().remove();
             });
 
@@ -819,6 +898,7 @@
                 });
 
                 initializeFinishDate();
+
                 function initializeFinishDate() {
                     $("input[name=finish_date]").datepicker({
                         keyboardNavigation: false,
@@ -833,18 +913,19 @@
                     });
                 }
 
-                function refreshFinishDate(date){
-                    if (date.length < 10 || date.length > 10){
+                function refreshFinishDate(date) {
+                    if (date.length < 10 || date.length > 10) {
                         $("input[name=finish_date]").prop({'readonly': false, 'disabled': true});
-                    }else {
+                    } else {
                         $("input[name=finish_date]").prop({'readonly': false, 'disabled': false});
                         $("input[name=finish_date]").datepicker('update', '');
-                        $("input[name=finish_date]").datepicker( 'setStartDate', new Date(date));
+                        $("input[name=finish_date]").datepicker('setStartDate', new Date(date));
                     }
                 }
 
 
                 initializeEndReservation();
+
                 function initializeEndReservation() {
                     $("input[name=end_reservation]").datepicker({
                         keyboardNavigation: false,
@@ -865,8 +946,8 @@
                     } else {
                         $("input[name=end_reservation]").prop({'readonly': false, 'disabled': false});
                         $("input[name=end_reservation]").datepicker('update', '');
-                        $("input[name=end_reservation]").datepicker( 'setEndDate', new Date(date));
-                        $("input[name=end_reservation]").datepicker( 'setStartDate', new Date());
+                        $("input[name=end_reservation]").datepicker('setEndDate', new Date(date));
+                        $("input[name=end_reservation]").datepicker('setStartDate', new Date());
                     }
                 }
 

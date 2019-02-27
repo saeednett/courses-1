@@ -13,11 +13,6 @@ class Reservation extends Model
         return $this->belongsTo('App\Student');
     }
 
-    public function course()
-    {
-        return $this->belongsTo('App\Course');
-    }
-
     public function appointment()
     {
         return $this->belongsTo('App\Appointment');
@@ -26,5 +21,10 @@ class Reservation extends Model
     public function payment()
     {
         return $this->hasOne('App\PaymentConfirmation');
+    }
+
+    public function coupon()
+    {
+        return $this->belongsTo('App\Coupon');
     }
 }

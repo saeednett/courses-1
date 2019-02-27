@@ -24,10 +24,11 @@
                             <tr>
                                 <th class="text-center">اسم الدورة</th>
                                 <th class="text-center">تاريخ الدورة</th>
-                                <th class="text-center">عدد الطلاب</th>
                                 <th class="text-center">عدد المقاعد</th>
-                                <th class="text-center">الصلاحيات</th>
-                                <th class="text-center" colspan="2">خيارات</th>
+                                <th class="text-center">عدد الطلاب</th>
+                                <th class="text-center">المدربين</th>
+                                <th class="text-center">الحضور</th>
+                                <th class="text-center">خيارات</th>
                             </tr>
                             </thead>
                             <tbody class="text-center">
@@ -38,23 +39,23 @@
                                         <td class="ltr">{{ date( 'Y-M-D h:i' ,strtotime($course->course->created_at)) }}</td>
                                         <td>{{ $course->course->appointment->attendance }}</td>
                                         <td>{{ count($course->course->appointment->reservation) }}</td>
+                                        <td>{{ count($course->course->trainer) }}</td>
+                                        <td>
+                                            @if($course->course->appointment->gender == 1)
+                                                رجال
+                                            @elseif($course->course->appointment->gender == 2)
+                                                نساء
+                                            @else
+                                                رجال ونساء
+                                            @endif
+                                        </td>
                                         @if($course->role_id == 1)
-                                            <td>مسؤول الدور</td>
-                                        @else
-                                            <td>محضر الدور</td>
-                                        @endif
-
-                                        @if($course->role_id == 1)
-                                            <td>
-                                                <a href="{{ route('admin.courses.payment', $course->course->identifier) }}">تأكيد الدفع</a>
-                                            </td>
-
-                                            <td>
-                                                <a href="#">منح الشهادات</a>
+                                            <td colspan="2">
+                                                <a href="{{ route('admin.course.students.show', $course->course->identifier) }}">عرض الطلاب</a>
                                             </td>
                                         @else
                                             <td colspan="2">
-                                                <a href="#">تحضير الطلاب</a>
+                                                <a href="{{ route('admin.course.students.show', $course->course->identifier) }}">عرض الطلاب</a>
                                             </td>
                                         @endif
                                     </tr>
@@ -72,10 +73,11 @@
                                 <tr>
                                     <th class="text-center">اسم الدورة</th>
                                     <th class="text-center">تاريخ الدورة</th>
-                                    <th class="text-center">عدد الطلاب</th>
                                     <th class="text-center">عدد المقاعد</th>
-                                    <th class="text-center">الصلاحيات</th>
-                                    <th class="text-center" colspan="2">خيارات</th>
+                                    <th class="text-center">عدد الطلاب</th>
+                                    <th class="text-center">المدربين</th>
+                                    <th class="text-center">الحضور</th>
+                                    <th class="text-center">خيارات</th>
                                 </tr>
                                 </tfoot>
                             @endif

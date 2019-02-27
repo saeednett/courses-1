@@ -68,7 +68,7 @@
 
             <!-- Site header  -->
             <header class="site-header">
-                <div class="site-logo"><a href="{{ route('center.index', Auth::user()->username) }}"><img src="{{ asset('img/center/logo.png') }}" alt="Mouldifi"
+                <div class="site-logo"><a href="{{ route('admin.index', Auth::user()->username) }}"><img src="{{ asset('img/center/logo.png') }}" alt="Mouldifi"
                                                                                                           title="Mouldifi" style="height: 40px; width: 50px; display: block; margin: auto;"></a></div>
                 <div class="sidebar-collapse hidden-xs"><a class="sidebar-collapse-icon" href="#"><i
                                 class="icon-menu"></i></a></div>
@@ -84,14 +84,15 @@
                 <li class="has-sub"><a href="index.html"><i class="icon-book-open"></i><span class="title">الدورات</span></a>
                     <ul class="nav collapse">
                         <li><a href="{{ route('admin.courses.show') }}"><span class="title">عرض الدورات</span></a></li>
+                        <li><a href="{{ route('admin.courses.attendance') }}"><span class="title">سجل الحضور</span></a></li>
                     </ul>
                 </li>
 
                 <li class="has-sub"><a href="collapsed-sidebar.html"><i class="icon-users"></i><span
                                 class="title">الطلاب</span></a>
                     <ul class="nav">
-                        <li><a href="{{ route('center.trainer.create') }}"><span class="title">تأكيد الدفع</span></a></li>
-                        <li><a href="{{ route('center.trainer.show') }}"><span class="title">عرض الطلاب</span></a>
+                        <li><a href="{{ route('admin.courses.payment.show') }}"><span class="title">تأكيد الدفع</span></a></li>
+                        <li><a href="{{ route('admin.courses.student.show') }}"><span class="title">عرض الطلاب</span></a>
                         </li>
                     </ul>
                 </li>
@@ -114,10 +115,10 @@
 
                 <li class="has-sub"><a href="form-basic.html"><i class="icon-user"></i><span class="title">الملف الاشخصي</span></a>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('center.edit') }}"><span class="title">كلمة المرور</span></a></li>
+                        <li><a href="{{ route('admin.reset.password') }}"><span class="title">كلمة المرور</span></a></li>
                     </ul>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('center.edit') }}"><span class="title">بياناتي الشخصية</span></a></li>
+                        <li><a href="{{ route('admin.edit') }}"><span class="title">بياناتي الشخصية</span></a></li>
                     </ul>
                 </li>
                 <li class="has-sub">
