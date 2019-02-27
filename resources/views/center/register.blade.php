@@ -83,6 +83,12 @@
             color: #ecf4e0;
             z-index: 2500;
         }
+
+        .custom-textarea{
+            resize: none;
+            border-radius: 30px;
+            border: 1px solid rgba(34,36,38,.15);
+        }
     </style>
 </head>
 <body>
@@ -151,8 +157,8 @@
                                 <input type="text" name="name" class="form-control {{ $errors->has('name') ? ' is-invalid' : '' }} custom-input text-center" value="{{ old('name') }}" placeholder="اسم المركز" autocomplete="off" required>
                                 @if ($errors->has('name'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('name') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('name') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -165,8 +171,8 @@
                                 <input type="text" name="verification_code" class="form-control {{ $errors->has('verification_code') ? ' is-invalid' : '' }} custom-input num-only text-center" value="{{ old('verification_code') }}" placeholder="رقم الترخيص" autocomplete="off" maxlength="10" required>
                                 @if ($errors->has('verification_code'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('verification_code') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('verification_code') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -179,8 +185,8 @@
                                 <input type="text" name="verification_authority" class="form-control {{ $errors->has('verification_authority') ? ' is-invalid' : '' }} custom-input text-center" value="{{ old('verification_authority') }}" placeholder="الجهة المرخصة" autocomplete="off" required>
                                 @if ($errors->has('verification_authority'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('verification_authority') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('verification_authority') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -193,8 +199,8 @@
                                 <input type="text" name="phone" class="form-control {{ $errors->has('phone') ? ' is-invalid' : '' }} custom-input num-only text-center" value="{{ old('phone') }}" placeholder="رقم الهاتف" autocomplete="off" maxlength="13" minlength="9" required>
                                 @if ($errors->has('phone'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('phone') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('phone') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -207,8 +213,8 @@
                                 <input type="email" name="email" class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }} custom-input text-center" value="{{ old('email') }}" placeholder="البريد الإلكتروني" autocomplete="off" required>
                                 @if ($errors->has('email'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('email') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('email') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -221,8 +227,8 @@
                                 <input type="text" name="username" class="form-control {{ $errors->has('username') ? ' is-invalid' : '' }} custom-input text-center" value="{{ old('username') }}" placeholder="اسم المستخدم" autocomplete="off" required>
                                 @if ($errors->has('username'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('username') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('username') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -235,8 +241,8 @@
                                 <input type="password" name="password" class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }} custom-input text-center" placeholder="كلمة المرور" autocomplete="off" required>
                                 @if ($errors->has('password'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('password') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('password') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -249,8 +255,8 @@
                                 <input type="password" name="password_confirmation" class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }} custom-input text-center" placeholder="تأكيد كلمة المرور" autocomplete="off" required>
                                 @if ($errors->has('password'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('password') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('password') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -268,8 +274,8 @@
                                 </select>
                                 @if ($errors->has('counter'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('counter') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('counter') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -298,8 +304,8 @@
                                 <input type="text" name="website" class="form-control {{ $errors->has('website') ? ' is-invalid' : '' }} custom-input text-center" value="{{ old('website') }}" placeholder="الموقع الإلكتروني" autocomplete="off" required>
                                 @if ($errors->has('website'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('website') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('website') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -317,8 +323,8 @@
                                 </select>
                                 @if ($errors->has('bank'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('bank') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('bank') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -331,8 +337,8 @@
                                 <input type="text" name="account_owner" class="form-control {{ $errors->has('account_owner') ? ' is-invalid' : '' }} custom-input text-center" value="{{ old('account_owner') }}" placeholder="اسم صاحب الحساب" autocomplete="off" maxlength="50" minlength="10" required>
                                 @if ($errors->has('account_owner'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('account_owner') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('account_owner') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -345,8 +351,8 @@
                                 <input type="text" name="account_number" class="form-control {{ $errors->has('account_number') ? ' is-invalid' : '' }} custom-input num-only text-center" value="{{ old('account_number') }}" placeholder="رقم الحساب | الايبان" autocomplete="off" maxlength="20" minlength="20" required>
                                 @if ($errors->has('account_number'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('account_number') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('account_number') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -356,15 +362,15 @@
 
                         <div class="form-group row justify-content-center">
                             <div class="col-lg-9">
-                                <input type="text" id="profile-cover" class="form-control {{ $errors->has('profile-cover') ? ' is-invalid' : '' }} custom-input text-center" value="{{ old('profile-cover') }}" placeholder="صورة الغلاف" autocomplete="off" readonly required>
-                                @if ($errors->has('profile-cover'))
+                                <textarea class="form-control {{ $errors->has('about') ? ' is-invalid' : '' }} custom-textarea text-center" name="about" cols="5" rows="6" placeholder="نبذة عن الجهة" autocomplete="off" required>{{ old('about') }}</textarea>
+                                @if ($errors->has('about'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('profile-cover') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('about') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
-                                <label class="col-form-label required-field rtl">صورة الغلاف</label>
+                                <label class="col-form-label required-field rtl">نبذة عن الجهة</label>
                             </div>
                         </div>
 
@@ -373,8 +379,8 @@
                                 <input type="text" id="profile-logo" class="form-control {{ $errors->has('profile-logo') ? ' is-invalid' : '' }} custom-input text-center" value="{{ old('profile-logo') }}" placeholder="الصورة الشخصية" autocomplete="off" readonly required>
                                 @if ($errors->has('profile-logo'))
                                     <span class="invalid-feedback text-center" role="alert">
-                                            <strong>{{ $errors->first('profile-logo') }}</strong>
-                                        </span>
+                                        <strong>{{ $errors->first('profile-logo') }}</strong>
+                                    </span>
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
@@ -383,9 +389,6 @@
                         </div>
 
                         <div class="form-group row justify-content-center">
-                            <div class="col-lg-6">
-                                <input type="file" name="profile-cover" style="opacity: 0;">
-                            </div>
                             <div class="col-lg-6 text-center">
                                 <input type="file" name="profile-logo" style="opacity: 0;">
                             </div>
@@ -393,7 +396,7 @@
 
 
 
-                        <div class="dropdown-divider mt-5 mb-5"></div>
+                        <div class="dropdown-divider mt-2 mb-5"></div>
 
                         <div class="form-group row justify-content-start">
                             <div class="col-lg-9">

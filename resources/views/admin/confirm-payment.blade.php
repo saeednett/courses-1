@@ -66,7 +66,7 @@
                                 {{ csrf_field() }}
                                 <thead>
                                 <tr>
-                                    @if(count($course->appointment->reservation) > 0)
+                                    @if(count($course->reservation) > 0)
                                         <th class="text-center" colspan="5"><h4> {{ $course->title }} </h4></th>
                                         <td class="text-center">
                                             <button class="btn btn-success btn-block" id="save">حفظ</button>
@@ -85,9 +85,9 @@
                                 </tr>
                                 </thead>
                                 <tbody class="text-center">
-                                @if(count($course->appointment->reservation) > 0)
+                                @if(count($course->reservation) > 0)
                                     <?php $counter = 0; ?>
-                                    @foreach($course->appointment->reservation as $reservation)
+                                    @foreach($course->reservation as $reservation)
                                         @if($reservation->confirmation == 0)
                                             <?php $counter++; ?>
                                             <tr class="gradeX">
@@ -122,13 +122,13 @@
                                     @endif
                                 @else
                                     <tr class="gradeX">
-                                        <td class="text-danger" colspan="5">
+                                        <td class="text-danger" colspan="6">
                                             <h3 style="margin-top: 15px">لايوجد طلاب مسجلين في الدورة</h3>
                                         </td>
                                     </tr>
                                 @endif
                                 </tbody>
-                                @if(count($course->appointment->reservation) > 2)
+                                @if(count($course->reservation) > 2)
                                     <tfoot>
                                     <tr>
                                         <th class="text-center">اسم الطالب</th>

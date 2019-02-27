@@ -19,7 +19,7 @@ class CreateStudentsTable extends Migration
             $table->integer('gender_id');
             $table->integer('city_id');
             $table->integer('status');
-            $table->string('url', 200)->default('account-profile.png');
+            $table->string('image', 200)->default('account-profile.png');
             $table->timestamps();
         });
     }

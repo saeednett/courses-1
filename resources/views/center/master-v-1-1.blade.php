@@ -84,6 +84,15 @@
                     <ul class="nav collapse">
                         <li><a href="{{ route('center.course.create') }}"><span class="title">إضافة دورة</span></a></li>
                         <li><a href="{{ route('center.course.show') }}"><span class="title">عرض الدورات</span></a></li>
+                        <li><a href="{{ route('center.course.create') }}"><span class="title">عرض الطلاب</span></a></li>
+                        <li><a href="{{ route('center.course.create') }}"><span class="title">تأكيد الدفع</span></a></li>
+                    </ul>
+                </li>
+
+                <li class="has-sub"><a href="index.html"><i class="icon-gauge"></i><span class="title">الشهادات</span></a>
+                    <ul class="nav collapse">
+                        <li><a href="{{ route('center.course.show') }}"><span class="title">إصدار شهادة</span></a></li>
+                        <li><a href="{{ route('center.course.show') }}"><span class="title">عرض الشهادات</span></a></li>
                     </ul>
                 </li>
 

@@ -103,7 +103,25 @@
     </style>
 
     <div class="row">
+        <div class="modal fade" id="warning-model" role="dialog">
+            <div class="modal-dialog">
 
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title"><h2 class="text-danger">تنبيه!</h2></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-danger">لقد قمت بإضافة الحد الأقصى من المدربين. قم بإضافة المزيد لكي تتمكن من تعينهم للدورات</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
         @if($errors->any())
             <div class="col-lg-12 animatedParent animateOnce z-index-49">
                 <div class="alert alert-danger animated fadeInUp">
@@ -157,7 +175,23 @@
                             <div class="tab-pane active" id="tab2-1">
 
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="required-field" for="title">عنوان الدورة</label>
+                                            <input type="text"
+                                                   class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }} custom-input text-center ltr"
+                                                   name="title" id="title" value="{{ old('title') }}"
+                                                   placeholder="عنوان الدورة" minlength="10"
+                                                   autocomplete="off" required>
+                                            @if ($errors->has('title'))
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('title') }}</strong>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="category">تصنيف الدورة</label>
                                             <select class="form-control select2-placeholer {{ $errors->has('category') ? 'is-invalid' : '' }}"
@@ -178,29 +212,36 @@
                                             @endif
                                         </div>
                                     </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="required-field" for="title">عنوان الدورة</label>
-                                            <input type="text"
-                                                   class="form-control {{ $errors->has('title') ? 'is-invalid' : '' }} custom-input text-center ltr"
-                                                   name="title" id="title" value="{{ old('title') }}"
-                                                   placeholder="عنوان الدورة" minlength="10"
-                                                   autocomplete="off" required>
-                                            @if ($errors->has('title'))
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $errors->first('title') }}</strong>
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </div>
-
                                 </div>
 
 
                                 <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="required-field" for="visible">ظهور الدورة</label>
+                                            <select id="visible"
+                                                    class="form-control select2-placeholer {{ $errors->has('visible') ? 'is-invalid' : '' }}"
+                                                    name="visible" required>
+                                                @if(old('visible') == 1)
+                                                    <option value="1" selected>عامة</option>
+                                                    <option value="2">خاصة</option>
+                                                @elseif(old('visible') == 2)
+                                                    <option value="1">عامة</option>
+                                                    <option value="2" selected>خاصة</option>
+                                                @else
+                                                    <option value="1">عامة</option>
+                                                    <option value="2">خاصة</option>
+                                                @endif
+                                            </select>
+                                            @if ($errors->has('visible'))
+                                                <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('visible') }}</strong>
+                                        </span>
+                                            @endif
+                                        </div>
+                                    </div>
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="template">قالب الشهادة</label>
                                             <select class="form-control select2-placeholer {{ $errors->has('template') ? 'is-invalid' : '' }} custom-input"
@@ -230,59 +271,10 @@
                                             @endif
                                         </div>
                                     </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="required-field" for="visible">ظهور الدورة</label>
-                                            <select id="visible"
-                                                    class="form-control select2-placeholer {{ $errors->has('visible') ? 'is-invalid' : '' }}"
-                                                    name="visible" required>
-                                                @if(old('visible') == 1)
-                                                    <option value="1" selected>عامة</option>
-                                                    <option value="2">خاصة</option>
-                                                @elseif(old('visible') == 2)
-                                                    <option value="1">عامة</option>
-                                                    <option value="2" selected>خاصة</option>
-                                                @else
-                                                    <option value="1">عامة</option>
-                                                    <option value="2">خاصة</option>
-                                                @endif
-                                            </select>
-                                            @if ($errors->has('visible'))
-                                                <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('visible') }}</strong>
-                                        </span>
-                                            @endif
-                                        </div>
-                                    </div>
-
                                 </div>
 
                                 <div class="row">
-
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label class="required-field" for="city">المدينة</label>
-                                            <select class="form-control select2-placeholer {{ $errors->has('city') ? 'is-invalid' : '' }}"
-                                                    name="city" required>
-                                                @foreach($cities as $city)
-                                                    @if(old('city') == $city->id)
-                                                        <option value="{{ $city->id }}"
-                                                                selected>{{ $city->name }}</option>
-                                                    @else
-                                                        <option value="{{ $city->id }}">{{ $city->name }}</option>
-                                                    @endif
-                                                @endforeach
-                                            </select>
-                                            @if ($errors->has('city'))
-                                                <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('city') }}</strong>
-                                        </span>
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="country">الدولة</label>
                                             <select class="form-control select2-placeholer {{ $errors->has('country') ? 'is-invalid' : '' }}"
@@ -304,12 +296,32 @@
                                         </div>
                                     </div>
 
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                        <div class="form-group">
+                                            <label class="required-field" for="city">المدينة</label>
+                                            <select class="form-control select2-placeholer {{ $errors->has('city') ? 'is-invalid' : '' }}"
+                                                    name="city" required>
+                                                @foreach($cities as $city)
+                                                    @if(old('city') == $city->id)
+                                                        <option value="{{ $city->id }}"
+                                                                selected>{{ $city->name }}</option>
+                                                    @else
+                                                        <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                                    @endif
+                                                @endforeach
+                                            </select>
+                                            @if ($errors->has('city'))
+                                                <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('city') }}</strong>
+                                        </span>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </div>
 
 
                                 <div class="row">
-
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="address">وصف عنوان إقامة الدورة</label>
                                             <input type="text"
@@ -325,7 +337,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="location">عنوان إقامة الدورة في
                                                 الخرائط</label>
@@ -345,7 +357,7 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="personal-profile">غلاف الدورة</label>
                                             <input type="text" id="course-poster-1"
@@ -356,7 +368,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="personal-profile">غلاف الدورة -
                                                 02 </label>
@@ -370,7 +382,7 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="description">وصف الدورة</label>
                                             <textarea id="description" class="form-control text-center required"
@@ -384,13 +396,13 @@
                             </div>
                             <div class="tab-pane" id="tab2-2">
                                 <div class="row">
-                                    <div class="col-lg-10">
+                                    <div class="col-lg-6 col-lg-offset-2 col-md-6 col-md-offset-2 col-sm-10 col-xs-10">
                                         <div class="form-group">
                                             <label class="required-field" for="trainer">المدرب</label>
                                             <select class="form-control select2-placeholer {{ $errors->has('trainer') ? 'is-invalid' : '' }}"
                                                     name="trainer[]" id="not here" required>
                                                 @foreach($trainers as $trainer)
-                                                    <option value="{{ $trainer->user->id }}">{{ $trainer->user->name }}</option>
+                                                    <option value="{{ $trainer->id }}">{{ $trainer->user->name }}</option>
                                                 @endforeach
                                             </select>
                                             @if ($errors->has('trainer'))
@@ -401,7 +413,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-2">
+                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                                         <label for="trainer"></label>
                                         <button type="button" class="btn btn-success btn-block custom-input"
                                                 id="add-trainer"><i class="fa fa-plus-circle"></i></button>
@@ -748,9 +760,9 @@
                 let options = $("select[name='trainer[]']:first").children();
 
                 if (parseInt(select.length) >= parseInt(options.length)) {
-                    alert("تم إستخدام الحد الأقصى، قم بإضافة مدربين لكي تتمكن من تعينهم للدورات");
+                    $("#warning-model").modal("show");
                 } else {
-                    $('#tab2-2').append("<div class='row'><div class='col-lg-10'> <div class='form-group'><label class='required-field' for='trainer'>المدرب</label><select class='form-control select2-placeholer {{ $errors->has('trainer') ? 'is-invalid' : '' }} custom-input' id='you are here' name='trainer[]'></select></div></div> <div class='col-lg-2'> <label for='trainer'></label><button type='button' class='btn btn-danger btn-block custom-input remove'><i class='fa fa-trash'></i></button> </div> </div>");
+                    $('#tab2-2').append("<div class='row'><div class='col-lg-6 col-lg-offset-2 col-md-6 col-md-offset-2 col-sm-10 col-xs-10'> <div class='form-group'><label class='required-field' for='trainer'>المدرب</label><select class='form-control select2-placeholer {{ $errors->has('trainer') ? 'is-invalid' : '' }} custom-input' name='trainer[]'></select></div></div> <div class='col-lg-2 col-md-2 col-sm-2 col-xs-2'> <label for='trainer'></label><button type='button' class='btn btn-danger btn-block custom-input remove'><i class='fa fa-trash'></i></button> </div> </div>");
                     for (let i = 0; i < options.length; i++) {
                         let select = $("select[name='trainer[]']:last");
                         select.append("<option value='" + options.eq(i).attr('value') + "' >" + options.eq(i).text() + "</option>");
@@ -759,7 +771,7 @@
                 }
             });
 
-            $(document).on('click', '.add-trainer', function () {
+            $(document).on('click', '.remove', function () {
                 $(this).parent().parent().remove();
             });
 
@@ -767,7 +779,7 @@
             $("select[name=type]").on('change', function () {
                 let value = $(this).val();
                 if (value == 2) {
-                    $("#tab2-3").append("<div class='row'> <div class='col-lg-6 col-lg-offset-3'> <div class='form-group'> <label class='required-field' for='price'>قيمة الدورة</label> <input type='text' class='form-control custom-input text-center num-only ltr' name='price' id='price'  placeholder='قيمة الدورة' autocomplete='off' required> </div></div> </div>   <div class='row'> <div class='col-lg-6 col-lg-offset-3'> <div class='form-group'> <label class='required-field' for='coupon'>كوبونات الخصم</label> <select class='form-control select2-placeholer {{ $errors->has('coupon') ? 'is-invalid' : '' }}' name='coupon' id='coupon'> <option value='1'> لا يوجد كوبونات خصم</option><option value='2'>يوجد كوبونات خصم</option></select></div></div> </div>");
+                    $("#tab2-3").append("<div class='row'> <div class='col-lg-6 col-lg-offset-3'> <div class='form-group'> <label class='required-field' for='price'>قيمة الدورة</label> <input type='text' class='form-control custom-input text-center num-only ltr' name='price' id='price'  placeholder='قيمة الدورة' autocomplete='off' required> </div></div> </div>   <div class='row'> <div class='col-lg-6 col-lg-offset-3'> <div class='form-group'> <label class='required-field' for='coupon'>كوبونات الخصم</label> <select class='form-control select2-placeholer {{ $errors->has('coupon') ? 'is-invalid' : '' }}' name='coupon' id='coupon'> <option value='0'> لا يوجد كوبونات خصم</option><option value='1'>يوجد كوبونات خصم</option></select></div></div> </div>");
                     refreshSelect();
                 } else {
                     $("#tab2-3 > div:not(#tab2-3 > div:eq(0))").remove();
@@ -776,16 +788,16 @@
 
             $(document).on('change', 'select[name=coupon]', function () {
                 let value = $(this).val();
-                if (value == 2) {
-                    $("#tab2-3").append("<div class='row'><div class='col-lg-6 col-lg-offset-3'> <label for='trainer'></label><button type='button' class='btn btn-success btn-block custom-input' id='add-coupon'><i class='fa fa-plus-circle'></i></button> </div> </div>");
-                    $("#tab2-3").append("<div class='row' style='margin-top:20px;'><div class='col-lg-4'> <div class='form-group'> <label class='required-field' for='coupon'>كود الخصم</label> <input type='text' class='form-control custom-input text-center ltr' name='coupon_code[]'  placeholder='كود الخصم' autocomplete='off' required> </div></div> <div class='col-lg-4'> <div class='form-group'> <label class='required-field' for='coupon'>قيمة الخصم</label> <input type='text' class='form-control custom-input text-center num-only ltr' name='coupon_discount[]'  placeholder='قيمة الخصم بالنسبة المئوية' autocomplete='off' required> </div></div> <div class='col-lg-4'> <label for='trainer'></label><button type='button' class='btn btn-danger btn-block custom-input remove'><i class='fa fa-trash'></i></button> </div> </div>");
+                if (value == 1) {
+                    $("#tab2-3").append("<div class='row'><div class='col-lg-2 col-lg-offset-5'> <label for='trainer'></label><button type='button' class='btn btn-success btn-block custom-input' id='add-coupon'><i class='fa fa-plus-circle'></i></button> </div> </div>");
+                    $("#tab2-3").append("<div class='row' style='margin-top:20px;'><div class='col-lg-4 col-lg-offset-2'> <div class='form-group'> <label class='required-field' for='coupon'>كود الخصم</label> <input type='text' class='form-control custom-input text-center ltr' name='coupon_code[]'  placeholder='كود الخصم' autocomplete='off' required> </div></div> <div class='col-lg-4'> <div class='form-group'> <label class='required-field' for='coupon'>قيمة الخصم</label> <input type='text' class='form-control custom-input text-center num-only ltr' name='coupon_discount[]'  placeholder='قيمة الخصم بالنسبة المئوية' autocomplete='off' required> </div></div> </div>");
                 } else {
-                    $("#tab2-3 > div:not(#tab2-3 > div:eq(0), #tab2-3 > div:eq(1))").remove();
+                    $("#tab2-3 > div:not(#tab2-3 > div:eq(0), #tab2-3 > div:eq(1), div:eq(2))").remove();
                 }
             });
 
             $(document).on('click', '#add-coupon', function () {
-                $("#tab2-3").append("<div class='row' style='margin-top:20px;'><div class='col-lg-4'> <div class='form-group'> <label class='required-field' for='coupon'>كود الخصم</label> <input type='text' class='form-control custom-input text-center ltr' name='coupon_code[]'  placeholder='كود الخصم' autocomplete='off' required> </div></div> <div class='col-lg-4'> <div class='form-group'> <label class='required-field' for='coupon'>قيمة الخصم</label> <input type='text' class='form-control custom-input text-center num-only ltr' name='coupon_discount[]'  placeholder='قيمة الخصم بالنسبة المئوية' autocomplete='off' required> </div></div> <div class='col-lg-4'> <label for='trainer'></label><button type='button' class='btn btn-danger btn-block custom-input remove'><i class='fa fa-trash'></i></button> </div> </div>");
+                $("#tab2-3").append("<div class='row' style='margin-top:20px;'><div class='col-lg-3 col-lg-offset-2'> <div class='form-group'> <label class='required-field' for='coupon'>كود الخصم</label> <input type='text' class='form-control custom-input text-center ltr' name='coupon_code[]'  placeholder='كود الخصم' autocomplete='off' required> </div></div> <div class='col-lg-3'> <div class='form-group'> <label class='required-field' for='coupon'>قيمة الخصم</label> <input type='text' class='form-control custom-input text-center num-only ltr' name='coupon_discount[]'  placeholder='قيمة الخصم بالنسبة المئوية' autocomplete='off' required> </div></div> <div class='col-lg-2'> <label for='trainer'></label><button type='button' class='btn btn-danger btn-block custom-input remove'><i class='fa fa-trash'></i></button> </div> </div>");
             });
 
             refreshTimePicker();

@@ -17,6 +17,7 @@ use App\CourseTrainer;
 use App\Image;
 use App\Nationality;
 use App\Reservation;
+use App\Role;
 use App\Title;
 use App\Trainer;
 use App\User;
@@ -168,69 +169,61 @@ class CenterController extends Controller
             'country' => 'required|integer|max:99|min:1|exists:countries,id',
             'city' => 'required|integer|max:99|min:1|exists:cities,id',
             'email' => 'required|email|unique:users,email',
-            'phone' => 'required|digits:9|unique:users,phone',
+            'phone' => 'required|digits_between:9,20|unique:users,phone|',
             'username' => 'required|string|unique:users,username',
             'password' => 'required|string|max:32|min:8|confirmed',
+            'about' => 'required|string|max:150',
             'bank' => 'required|integer|max:99|min:1|exists:banks,id',
             'account_owner' => 'required|string|max:50|min:10',
             'account_number' => 'required|digits:20|unique:center_accounts,account_number',
             'website' => 'required|string|max:50|min:10|unique:centers,website',
-            'profile-cover' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
             'profile-logo' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
         ]);
 
         DB::beginTransaction();
 
         try {
-            $center = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'username' => $request->username,
-                'phone' => "+966" . $request->phone,
-                'role_id' => 2,
-                'password' => Hash::make($request->password),
-            ]);
-
-            $cover = "";
-            $logo = "";
-
-            for ($i = 0; $i < 2; $i++) {
-                $input_names = ['profile-cover', 'profile-logo'];
-                $file = $request->file($input_names[$i])->store('public/center-images');
-                $file_name = basename($file);
-                if ($i == 0) {
-                    $cover = $file_name;
-                } else {
-                    $logo = $file_name;
-                }
-            }
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'username' => $request->username,
+            'phone' => $request->phone,
+            'role_id' => 2,
+            'password' => Hash::make($request->password),
+        ]);
 
 
-            $center = Center::create([
-                'user_id' => $center->id,
-                'verification_code' => $request->verification_code,
-                'verification_authority' => $request->verification_authority,
-                'website' => $request->website,
-                'city_id' => $request->city,
-                'status' => 1,
-                'cover' => $cover,
-                'logo' => $logo,
-            ]);
+        $file = $request->file('profile-logo')->store('public/center-images');
+        $file_name = basename($file);
+        $logo = $file_name;
 
-            CenterAccount::create([
-                'account_owner' => 'Test Owner',
-                'account_number' => $request->account_number,
-                'bank_id' => $request->bank,
-                'center_id' => $center->id,
-            ]);
+
+        $center = Center::create([
+            'user_id' => $user->id,
+            'verification_code' => $request->verification_code,
+            'verification_authority' => $request->verification_authority,
+            'website' => $request->website,
+            'city_id' => $request->city,
+            'about' => $request->about,
+            'status' => 1,
+            'logo' => $logo,
+        ]);
+
+        CenterAccount::create([
+            'account_owner' => $request->account_owner,
+            'account_number' => $request->account_number,
+            'bank_id' => $request->bank,
+            'center_id' => $center->id,
+        ]);
 
             DB::commit();
 
-            auth()->login($center);
+            auth()->login($user);
             return redirect()->route('center.index', $request->username);
 
         } catch (\Exception $e) {
             DB::rollback();
+            return redirect()->route('center.register')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع']);
             // something went wrong
         }
     }
@@ -507,7 +500,7 @@ class CenterController extends Controller
 
         } catch (Exception $e) {
             DB::rollback();
-            return redirect()->route('center.trainer.create')->withErrors(['لم يتم إضافة المدرب', 'الرجاء المحاولة مجددا']);
+            return redirect()->route('center.trainer.create')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع']);
         }
         return redirect()->route('center.trainer.create')->with('success', 'تم إضافة المدرب بنجاح');
     }
@@ -668,10 +661,7 @@ class CenterController extends Controller
     {
         // All Trainers Who Belongs To The Center
         $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
-        if (count($trainers) <= 0) {
-            (['title' => 'لاتوجد دورات في النظام', 'error' => 'من فضلك قم بإضافة بعض الدورات لكي تتمكن من تعيين مدربين لها',]);
-            return view("center.error-description", compact('trainers', 'admins', 'students', 'courses'))->withErrors(['title' => 'لايوجد مدربين في النظام', 'error' => 'من فضلك قم بإضافة بعض المدربين لكي تتمكن من إضافة الدورات']);
-        }
+
         // All Admins Who Belongs To The Center
         $admins = Admin::where('center_id', Auth::user()->center->id)->get();
         // All Courses Which Belongs To The Center
@@ -680,6 +670,7 @@ class CenterController extends Controller
         $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
         // All Students Who Reserved A Course Of The Center
         $students = Reservation::find($course_id);
+
         // An Empty Array To Hold The Different Id's Of The Students
         $total_students = array();
         for ($i = 0; $i < count($students); $i++) {
@@ -693,6 +684,11 @@ class CenterController extends Controller
         }
         // To Hold The Count Of The Array And Pass It As String
         $total_students = count($total_students);
+
+        if (count($trainers) <= 0) {
+            (['title' => 'لاتوجد دورات في النظام', 'error' => 'من فضلك قم بإضافة بعض الدورات لكي تتمكن من تعيين مدربين لها',]);
+            return view("center.error-description", compact('trainers', 'admins', 'students', 'courses', 'total_students'))->withErrors(['title' => 'لايوجد مدربين في النظام', 'error' => 'من فضلك قم بإضافة بعض المدربين لكي تتمكن من إضافة الدورات']);
+        }
 
         // Get The First Cities The The Rest With Ajax Rexuest
         $cities = City::where('country_id', 1)->get();
@@ -708,51 +704,62 @@ class CenterController extends Controller
     public function store_course(Request $request)
     {
         // Getting Center Main Information
-        $center = User::find(Auth::user()->id);
+        $center = Center::find(Auth::user()->id);
         // Trainers Array That Will Hold Ids Of The Trainers Who Belong To The Center
         $trainers_data = array();
         // Getting Trainers Information
         $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
 
         // Making Sure That The Center Has Trainers
-        if (count($trainers) <= 0) {
+        if (count($trainers) < 1) {
             abort(404);
         }
         // Fetching Trainers Data Into The Array
-        foreach ($center->center->trainer as $data) {
-            array_push($trainers_data, $data->user_id);
+        foreach ($center->trainer as $trainer) {
+            array_push($trainers_data, $trainer->id);
         }
+
         // Validating The Request Data
         $request->validate([
             // The Title Of The Course
             'title' => 'required|string|max:50|min:10|unique:courses,title',
             // the Category Of The Course
             'category' => 'required|integer|max:99|min:1|exists:categories,id',
-            // The Template Of The Certificate Of The Course
-            'template' => 'required|integer|max:3|min:1',
             // If The Course Is Visible To The Users
             'visible' => 'required|integer|max:2|min:1',
-            // The City Of The Course
-            'city' => 'required|integer|max:99|min:1|exists:cities,id',
+            // The Template Of The Certificate Of The Course
+            'template' => 'required|integer|max:3|min:1',
             // The Country Of The City
             'country' => 'required|integer|max:99|min:1|exists:countries,id',
+            // The City Of The Course
+            'city' => 'required|integer|max:99|min:1|exists:cities,id',
             // The Address Of tHE Course
             'address' => 'required|string|max:150|min:10',
             // The Location The Course On Google Map
             'location' => 'required|string|max:150|min:20',
-            // The Description Of tHE Course
+            // The Cover And Image Of The Course
+            'course-poster-1' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
+            'course-poster-2' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
+            // The Description Of The Course
             'description' => 'required|string|max:200|min:50',
+
+
             //The Trainers Array Of The Course
-            'trainer' => 'required|array|max:' . count($center->center->trainer),
+            'trainer' => 'required|array|max:' . count($center->trainer),
             // The Trainers Array Data
             'trainer.*' => 'required|integer|distinct|' . Rule::in($trainers_data),
+
+
             // The Type Of Course Payed Or Free
             'type' => 'required|integer|max:2|min:1',
-            //The Coupons Array Of The Course
-            'coupon' => 'required_if:type,2',
+            //The Coupons Indicator Of The Coupons
+            'coupon' => 'required_if:type,2|integer|max:1|min:0',
             //The Coupons Array Data
             'coupon_code' => 'required_if:coupon,2|array',
+            'coupon_code.*' => 'required|string|distinct',
             'coupon_discount' => 'required_if:coupon,2|array|size:' . count($request->coupon_code),
+            'coupon_discount.*' => 'required|integer',
+
             // The Start Date Of The Course
             'start_date' => 'required|date',
             // The Finish Date Of The Course
@@ -767,28 +774,53 @@ class CenterController extends Controller
             'price' => 'required_if:type,2|digits_between:1,4',
             // The Attendance Gender
             'gender' => 'required|digits_between:1,3|',
-            // The Cover And Image Of The Course
-            'course-poster-1' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
-            'course-poster-2' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
+
         ]);
 
         DB::beginTransaction();
         try {
+
+            if ( is_null($request->price) ){
+                $price = 0;
+            }else{
+                $price = $request->price;
+            }
+            if ( $request->type == 1 ){
+                $type = 'free';
+            }else{
+                $type = 'payed';
+            }
+
+            if ( is_null($request->coupon) ){
+                $coupon = 0;
+            }else{
+                $coupon = $request->coupon;
+            }
             // Creating The New Course
             $course = Course::create([
                 'title' => $request->title,
                 'identifier' => Str::random(10),
-                'description' => $request->description,
-                'location' => $request->location,
                 'address' => $request->address,
-                'center_id' => Auth::user()->center->id,
+                'location' => $request->location,
+                'price' => $price,
+                'type' => $type,
+                'start_date' => $request->start_date,
+                'finish_date' => $request->finish_date,
+                'start_time' => $request->start_time,
+                'end_reservation' => $request->end_reservation,
+                'attendance' => $request->attendance,
+                'gender' => $request->gender,
+                'coupon' => $coupon,
                 'category_id' => $request->category,
                 'city_id' => $request->city,
                 'template_id' => $request->template,
+                'center_id' => Auth::user()->center->id,
                 'visible' => $request->visible,
+                'description' => $request->description,
                 'validation' => 0,
 
             ]);
+
             // Making Sure That The Data Has A Cover And Image For The Course
             if ($request->hasFile('course-poster-1') && $request->hasFile('course-poster-2')) {
                 for ($i = 1; $i <= 2; $i++) {
@@ -796,11 +828,12 @@ class CenterController extends Controller
                     $file_name = basename($file);
 
                     Image::create([
-                        'url' => $file_name,
+                        'image' => $file_name,
                         'course_id' => $course->id,
                     ]);
                 }
             }
+
             // Storing The Course Trainers
             for ($i = 0; $i < count($request->trainer); $i++) {
                 CourseTrainer::create([
@@ -808,40 +841,16 @@ class CenterController extends Controller
                     'trainer_id' => $request->trainer[$i],
                 ]);
             }
+
             // Storing The Course Coupons If The Type Is Payed
-            if ($request->type == 2) {
+            if ($request->coupon == 2) {
                 for ($i = 0; $i < count($request->coupon_code); $i++) {
                     Coupon::create([
-                        'coupon_code' => $request->coupon_code[$i],
-                        'course_id' => $course->id,
+                        'code' => $request->coupon_code[$i],
                         'discount' => $request->coupon_discount[$i],
+                        'course_id' => $course->id,
                     ]);
                 }
-            }
-            // Storing The Appointment Date Of The Course
-            // If The Price Is Empty Course Is Free
-            if (is_null($request->price)) {
-                Appointment::create([
-                    'course_id' => $course->id,
-                    'start_date' => $request->start_date,
-                    'finish_date' => $request->finish_date,
-                    'end_reservation' => $request->end_reservation,
-                    'start_time' => $request->start_time,
-                    'attendance' => $request->attendance,
-                    'price' => 0,
-                    'gender' => $request->gender,
-                ]);
-            } else {
-                Appointment::create([
-                    'course_id' => $course->id,
-                    'start_date' => $request->start_date,
-                    'finish_date' => $request->finish_date,
-                    'end_reservation' => $request->end_reservation,
-                    'start_time' => $request->start_time,
-                    'attendance' => $request->attendance,
-                    'price' => $request->price,
-                    'gender' => $request->gender,
-                ]);
             }
 
             // Save The Changes If The Is No Errors
@@ -851,7 +860,8 @@ class CenterController extends Controller
         } catch (\Exception $e) {
             // Don't Save The Changes If The Is Errors
             DB::rollBack();
-            return "Error";
+            return redirect()->route('center.course.create')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع']);
+
         }
     }
 
@@ -935,9 +945,9 @@ class CenterController extends Controller
 
             Admin::create([
                 'user_id' => $user->id,
-                'center_id' => Auth::user()->id,
-                'status' => 1,
+                'center_id' => Auth::user()->center->id,
                 'image' => $file_name,
+                'status' => 1,
             ]);
 
             DB::commit();
@@ -1069,10 +1079,28 @@ class CenterController extends Controller
         $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
         $students = Reservation::find($course_id);
 
+        // All Courses Id's Of The Courses Which Who Belongs To The Center
+        $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
+        // All Students Who Reserved A Course Of The Center
+        $students = Reservation::find($course_id);
+        // An Empty Array To Hold The Different Id's Of The Students
+        $total_students = array();
+        for ($i = 0; $i < count($students); $i++) {
+            if ($i == 0) {
+                array_push($total_students, $students[$i]->student_id);
+            } else {
+                if (!in_array($students[$i]->student_id, $total_students)) {
+                    array_push($total_students, $students[$i]->student_id);
+                }
+            }
+        }
+        // To Hold The Count Of The Array And Pass It As String
+        $total_students = count($total_students);
+
         if (count($courses) <= 0) {
-            return view("center.error-description", compact('trainers', 'admins', 'students', 'courses'))->withErrors(['title' => 'لاتوجد دورات في النظام', 'error' => 'من فضلك قم بإضافة بعض الدورات لكي تتمكن من تعيين مدربين لها',]);
+            return view("center.error-description", compact('trainers', 'admins', 'students', 'courses', 'total_students'))->withErrors(['title' => 'لاتوجد دورات في النظام', 'error' => 'من فضلك قم بإضافة بعض الدورات لكي تتمكن من تعيين مدربين لها',]);
         } elseif (count($admins) <= 0) {
-            return view("center.error-description", compact('trainers', 'admins', 'students', 'courses'))->withErrors(['title' => 'لايوجد مدراء في النظام', 'error' => 'من فضلك قم بإضافة بعض المدراء لكي تتمكن من تعيينهم مدربين للدورات',]);
+            return view("center.error-description", compact('trainers', 'admins', 'students', 'courses', 'total_students'))->withErrors(['title' => 'لايوجد مدراء في النظام', 'error' => 'من فضلك قم بإضافة بعض المدراء لكي تتمكن من تعيينهم مدربين للدورات',]);
         }
 
         $total_students = array();
@@ -1136,6 +1164,7 @@ class CenterController extends Controller
     {
 
     }
+
     // To Show The Form Of Resetting Password
     public function reset_password()
     {
@@ -1163,6 +1192,7 @@ class CenterController extends Controller
         $center = User::find(Auth::user()->id);
         return view('center.reset-password', compact('center', 'courses', 'trainers', 'admins', 'total_students'));
     }
+
     // The Data Of Resetting Password Goes Here And The Process Happens Here
     public function reset_password_confirm(Request $request)
     {
@@ -1177,17 +1207,19 @@ class CenterController extends Controller
             return redirect()->route('center.reset.password')->withErrors(['old_password' => 'كلمة المرور القديمة غير صحيحة']);
         } else {
             // Checking If The New Password Equal The Old Password
-            if (Hash::check($request->password, $center->password)){
+            if (Hash::check($request->password, $center->password)) {
                 return redirect()->route('center.reset.password')->withErrors(['password' => 'لايمكنك تغير كلمة المرور بكلمة مرورك الحالية']);
-            }else{
+            } else {
                 $center->password = Hash::make($request->password);
                 $center->update();
                 return redirect()->route('center.reset.password')->with('success', 'تم تغير كلمة المرور بنجاح');
             }
         }
     }
+
     // To Show The Form Of Editing And Adding Bank Account
-    public function edit_bank_account(){
+    public function edit_bank_account()
+    {
         $courses = Course::where('center_id', Auth::user()->center->id)->get();
         $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
         $admins = Admin::where('center_id', Auth::user()->center->id)->get();
@@ -1211,16 +1243,140 @@ class CenterController extends Controller
         $accounts = CenterAccount::where('center_id', Auth::user()->center->id)->get();
         return view('center.edit-bank-account', compact('courses', 'trainers', 'admins', 'total_students', 'accounts', 'banks'));
     }
+
     //
-    public function update_bank_account(Request $request){
+    public function update_bank_account(Request $request)
+    {
+        $banks_data = Bank::select('id')->get();
+        $banks = array();
+        foreach ($banks_data as $bank){
+            array_push($banks, $bank->id);
+        }
+
         $request->validate([
             'account_owner' => 'required|array|max:20',
-            'account_owner.*' => 'required|string|max:50|min:10|distinct',
-            'account_number' => 'required|array|size:'.count($request->account_owner),
+            'account_owner.*' => 'required|string|max:50|min:10',
+            'account_number' => 'required|array|size:' . count($request->account_owner),
             'account_number.*' => 'required|digits_between:10,20|distinct',
             'bank' => 'required|array|max:20|',
-            'bank.*' => 'required|digits_between:1,30|distinct',
+            'bank.*' => 'required|digits_between:1,30|distinct|'.Rule::in($banks),
         ]);
+
+        $center_account = CenterAccount::where('center_id', Auth::user()->center->id)->get();
+        if ( count($center_account) ==  count($request->account_owner) ){
+            $counter = 0;
+            for ($i = 0; $i < count($center_account); $i++){
+
+                if ( $center_account[$i]->account_owner != $request->account_owner[$i] ){
+                    $center_account[$i]->account_owner = $request->account_owner[$i];
+                    $counter++;
+                }
+
+                if ( $center_account[$i]->account_number != $request->account_number[$i] ){
+                    $center_account[$i]->account_number = $request->account_number[$i];
+                    $counter++;
+                }
+
+                if ( $center_account[$i]->bank_id != $request->bank[$i] ){
+                    $center_account[$i]->bank_id = $request->bank[$i];
+                    $counter++;
+                }
+
+                if ( $counter != 0 ){
+                    $center_account[$i]->save();
+                }
+            }
+
+            if( $counter == 0 ){
+                return redirect()->route('center.bank.account.edit')->withErrors(['قم بإضافة حقول جديدة او تعديل القديمة لكي يتم حفظها']);
+            }else {
+                return redirect()->route('center.bank.account.edit')->with('success', 'تم تعديل البيانات بنجاح');
+            }
+        }elseif( count($center_account) <  count($request->account_owner) ) {
+            $counter = 0;
+            for ($i = 0; $i < count($request->account_owner); $i++){
+
+                if ( isset($center_account[$i]) ){
+
+                    for ($x = 0; $x < count($center_account); $x++){
+
+                        if($center_account[$x]->bank_id == $request->bank[$i]  ){
+
+                            if ( $center_account[$x]->account_owner != $request->account_owner[$i] ){
+                                $center_account[$x]->account_owner = $request->account_owner[$i];
+                                $counter++;
+                            }
+
+                            if ( $center_account[$x]->account_number != $request->account_number[$i] ){
+                                $center_account[$x]->account_number = $request->account_number[$i];
+                                $counter++;
+                            }
+
+                            if ( $center_account[$x]->bank_id != $request->bank[$i] ){
+                                $center_account[$x]->bank_id = $request->bank[$i];
+                                $counter++;
+                            }
+
+                            if ( $counter != 0 ){
+                                $center_account[$x]->save();
+                            }
+                        }
+
+                    }
+
+                }else{
+                    CenterAccount::create([
+                        'account_owner' => $request->account_owner[$i],
+                        'account_number' => $request->account_number[$i],
+                        'bank_id' => $request->bank[$i],
+                        'center_id' => Auth::user()->center->id,
+                    ]);
+                }
+            }
+            return redirect()->route('center.bank.account.edit')->with('success', 'تم إضافة البيانات بنجاح');
+        }else {
+
+
+            $counter = 0;
+            for ($i = 0; $i < count($center_account); $i++){
+
+                if ( isset($request->account_owner[$i]) ){
+
+                    for ($x = 0; $x < count($request->account_owner); $x++){
+
+                        if($center_account[$i]->bank_id == $request->bank[$x]  ){
+
+                            if ( $center_account[$i]->account_owner != $request->account_owner[$x] ){
+                                $center_account[$i]->account_owner = $request->account_owner[$x];
+                                $counter++;
+                            }
+
+                            if ( $center_account[$i]->account_number != $request->account_number[$x] ){
+                                $center_account[$i]->account_number = $request->account_number[$x];
+                                $counter++;
+                            }
+
+                            if ( $center_account[$i]->bank_id != $request->bank[$x] ){
+                                $center_account[$i]->bank_id = $request->bank[$x];
+                                $counter++;
+                            }
+
+                            if ( $counter != 0 ){
+                                $center_account[$i]->save();
+                            }
+                        }
+
+                    }
+
+                }else{
+                    $center_account[$i]->delete();
+                    return redirect()->route('center.bank.account.edit')->with('success', 'تم تعديل البيانات بنجاح');
+                }
+
+            }
+
+
+        }
     }
 
 }

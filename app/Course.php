@@ -54,12 +54,7 @@ class Course extends Model
         return $this->hasMany('App\CourseAdmin');
     }
 
-    public function appointment()
-    {
-        return $this->hasOne('App\Appointment');
-    }
-
-    public function coupon()
+    public function discountCoupon()
     {
         return $this->hasMany('App\Coupon');
     }

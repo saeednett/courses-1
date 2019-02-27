@@ -1,11 +1,11 @@
 @extends('center.master-v-1-1')
 
-@section('main-title', "إضافة دورات")
+@section('title', "خطأ")
 
-@section('page-links')
-    <li><a href="{{ route('center.index', Auth::user()->username) }}"><i class="fa fa-users"></i>المسؤولين</a></li>
-    <li class="active"><a href="{{ route('center.trainer.create') }}"><i class="fa fa-user-plus"></i>إضافة مسؤول</a></li>
-@endsection
+{{--@section('page-links')--}}
+    {{--<li><a href="{{ route('center.index', Auth::user()->username) }}"><i class="fa fa-users"></i>المسؤولين</a></li>--}}
+    {{--<li class="active"><a href="{{ route('center.trainer.create') }}"><i class="fa fa-user-plus"></i>إضافة مسؤول</a></li>--}}
+{{--@endsection--}}
 
 @section('style-file')
 

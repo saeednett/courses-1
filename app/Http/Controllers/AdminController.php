@@ -25,7 +25,7 @@ class AdminController extends Controller
     {
         if ($admin == Auth::user()->username) {
 
-            $courses = CourseAdmin::where('admin_id', auth()->user()->admin->id)->get();
+            $courseAdmin = CourseAdmin::where('admin_id', auth()->user()->admin->id)->get();
 
             $course_admin = array();
             $course_attender = array();
@@ -50,7 +50,7 @@ class AdminController extends Controller
 
             $course_admin = count($course_admin);
             $course_attender = count($course_attender);
-            return view('admin.index', compact('courses', 'course_admin', 'course_attender'));
+            return view('admin.index', compact('courseAdmin', 'course_admin', 'course_attender'));
         } else {
             return abort(404);
         }
@@ -131,7 +131,7 @@ class AdminController extends Controller
     }
     // To Show All Course
     public function show_courses(){
-        $courses = CourseAdmin::where('admin_id', auth()->user()->admin->id)->get();
+        $courseAdmin = CourseAdmin::where('admin_id', auth()->user()->admin->id)->get();
 
         $course_admin = array();
         $course_attender = array();
@@ -157,11 +157,11 @@ class AdminController extends Controller
         $course_admin = count($course_admin);
         $course_attender = count($course_attender);
 
-        return view('admin.show-courses', compact('courses', 'course_admin', 'course_attender'));
+        return view('admin.show-courses', compact('courseAdmin', 'course_admin', 'course_attender'));
     }
     // To Show The Table Of All Courses That Will Confirm Payments For
     public function courses_payment_show(){
-        $courses = CourseAdmin::where('admin_id', auth()->user()->admin->id)->get();
+        $courseAdmin = CourseAdmin::where('admin_id', auth()->user()->admin->id)->get();
 
         $course_admin = array();
         $course_attender = array();
@@ -186,11 +186,11 @@ class AdminController extends Controller
 
         $course_admin = count($course_admin);
         $course_attender = count($course_attender);
-        return view('admin.courses-payment', compact('courses' ,'course_admin', 'course_attender'));
+        return view('admin.all-courses-payment', compact('courseAdmin' ,'course_admin', 'course_attender'));
     }
     // To Show The Table Of All Courses That Will Show Their Student Who Are Registered
     public function courses_student_show(){
-        $courses = CourseAdmin::where('admin_id', auth()->user()->admin->id)->get();
+        $courseAdmin = CourseAdmin::where('admin_id', auth()->user()->admin->id)->get();
 
         $course_admin = array();
         $course_attender = array();
@@ -215,7 +215,7 @@ class AdminController extends Controller
 
         $course_admin = count($course_admin);
         $course_attender = count($course_attender);
-        return view('admin.courses-students', compact('courses' ,'course_admin', 'course_attender'));
+        return view('admin.all-courses-students', compact('courseAdmin' ,'course_admin', 'course_attender'));
     }
     // To Show One Course Student
     public function course_student_show($identifier){
@@ -236,7 +236,7 @@ class AdminController extends Controller
             abort(404);
         }
 
-        $students = Reservation::where('appointment_id', $course_->appointment->id)->get();
+        $students = Reservation::where('course_id', $course_->id)->get();
 
         $course_admin = array();
         $course_attender = array();
@@ -417,11 +417,13 @@ class AdminController extends Controller
     }
     // To Show The Form Of Editing Course
     public function edit_course($id){
+
         $admin_courses = CourseAdmin::where('admin_id', Auth::user()->admin->id)->where('role_id', 1)->get();
         $courses_id = array();
         foreach ($admin_courses as $course){
             array_push($courses_id, $course->course_id);
         }
+
         if( !in_array($id, $courses_id) ){
             abort(404);
         }
@@ -467,7 +469,9 @@ class AdminController extends Controller
 
     public function show_courses_attendance(){
 
-        $courses = CourseAdmin::where('admin_id', auth()->user()->admin->id)->get();
+        $courseAdmin = CourseAdmin::where('admin_id', auth()->user()->admin->id)->get();
+
+
         $course_admin = array();
         $course_attender = array();
 
@@ -492,8 +496,51 @@ class AdminController extends Controller
         $course_admin = count($course_admin);
         $course_attender = count($course_attender);
 
-        return view('admin.all-courses-attendance', compact('courses','course_admin', 'course_attender'));
+        return view('admin.all-courses-attendance', compact('courseAdmin','course_admin', 'course_attender'));
     }
+     public function course_attendance($identifier){
+
+         $course = Course::where('identifier',$identifier)->first();
+         if ( count($course) == 0 ){
+             abort(404);
+         }
+
+         $identifiers = array();
+         $admin_courses = Course::where('center_id', Auth::user()->admin->center->id)->get();
+         foreach ($admin_courses as $admin_course){
+             array_push($identifiers, $admin_course->identifier);
+         }
+
+         if ( !in_array($identifier, $identifiers) ){
+             abort(404);
+         }
+
+         $course_admin = array();
+         $course_attender = array();
+
+         $courses_data = Course::select('id')->where('center_id', Auth::user()->admin->center->id)->get();
+
+         for ($i = 0; $i < count($courses_data); $i++) {
+
+             $course_admin_data = CourseAdmin::where('admin_id', Auth::user()->admin->id)->where('course_id', $courses_data[$i]->id)->first();
+
+             if ( count($course_admin_data) > 0 ){
+
+                 if ($course_admin_data->role_id == 1) {
+                     array_push($course_admin, $course_admin_data->course_id);
+                 } else {
+                     array_push($course_attender, $course_admin_data->course_id);
+                 }
+
+             }
+
+         }
+
+         $course_admin = count($course_admin);
+         $course_attender = count($course_attender);
+
+        return view('admin.show-course-attendance', compact('course','course_admin', 'course_attender'));
+     }
 
     public function destroy($id)
     {

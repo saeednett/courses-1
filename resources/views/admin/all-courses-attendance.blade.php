@@ -32,30 +32,30 @@
                             </tr>
                             </thead>
                             <tbody class="text-center">
-                            @if(count($courses) > 0)
-                                @foreach($courses as $course)
+                            @if(count($courseAdmin) > 0)
+                                @foreach($courseAdmin as $admin)
                                     <tr class="gradeX">
-                                        <td>{{ $course->course->title }}</td>
-                                        <td class="ltr">{{ date( 'Y-M-D h:i' ,strtotime($course->course->created_at)) }}</td>
-                                        <td>{{ $course->course->appointment->attendance }}</td>
-                                        <td>{{ count($course->course->appointment->reservation) }}</td>
-                                        <td>{{ count($course->course->trainer) }}</td>
+                                        <td>{{ $admin->course->title }}</td>
+                                        <td class="ltr">{{ date( 'Y-M-D h:i' ,strtotime($admin->course->created_at)) }}</td>
+                                        <td>{{ $admin->course->attendance }}</td>
+                                        <td>{{ count($admin->course->reservation) }}</td>
+                                        <td>{{ count($admin->course->trainer) }}</td>
                                         <td>
-                                            @if($course->course->appointment->gender == 1)
+                                            @if($admin->course->gender == 1)
                                                 رجال
-                                            @elseif($course->course->appointment->gender == 2)
+                                            @elseif($admin->course->gender == 2)
                                                 نساء
                                             @else
                                                 رجال ونساء
                                             @endif
                                         </td>
-                                        @if($course->role_id == 1)
+                                        @if($admin->role_id == 1)
                                             <td colspan="2">
-                                                <a href="{{ route('admin.course.students.show', $course->course->identifier) }}">عرض الطلاب</a>
+                                                <a href="{{ route('admin.course.attendance', $admin->course->identifier) }}">عرض الطلاب</a>
                                             </td>
                                         @else
                                             <td colspan="2">
-                                                <a href="{{ route('admin.course.students.show', $course->course->identifier) }}">عرض الطلاب</a>
+                                                <a href="{{ route('admin.course.attendance', $admin->course->identifier) }}">عرض الطلاب</a>
                                             </td>
                                         @endif
                                     </tr>
@@ -68,7 +68,7 @@
                                 </tr>
                             @endif
                             </tbody>
-                            @if(count($courses) > 0)
+                            @if(count($courseAdmin) > 0)
                                 <tfoot>
                                 <tr>
                                     <th class="text-center">اسم الدورة</th>

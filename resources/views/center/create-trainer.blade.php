@@ -1,5 +1,6 @@
 @extends('center.master-v-1-1')
 
+@section('title', "إضافة مدرب جديد")
 @section('main-title', "إضافة مدرب جديد")
 
 @section('page-links')
@@ -114,7 +115,7 @@
             <div class="panel panel-default animated fadeInUp">
 
                 <div class="panel-heading clearfix">
-                    {{--<h3 class="panel-title">Basic Form</h3>--}}
+                    <h3 class="panel-title">إضافة مدرب جديد</h3>
                     <ul class="panel-tool-options">
                         <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
                         <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
@@ -126,8 +127,9 @@
 
                     <form method="post" action="{{ route('center.trainer.store') }}" enctype="multipart/form-data">
                         {{ csrf_field() }}
+
                         <div class="row">
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-lg-offset-3 col-mg-12 col-sm-12 colxs-12">
                                 <div class="form-group">
                                     <label class="required-field rtl" for="name">اسم المدرب</label>
                                     <input type="text"
@@ -142,7 +144,10 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-6">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-lg-offset-3 col-mg-12 col-sm-12 colxs-12">
                                 <div class="form-group">
                                     <label class="required-field rtl" for="phone">رقم الهاتف</label>
                                     <input type="text"
@@ -160,7 +165,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-lg-offset-3 col-mg-12 col-sm-12 colxs-12">
                                 <div class="form-group">
                                     <label class="required-field" for="email">البريد الإلكتروني</label>
                                     <input type="email"
@@ -174,7 +179,10 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-6">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6 col-lg-offset-3 col-mg-12 col-sm-12 colxs-12">
                                 <div class="form-group">
                                     <label class="required-field" for="username">اسم المستخدم</label>
                                     <input type="text"
@@ -190,7 +198,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-lg-offset-3 col-mg-12 col-sm-12 colxs-12">
                                 <div class="form-group">
                                     <label class="required-field" for="nationality">الجنسية</label>
                                     <select class="form-control select2-placeholer {{ $errors->has('nationality') ? ' is-invalid' : '' }}"
@@ -210,8 +218,10 @@
                                     @endif
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-6 col-lg-offset-3 col-mg-12 col-sm-12 colxs-12">
                                 <div class="form-group">
                                     <label class="required-field" for="country">اللقب</label>
                                     <select class="form-control select2-placeholer {{ $errors->has('title') ? ' is-invalid' : '' }}"
@@ -234,7 +244,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-lg-offset-3 col-mg-12 col-sm-12 colxs-12">
                                 <div class="form-group">
                                     <label class="required-field" for="password_confirmation">تأكيد كلمة المرور</label>
                                     <input type="password"
@@ -248,8 +258,10 @@
                                     @endif
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-lg-6 col-lg-offset-3 col-mg-12 col-sm-12 colxs-12">
                                 <div class="form-group">
                                     <label class="required-field" for="website">كلمة المرور</label>
                                     <input type="password"
@@ -264,10 +276,8 @@
                             </div>
                         </div>
 
-
                         <div class="row">
-
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 col-lg-offset-3 col-mg-12 col-sm-12 colxs-12">
                                 <div class="form-group">
                                     <label for="personal-profile">الصورة الشخصية</label>
                                     <input type="text" id="profile-image" class="form-control {{ $errors->has('profile-image') ? ' is-invalid' : '' }} custom-input text-center" placeholder='اختر صورة الملف الشخصي' readonly required/>
@@ -279,20 +289,10 @@
                                     @endif
                                 </div>
                             </div>
-
-
-                            <div class="col-lg-6">
-
-                            </div>
-
-
                         </div>
 
-                        {{--<div class="checkbox">--}}
-                        {{--<label><input type="checkbox">Check me out</label>--}}
-                        {{--</div>--}}
                         <div class="row">
-                            <div class="col-lg-2">
+                            <div class="col-lg-6 col-lg-offset-3 col-mg-12 col-sm-12 colxs-12">
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-block custom-btn">حفظ</button>
                                 </div>

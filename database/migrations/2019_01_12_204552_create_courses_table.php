@@ -15,16 +15,24 @@ class CreateCoursesTable extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('identifier')->unique();
             $table->string('title');
-            $table->text('description');
+            $table->string('identifier', 10)->unique();
             $table->string('address');
             $table->string('location');
-            $table->integer('visible')->default(1);
-            $table->integer('center_id');
+            $table->integer('price');
+            $table->string('type');
+            $table->date('start_date');
+            $table->time('start_time');
+            $table->date('end_reservation');
+            $table->integer('attendance');
+            $table->integer('gender');
+            $table->integer('coupon');
             $table->integer('category_id');
             $table->integer('city_id');
             $table->integer('template_id');
+            $table->integer('center_id');
+            $table->integer('visible')->default(1);
+            $table->text('description');
             $table->integer('validation')->default(0);
             $table->timestamps();
         });

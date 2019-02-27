@@ -357,7 +357,7 @@
                                     <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
 
                                         <div style="padding: 10px; width: 100%;">
-                                            <img class="img-rounded img-thumbnail" src="/storage/course-images/{{ $course->image[0]->url }}" style="width: 100%; height: 50%;">
+                                            <img class="img-rounded img-thumbnail" src="/storage/course-images/{{ $course->image[0]->image }}" style="width: 100%; height: 50%;">
                                         </div>
 
                                         <div class="form-group">
@@ -375,7 +375,7 @@
                                     <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
 
                                         <div style="padding: 10px; width: 100%;">
-                                            <img class="img-rounded img-thumbnail" src="/storage/course-images/{{ $course->image[1]->url }}" style="width: 100%; height: 50%;">
+                                            <img class="img-rounded img-thumbnail" src="/storage/course-images/{{ $course->image[1]->image }}" style="width: 100%; height: 50%;">
                                         </div>
 
                                         <div class="form-group">
@@ -441,10 +441,10 @@
                                             <label class="required-field" for="type">نوع الدورة</label>
                                             <select class="form-control select2-placeholer {{ $errors->has('type') ? 'is-invalid' : '' }}"
                                                     name="type" required>
-                                                @if($course->appointment->price == 0)
+                                                @if($course->type == 'free')
                                                     <option value="1" selected>مجانية</option>
                                                     <option value="2">مدفوعة</option>
-                                                @elseif($course->appointment->price > 0)
+                                                @elseif($course->type == 'payed')
                                                     <option value="1">مجانية</option>
                                                     <option value="2" selected>مدفوعة</option>
                                                 @endif
@@ -458,14 +458,14 @@
                                     </div>
                                 </div>
 
-                                @if($course->appointment->price > 0)
+                                @if($course->type == 'payed')
                                     <div class='row'>
                                         <div class='col-lg-6 col-lg-offset-3'>
                                             <div class='form-group'>
                                                 <label class='required-field' for='price'>قيمة الدورة</label>
                                                 <input type='text'
                                                        class='form-control custom-input text-center num-only ltr'
-                                                       value="{{ $course->appointment->price }}" name='price'
+                                                       value="{{ $course->price }}" name='price'
                                                        autocomplete='off' required>
                                             </div>
                                         </div>
@@ -500,7 +500,7 @@
                                             </div>
                                         </div>
 
-                                        @foreach($course->coupon as $coupon)
+                                        @foreach($course->discountCoupon as $coupon)
                                             <div class='row' style='margin-top:20px;'>
                                                 <div class='col-lg-4'>
                                                     <div class='form-group'>
@@ -534,7 +534,7 @@
                                             <label class="required-field" for="start_date">تاريخ بدء الدورة</label>
                                             <input type="text"
                                                    class="form-control {{ $errors->has('start_date') ? 'is-invalid' : '' }} custom-input text-center ltr"
-                                                   name="start_date" id="start_date" value="{{ $course->appointment->start_date }}"
+                                                   name="start_date" id="start_date" value="{{ $course->start_date }}"
                                                    placeholder="تاريخ بدء الدورة"
                                                    autocomplete="off" required>
                                             @if ($errors->has('start_date'))
@@ -552,7 +552,7 @@
                                             <label class="required-field" for="start_time">وقت بدء الدورة</label>
                                             <input type="text"
                                                    class="form-control {{ $errors->has('start_time') ? 'is-invalid' : '' }} custom-input text-center"
-                                                   name="start_time" id="start_time" value="{{ $course->appointment->start_time }}"
+                                                   name="start_time" id="start_time" value="{{ $course->start_time }}"
                                                    autocomplete="off" required>
                                             @if ($errors->has('start_time'))
                                                 <span class="invalid-feedback" role="alert">
@@ -570,7 +570,7 @@
                                             <input type="text"
                                                    class="form-control {{ $errors->has('attendance') ? 'is-invalid' : '' }} custom-input text-center num-only ltr"
                                                    name="attendance" id="attendance"
-                                                   value="{{ $course->appointment->attendance }}"
+                                                   value="{{ $course->attendance }}"
                                                    placeholder="عدد المقاعد"
                                                    autocomplete="off" maxlength="4" required>
                                             @if ($errors->has('attendance'))
@@ -589,15 +589,15 @@
                                             <select id="gender"
                                                     class="form-control select2-placeholer {{ $errors->has('gender') ? 'is-invalid' : '' }}"
                                                     name="gender" required>
-                                                @if($course->appointment->gender == 1)
+                                                @if($course->gender == 1)
                                                     <option value="1" selected>رجال</option>
                                                     <option value="2">نساء</option>
                                                     <option value="3">رجال ونساء</option>
-                                                @elseif($course->appointment->gender == 2)
+                                                @elseif($course->gender == 2)
                                                     <option value="1">رجال</option>
                                                     <option value="2" selected>نساء</option>
                                                     <option value="3">رجال ونساء</option>
-                                                @elseif($course->appointment->gender == 3)
+                                                @elseif($course->gender == 3)
                                                     <option value="1">رجال</option>
                                                     <option value="2">نساء</option>
                                                     <option value="3" selected>رجال ونساء</option>
@@ -618,7 +618,7 @@
                                             <label class="required-field" for="start_date">تاريخ انتهاء الدورة</label>
                                             <input type="text"
                                                    class="form-control {{ $errors->has('finish_date') ? 'is-invalid' : '' }} custom-input text-center ltr"
-                                                   name="finish_date" id="finish_date" value="{{ $course->appointment->finish_date }}"
+                                                   name="finish_date" id="finish_date" value="{{ $course->finish_date }}"
                                                    autocomplete="off" required>
                                             @if ($errors->has('finish_date'))
                                                 <span class="invalid-feedback" role="alert">
@@ -637,7 +637,7 @@
                                             <input type="text"
                                                    class="form-control {{ $errors->has('end_reservation') ? 'is-invalid' : '' }} custom-input text-center ltr"
                                                    name="end_reservation" id="start_date"
-                                                   value="{{ $course->appointment->end_reservation }}"
+                                                   value="{{ $course->end_reservation }}"
                                                    autocomplete="off" required>
                                             @if ($errors->has('end_reservation'))
                                                 <span class="invalid-feedback" role="alert">

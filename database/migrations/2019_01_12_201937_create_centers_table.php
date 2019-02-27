@@ -20,8 +20,9 @@ class CreateCentersTable extends Migration
             $table->string('verification_authority');
             $table->string('website');
             $table->integer('city_id');
-            $table->integer('status');
             $table->text('about');
+            $table->string('logo');
+            $table->integer('status');
             $table->timestamps();
         });
     }

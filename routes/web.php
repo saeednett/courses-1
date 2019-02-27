@@ -57,39 +57,39 @@ Route::get('/{center}', 'CenterController@index')->name('center.index')->middlew
 // When The Student Wants To Show The Information Of The Center
 Route::get('profile/{name}', 'CenterController@show')->name('center.profile');
 // To Show And Edit The Profile Information Of The Center
-Route::get('center/edit-profile', 'CenterController@edit')->name('center.edit')->middleware('auth-center');
+Route::get('center/profile/edit', 'CenterController@edit')->name('center.edit')->middleware('auth-center');
 // The New Information Goes Here
-Route::put('center/update', 'CenterController@update')->name('center.update')->middleware('auth-center');
+Route::put('center/profile/update', 'CenterController@update')->name('center.update')->middleware('auth-center');
 // To Create A New Trainer Belongs To The Center
-Route::get('center/crate-trainer', 'CenterController@create_trainer')->name('center.trainer.create')->middleware('auth-center');
+Route::get('center/trainer/crate', 'CenterController@create_trainer')->name('center.trainer.create')->middleware('auth-center');
 // The Information Of The Trainer Goes Here
-Route::post('center/crate-trainer', 'CenterController@store_trainer')->name('center.trainer.store')->middleware('auth-center');
+Route::post('center/trainer/store', 'CenterController@store_trainer')->name('center.trainer.store')->middleware('auth-center');
 // To Show All Trainers Who Belong To The Center
-Route::get('center/show-trainers', 'CenterController@show_trainers')->name('center.trainer.show')->middleware('auth-center');
+Route::get('center/trainers/show', 'CenterController@show_trainers')->name('center.trainer.show')->middleware('auth-center');
 // To Edit A Trainer Information
-Route::get('center/trainer-edit/{id}', 'CenterController@edit_trainer')->name('center.trainer.edit')->middleware('auth-center');
+Route::get('center/trainer/edit/{id}', 'CenterController@edit_trainer')->name('center.trainer.edit')->middleware('auth-center');
 // The New Information Goes Here
-Route::put('center/trainer-edit/{id}', 'CenterController@update_trainer')->name('center.trainer.update')->middleware('auth-center');
+Route::put('center/trainer/update/{id}', 'CenterController@update_trainer')->name('center.trainer.update')->middleware('auth-center');
 // To Create An Admin For The Courses
-Route::get('center/crate-admin', 'CenterController@create_admin')->name('center.admin.create')->middleware('auth-center');
+Route::get('center/admin/crate', 'CenterController@create_admin')->name('center.admin.create')->middleware('auth-center');
 // The Data Of The Creation Goes Here
-Route::post('center/crate-admin', 'CenterController@store_admin')->name('center.admin.store')->middleware('auth-center');
+Route::post('center/admin/store', 'CenterController@store_admin')->name('center.admin.store')->middleware('auth-center');
 // To Show All Admins Who Belong To The Center
-Route::get('center/show-admins', 'CenterController@show_admins')->name('center.admin.show')->middleware('auth-center');
+Route::get('center/admins/show', 'CenterController@show_admins')->name('center.admin.show')->middleware('auth-center');
 // To Edit Admin Information
-Route::get('center/admin-edit/{id}', 'CenterController@edit_admin')->name('center.admin.edit')->middleware('auth-center');
+Route::get('center/admin/edit/{id}', 'CenterController@edit_admin')->name('center.admin.edit')->middleware('auth-center');
 // The New Information Goes Here
-Route::put('center/admin-edit/{id}', 'CenterController@update_admin')->name('center.admin.update')->middleware('auth-center');
+Route::put('center/admin/update/{id}', 'CenterController@update_admin')->name('center.admin.update')->middleware('auth-center');
 // To Assign Admin To The Course
-Route::get('center/assign-admin', 'CenterController@assign_course_admin')->name('center.course.admin.assign')->middleware('auth-center');
+Route::get('center/admin/assign', 'CenterController@assign_course_admin')->name('center.course.admin.assign')->middleware('auth-center');
 // The Data Of Assignation Goes Here
-Route::post('center/assign-admin', 'CenterController@store_course_admin')->name('center.course.admin.store')->middleware('auth-center');
+Route::post('center/admin/assign/confirm', 'CenterController@store_course_admin')->name('center.course.admin.store')->middleware('auth-center');
 // To Create A New Course
-Route::get('center/create-course', 'CenterController@create_course')->name('center.course.create')->middleware('auth-center');
+Route::get('center/course/create', 'CenterController@create_course')->name('center.course.create')->middleware('auth-center');
 // The Data Of Creation Goes Here
-Route::post('center/create-course', 'CenterController@store_course')->name('center.course.store')->middleware('auth-center');
+Route::post('center/course/store', 'CenterController@store_course')->name('center.course.store')->middleware('auth-center');
 // To Show All Courses Who Belong To The Center
-Route::get('center/show-courses', 'CenterController@show_courses')->name('center.course.show')->middleware('auth-center');
+Route::get('center/courses/show', 'CenterController@show_courses')->name('center.course.show')->middleware('auth-center');
 // To Register As A Center
 Route::get('center/sign-up', 'CenterController@create')->name('center.register')->middleware('guest');
 // The Data Of Registering Goes Here
@@ -101,13 +101,13 @@ Route::get('contact/contact-us', 'CenterController@contact_us')->name('contact.u
 // To Show About Us Information Of The Site
 Route::get('contact/about-us', 'CenterController@about_us')->name('about.us');
 // To Show The Form Of Resetting Password
-Route::get('center/reset-password', 'CenterController@reset_password')->name('center.reset.password')->middleware('auth-center');
+Route::get('center/password/reset', 'CenterController@reset_password')->name('center.reset.password')->middleware('auth-center');
 // The Data Of Resetting Password Goes Here And The Process Happens Here
-Route::post('center/reset-password', 'CenterController@reset_password_confirm')->name('center.reset.password.confirm')->middleware('auth-center');
+Route::post('center/password/reset/confirm', 'CenterController@reset_password_confirm')->name('center.reset.password.confirm')->middleware('auth-center');
 // To Show The Form Of Editing Or Adding Bank Account
-Route::get('center/bank-accounts', 'CenterController@edit_bank_account')->name('center.bank.account.edit')->middleware('auth-center');
+Route::get('center/bank-accounts/edit', 'CenterController@edit_bank_account')->name('center.bank.account.edit')->middleware('auth-center');
 // The Data Of Editing Or Adding Bank Account Goes Here And The Process Happens Here
-Route::post('center/reset-password', 'CenterController@update_bank_account')->name('center.bank.account.update')->middleware('auth-center');
+Route::post('center/bank-accounts/update', 'CenterController@update_bank_account')->name('center.bank.account.update')->middleware('auth-center');
 /*  End Of Center Routes Part */
 
 
@@ -140,8 +140,9 @@ Route::get('admin/password/reset', 'AdminController@reset_password')->name('admi
 // The Data Of Resetting Password Goes Here And The Process Happens Here
 Route::post('admin/password/reset', 'AdminController@reset_password_confirm')->name('admin.reset.password.confirm')->middleware('auth-center');
 
-// The Data Of Resetting Password Goes Here And The Process Happens Here
+
 Route::get('admin/courses/attendance', 'AdminController@show_courses_attendance')->name('admin.courses.attendance')->middleware('auth-center');
+Route::get('admin/{course}/attendance', 'AdminController@course_attendance')->name('admin.course.attendance')->middleware('auth-center');
 
 /*  End Of Admin Routes Part */
 

@@ -1,6 +1,6 @@
 @extends('center.master-v-1-1')
 
-
+@section('title', "عرض المسؤولين")
 @section('main-title', "عرض المسؤولين")
 
 @section('page-links')

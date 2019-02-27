@@ -24,29 +24,29 @@
                             <tr>
                                 <th class="text-center">اسم الدورة</th>
                                 <th class="text-center">تاريخ الدورة</th>
-                                <th class="text-center">عدد الطلاب</th>
                                 <th class="text-center">عدد المقاعد</th>
+                                <th class="text-center">عدد الطلاب</th>
                                 <th class="text-center">الصلاحيات</th>
                                 <th class="text-center" colspan="2">خيارات</th>
                             </tr>
                             </thead>
                             <tbody class="text-center">
-                            @if(count($courses) > 0)
-                                @foreach($courses as $course)
+                            @if(count($courseAdmin) > 0)
+                                @foreach($courseAdmin as $admin)
                                     <tr class="gradeX">
-                                        <td>{{ $course->course->title }}</td>
-                                        <td class="ltr">{{ date( 'Y-M-D h:i' ,strtotime($course->course->created_at)) }}</td>
-                                        <td>{{ $course->course->appointment->attendance }}</td>
-                                        <td>{{ count($course->course->appointment->reservation) }}</td>
-                                        @if($course->role_id == 1)
+                                        <td>{{ $admin->course->title }}</td>
+                                        <td class="ltr">{{ date( 'Y-M-D h:i' ,strtotime($admin->course->created_at)) }}</td>
+                                        <td>{{ $admin->course->attendance }}</td>
+                                        <td>{{ count($admin->course->reservation) }}</td>
+                                        @if($admin->role_id == 1)
                                             <td>مسؤول الدور</td>
                                         @else
                                             <td>محضر الدور</td>
                                         @endif
 
-                                        @if($course->role_id == 1)
+                                        @if($admin->role_id == 1)
                                             <td>
-                                                <a href="{{ route('admin.courses.payment', $course->course->identifier) }}">تأكيد الدفع</a>
+                                                <a href="{{ route('admin.courses.payment', $admin->course->identifier) }}">تأكيد الدفع</a>
                                             </td>
 
                                             <td>
@@ -67,13 +67,13 @@
                                 </tr>
                             @endif
                             </tbody>
-                            @if(count($courses) > 0)
+                            @if(count($courseAdmin) > 0)
                                 <tfoot>
                                 <tr>
                                     <th class="text-center">اسم الدورة</th>
                                     <th class="text-center">تاريخ الدورة</th>
-                                    <th class="text-center">عدد الطلاب</th>
                                     <th class="text-center">عدد المقاعد</th>
+                                    <th class="text-center">عدد الطلاب</th>
                                     <th class="text-center">الصلاحيات</th>
                                     <th class="text-center" colspan="2">خيارات</th>
                                 </tr>
