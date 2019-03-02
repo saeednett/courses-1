@@ -45,7 +45,7 @@ class LoginController extends Controller
         if( $role < 5 ){
             return redirect()->route('center.login');
         }elseif ($role == 5){
-            return redirect()->route('center.index');
+            return redirect()->route('account.index');
         }
     }
 

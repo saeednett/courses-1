@@ -11,7 +11,7 @@
         <div class="col-lg-12 animatedParent animateOnce z-index-50">
             <div class="panel panel-default animated fadeInUp">
                 <div class="panel-heading clearfix">
-                    <h3 class="panel-title">بيانات الدورات المسجلة في النظام</h3>
+                    <h3 class="panel-title">بيانات سجل الحضور للدورة</h3>
                     <ul class="panel-tool-options">
                         <li><a data-rel="collapse" href="#"><i class="icon-down-open"></i></a></li>
                         <li><a data-rel="reload" href="#"><i class="icon-arrows-ccw"></i></a></li>
@@ -81,23 +81,40 @@
                             <tbody class="text-center">
                             @if(count($course->reservation) > 0)
                                 @foreach($course->reservation as $reservation)
-                                    <tr class="gradeX">
-                                        <td>{{ $reservation->student->user->name }}</td>
-                                        <td style="direction: ltr;">{{ $reservation->student->user->phone }}</td>
-                                        <td><i class="fa fa-check-circle-o text-success bg-success"></i></td>
-                                        <td><i class="fa fa-times-circle text-danger bg-danger"></i></td>
-                                        <td><i class="fa fa-question-circle text-warning bg-warning"></i></td>
-                                        @foreach($reservation->student->attendance as $attendance)
-                                            @if($course->id == $attendance->course_id)
-                                                @if($attendance->status > 0)
-                                                    <td><i class="fa fa-check-circle-o text-success bg-success"></i></td>
-                                                @else
-                                                    <td><i class="fa fa-times-circle text-danger bg-danger"></i></td>
-                                                @endif
-                                            @endif
-                                        @endforeach
+                                    @if($reservation->confirmation == 1)
+                                        <tr class="gradeX">
+                                            <td>{{ $reservation->student->user->name }}</td>
+                                            <td style="direction: ltr;">{{ $reservation->student->user->phone }}</td>
+                                            @for($i = 0; $i < $days; $i++)
 
-                                    </tr>
+
+
+
+                                                {{--// $course->id == $reservation->student->attendance[$i]->course_id--}}
+                                                @if(isset($reservation->student->attendance[$i]))
+                                                    @if($reservation->student->attendance[$i]->status > 0)
+                                                        <td>
+                                                            <i class="fa fa-check-circle-o text-success bg-success"></i>
+                                                        </td>
+                                                    @else
+                                                        <td><i class="fa fa-times-circle text-danger bg-danger"></i>
+                                                        </td>
+                                                    @endif
+
+
+                                                @else
+                                                    <td>
+                                                        <i class="fa fa-question-circle text-warning bg-warning"></i>
+                                                    </td>
+                                                @endif
+
+                                            @endfor
+                                        </tr>
+                                    @else
+                                        <td class="text-danger" colspan="{{ $days+2 }}">
+                                            <h3 style="margin-top: 15px">لم يتم تأكيد التسجيل لأي طالب</h3>
+                                        </td>
+                                    @endif
                                 @endforeach
                             @else
                                 <tr class="gradeX">
@@ -108,55 +125,56 @@
                             @endif
                             </tbody>
                             @if(count($course->reservation) > 0)
-                                <tfoot>
-                                <tr>
-                                    <th class="text-center">اسم الطالب</th>
-                                    <th class="text-center">رقم الهاتف</th>
-                                    @for($i = 0; $i < $days; $i++)
-                                        @switch($i)
-                                            @case(0)
-                                            <th class="text-center">اليوم الأول</th>
-                                            @break
+                                @if($reservation->confirmation == 1)
+                                    <tfoot>
+                                    <tr>
+                                        <th class="text-center">اسم الطالب</th>
+                                        <th class="text-center">رقم الهاتف</th>
+                                        @for($i = 0; $i < $days; $i++)
+                                            @switch($i)
+                                                @case(0)
+                                                <th class="text-center">اليوم الأول</th>
+                                                @break
 
-                                            @case(1)
-                                            <th class="text-center">اليوم الثاني</th>
-                                            @break
+                                                @case(1)
+                                                <th class="text-center">اليوم الثاني</th>
+                                                @break
 
-                                            @case(2)
-                                            <th class="text-center">اليوم الثالث</th>
-                                            @break
+                                                @case(2)
+                                                <th class="text-center">اليوم الثالث</th>
+                                                @break
 
-                                            @case(3)
-                                            <th class="text-center">اليوم الرابع</th>
-                                            @break
+                                                @case(3)
+                                                <th class="text-center">اليوم الرابع</th>
+                                                @break
 
-                                            @case(4)
-                                            <th class="text-center">اليوم الخامس</th>
-                                            @break
+                                                @case(4)
+                                                <th class="text-center">اليوم الخامس</th>
+                                                @break
 
-                                            @case(5)
-                                            <th class="text-center">اليوم السادس</th>
-                                            @break
-                                            @case(6)
-                                            <th class="text-center">اليوم السابع</th>
-                                            @break
+                                                @case(5)
+                                                <th class="text-center">اليوم السادس</th>
+                                                @break
+                                                @case(6)
+                                                <th class="text-center">اليوم السابع</th>
+                                                @break
 
-                                            @case(7)
-                                            <th class="text-center">اليوم الثامن</th>
-                                            @break
+                                                @case(7)
+                                                <th class="text-center">اليوم الثامن</th>
+                                                @break
 
-                                            @case(8)
-                                            <th class="text-center">اليوم التاسع</th>
-                                            @break
+                                                @case(8)
+                                                <th class="text-center">اليوم التاسع</th>
+                                                @break
 
-                                            @case(9)
-                                            <th class="text-center">اليوم العاشر</th>
-                                            @break
-
-                                        @endswitch
-                                    @endfor
-                                </tr>
-                                </tfoot>
+                                                @case(9)
+                                                <th class="text-center">اليوم العاشر</th>
+                                                @break
+                                            @endswitch
+                                        @endfor
+                                    </tr>
+                                    </tfoot>
+                                @endif
                             @endif
                         </table>
                     </div>

@@ -67,12 +67,12 @@
                                 <thead>
                                 <tr>
                                     @if(count($course->reservation) > 0)
-                                        <th class="text-center" colspan="5"><h4> {{ $course->title }} </h4></th>
+                                        <th class="text-center" colspan="6"><h4> {{ $course->title }} </h4></th>
                                         <td class="text-center">
                                             <button class="btn btn-success btn-block" id="save">حفظ</button>
                                         </td>
                                     @else
-                                        <th class="text-center" colspan="6"><h4> {{ $course->title }} </h4></th>
+                                        <th class="text-center" colspan="7"><h4> {{ $course->title }} </h4></th>
                                     @endif
                                 </tr>
                                 <tr>
@@ -81,6 +81,7 @@
                                     <th class="text-center">اسم صاحب الحساب</th>
                                     <th class="text-center">رقم الحساب</th>
                                     <th class="text-center">الخصم</th>
+                                    <th class="text-center">الإجمالي</th>
                                     <th class="text-center" colspan="2">خيارات</th>
                                 </tr>
                                 </thead>
@@ -101,9 +102,15 @@
                                                 <td class="pt-17">{{ $reservation->payment->account_number }}</td>
                                                 @if($reservation->coupon_id > 0)
                                                     <td class="pt-17 text-success">
-                                                        %{{ $reservation->coupon->discount }}</td>
+                                                        {{ $reservation->coupon->discount }}</td>
+                                                    <?php
+                                                        $discount = ($course->price * $reservation->coupon->discount) / 100;
+                                                        $amount = $course->price - $discount;
+                                                    ?>
+                                                    <td class="pt-17">{{ $amount }}</td>
                                                 @else
                                                     <td class="pt-17 text-danger">لايوجد</td>
+                                                    <td class="pt-17">{{ $course->price  }}</td>
                                                 @endif
                                                 <td>
                                                     <input type="checkbox" data-toggle="toggle" class="payment-toggle">
@@ -116,7 +123,7 @@
                                     @endforeach
                                     @if($counter == 0)
                                         <tr class="gradeX">
-                                            <td colspan="6"><h3 class="text-success" style="padding-top: 8px;">تم تأكيد
+                                            <td colspan="7"><h3 class="text-success" style="padding-top: 8px;">تم تأكيد
                                                     حجز جميع الطلاب المسجلين</h3></td>
                                         </tr>
                                     @endif

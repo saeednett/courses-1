@@ -18,6 +18,9 @@ class CreateStudentsTable extends Migration
             $table->integer('user_id');
             $table->integer('gender_id');
             $table->integer('city_id');
+            $table->string('year', 4);
+            $table->string('month', 2);
+            $table->string('day', 2);
             $table->integer('status');
             $table->string('image', 200)->default('account-profile.png');
             $table->timestamps();

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Admin;
-use App\Appointment;
 use App\Bank;
 use App\Category;
 use App\Center;
@@ -54,7 +53,7 @@ class CenterController extends Controller
             return response()->json($response);
         }
 
-        $coupon = Coupon::where('coupon_code', $coupon)->where('course_id', $course->id)->first();
+        $coupon = Coupon::where('code', $coupon)->where('course_id', $course->id)->first();
 
         if (count($coupon) == 0) {
             array_push($response['status'], "Failed");
@@ -152,7 +151,7 @@ class CenterController extends Controller
     }
 
     // To Show The Form Of Creating A New Center
-    public function create()
+    public function register()
     {
         $banks = Bank::all();
         $countries = Country::all();
@@ -246,7 +245,7 @@ class CenterController extends Controller
         // To Filter The Reservation That Is Not Confirmed
         $tickets_data = array();
         foreach ($reservations as $reservation) {
-            if ($reservation->appointment->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
+            if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
                 array_push($tickets_data, $reservation->id);
             }
         }
@@ -423,7 +422,7 @@ class CenterController extends Controller
     }
 
     // To Show The Form Of Signing in For The Center
-    public function create_sign_in()
+    public function login()
     {
         return view('center.login');
     }
@@ -722,7 +721,7 @@ class CenterController extends Controller
         // Validating The Request Data
         $request->validate([
             // The Title Of The Course
-            'title' => 'required|string|max:50|min:10|unique:courses,title',
+            'title' => 'required|string|max:50|min:10',
             // the Category Of The Course
             'category' => 'required|integer|max:99|min:1|exists:categories,id',
             // If The Course Is Visible To The Users

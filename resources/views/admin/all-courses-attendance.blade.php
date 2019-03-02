@@ -51,11 +51,11 @@
                                         </td>
                                         @if($admin->role_id == 1)
                                             <td colspan="2">
-                                                <a href="{{ route('admin.course.attendance', $admin->course->identifier) }}">عرض الطلاب</a>
+                                                <a href="{{ route('admin.course.attendance', $admin->course->identifier) }}">عرض سجل الطلاب</a>
                                             </td>
                                         @else
                                             <td colspan="2">
-                                                <a href="{{ route('admin.course.attendance', $admin->course->identifier) }}">عرض الطلاب</a>
+                                                <a href="{{ route('admin.course.attendance', $admin->course->identifier) }}">عرض سجل الطلاب</a>
                                             </td>
                                         @endif
                                     </tr>

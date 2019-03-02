@@ -74,11 +74,11 @@
 
                             <div class="row">
                                 <div class="col-lg-12 text-lg-left order-first order-lg-first text-center">
-                                    @if($user->student->url == 'account-profile.png')
-                                        <img src="{{ asset('img/student/'.$user->student->url) }}" class="img-thumbnail"
+                                    @if($user->student->image == 'account-profile.png')
+                                        <img src="{{ asset('img/student/'.$user->student->image) }}" class="img-thumbnail"
                                              style="height: 30%; width: 100%;">
                                     @else
-                                        <img src="/storage/account-images/{{ $user->student->url }}"
+                                        <img src="/storage/account-images/{{ $user->student->image }}"
                                              class="img-thumbnail" style="height: 30%; width: 100%;">
                                     @endif
                                 </div>

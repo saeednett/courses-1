@@ -1,8 +1,6 @@
-
-
 @extends('student.master-v-1-1')
 
-@section('title', $reservation->appointment->course->title)
+@section('title', $reservation->course->title)
 
 @section('guest-links')
     <a class="dropdown-item" href="{{ route('account.login') }}">تسجيل الدخول</a>
@@ -26,20 +24,20 @@
                         <div class="course-information-section">
                             <div class="row">
                                 <div class="col-lg-12">
-                                    <h2>{{ $reservation->appointment->course->title }}</h2>
+                                    <h2>{{ $reservation->course->title }}</h2>
                                 </div>
                             </div>
                             <div class="row justify-content-end">
                                 <div class="col-lg-12">
                                     <div class="main-info">
                                         <div class="course-logo rounded-top">
-                                            <img src="/storage/course-images/{{ $reservation->appointment->course->image[0]->url }}" alt="{{ $reservation->appointment->course->title }}">
+                                            <img src="/storage/course-images/{{ $reservation->course->image[0]->image }}" alt="{{ $reservation->course->title }}">
                                         </div>
                                         <div class="block rounded-bottom mt-0">
                                             <div class="row">
                                                 <div class="col-lg-9">
                                                     <h5 class="text-right rtl"><span>اسم المنظم:</span> <a
-                                                                href="{{ route('center.profile', $reservation->appointment->course->center->user->username) }}">{{ $reservation->appointment->course->center->user->name }}</a></h5>
+                                                                href="{{ route('center.profile', $reservation->course->center->user->username) }}">{{ $reservation->course->center->user->name }}</a></h5>
                                                     <div class="social-media mt-4">
                                                         <div class="row justify-content-end">
                                                             <div class="col-lg-8 text-center h-100">
@@ -64,8 +62,8 @@
                                                 <div class="col-lg-3">
                                                     <div class="logo-holder">
                                                         <img class="border"
-                                                             src="/storage/center-images/{{ $reservation->appointment->course->center->logo }}"
-                                                             alt="{{ $reservation->appointment->course->title }}">
+                                                             src="/storage/center-images/{{ $reservation->course->center->logo }}"
+                                                             alt="{{ $reservation->course->title }}">
                                                     </div>
                                                 </div>
                                             </div>
@@ -77,7 +75,7 @@
                                                     <span class="">الدورة:</span>
                                                 </div>
                                                 <div class="col-lg-9">
-                                                    {{ $reservation->appointment->course->title }}
+                                                    {{ $reservation->course->title }}
                                                 </div>
                                             </div>
                                             <div class="row info">
@@ -86,7 +84,7 @@
                                                     <span class="">التاريخ:</span>
                                                 </div>
                                                 <div class="col-lg-9">
-                                                    {{ date('F d l', strtotime($reservation->appointment->start_date)) }}
+                                                    {{ date('F d l', strtotime($reservation->start_date)) }}
                                                 </div>
                                             </div>
                                             <div class="row info">
@@ -95,7 +93,7 @@
                                                     <span class="">المكان:</span>
                                                 </div>
                                                 <div class="col-lg-9 rtl">
-                                                    {{ $reservation->appointment->course->city->name.' - '.$reservation->appointment->course->address }}
+                                                    {{ $reservation->course->city->name.' - '.$reservation->course->address }}
                                                 </div>
                                             </div>
                                             <div class="row info">
@@ -104,10 +102,10 @@
                                                     <span class="">الوقت:</span>
                                                 </div>
                                                 <div class="col-lg-9 rtl">
-                                                    @if( date('a', strtotime($reservation->appointment->start_time)) == 'pm' )
-                                                        {{ date('h:i', strtotime($reservation->appointment->start_time)).' مساء' }}
+                                                    @if( date('a', strtotime($reservation->start_time)) == 'pm' )
+                                                        {{ date('h:i', strtotime($reservation->start_time)).' مساء' }}
                                                     @else
-                                                        {{ date('h:i', strtotime($reservation->appointment->start_time)).' صباحا' }}
+                                                        {{ date('h:i', strtotime($reservation->start_time)).' صباحا' }}
                                                     @endif
                                                 </div>
                                             </div>
@@ -118,8 +116,8 @@
                                                 </div>
                                                 <div class="col-lg-9 rtl">
                                                     <?php
-                                                    $date1 = date_create($reservation->appointment->start_date);
-                                                    $date2 = date_create($reservation->appointment->finish_date);
+                                                    $date1 = date_create($reservation->start_date);
+                                                    $date2 = date_create($reservation->finish_date);
                                                     $diff = date_diff($date1,$date2);
                                                     $days = $diff->format("%a");
                                                     if ( $days == 1 ){
@@ -139,13 +137,13 @@
                                             <div class="row">
                                                 <div class="col-lg-12">
                                                     <p class="text-right">
-                                                        {{ $reservation->appointment->course->title }}
+                                                        {{ $reservation->course->title }}
                                                     </p>
                                                 </div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <p class="course-description">{{ $reservation->appointment->course->description }}</p>
+                                                    <p class="course-description">{{ $reservation->course->description }}</p>
                                                     <hr>
                                                 </div>
                                             </div>
@@ -268,7 +266,7 @@
                                             <img src="https://snazzy-maps-cdn.azureedge.net/assets/1243-xxxxxxxxxxx.png?v=20170626083204">
                                         </div>
                                         <div class="block rounded-bottom mt-0 rtl">
-                                            <p class="text-right">{{ $reservation->appointment->course->city->name.' - '.$reservation->appointment->course->address }}</p>
+                                            <p class="text-right">{{ $reservation->course->city->name.' - '.$reservation->course->address }}</p>
                                         </div>
                                     </div>
                                 </div>

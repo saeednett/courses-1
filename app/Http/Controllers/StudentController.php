@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Appointment;
 use App\Bank;
 use App\Center;
 use App\CenterAccount;
@@ -34,7 +33,7 @@ class StudentController extends Controller
             // To Filter The Reservation That Is Not Confirmed
             $tickets_data = array();
             foreach ($reservations as $reservation){
-                if ( $reservation->appointment->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+                if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
                     array_push($tickets_data, $reservation->id);
                 }
             }
@@ -52,32 +51,47 @@ class StudentController extends Controller
     // To Show The Form Of Registering Of The Student
     public function create()
     {
-        return view('student.register');
+        $countries = Country::all();
+        $cities = City::where('country_id', 1)->get();
+        return view('student.register', compact('countries', 'cities'));
     }
     // The Registering Data Goes Here
     public function store(Request $request)
     {
+
+        $cities = array();
+        $cities_data = City::where('country_id', $request->country)->get();
+
+        foreach ($cities_data as $city){
+            array_push($cities, $city->id);
+        }
+
         $request->validate([
             'name' => 'required|string|max:50|min:10',
             'email' => 'required|email|max:100|unique:users,email',
             'username' => 'required|string|max:20|min:5|unique:users,username',
-            'phone' => 'required|max:10|min:9|unique:users,phone',
+            'phone' => 'required|max:20|min:9|unique:users,phone',
             'gender' => 'required|max:99|min:1|exists:genders,id',
+            'country' => 'required|integer|max:99|min:1|exists:countries,id',
+            'city' => 'required|integer|max:99|min:1|'.Rule::in($cities),
             'password' => 'required|string|max:32|min:8|confirmed'
         ]);
         $student = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'username' => $request->username,
-            'phone' => "+966" . $request->phone,
-            'role_id' => 3,
+            'phone' => $request->phone,
+            'role_id' => 5,
             'password' => Hash::make($request->password),
         ]);
 
         Student::create([
             'user_id' => $student->id,
             'gender_id' => $request->gender,
-            'city_id' => 0,
+            'city_id' => $request->city,
+            'year' => 0,
+            'month' => 0,
+            'day' => 0,
             'status' => 1
         ]);
 
@@ -110,7 +124,7 @@ class StudentController extends Controller
             // To Filter The Reservation That Is Not Confirmed
             $tickets_data = array();
             foreach ($reservations as $reservation){
-                if ( $reservation->appointment->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+                if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
                     array_push($tickets_data, $reservation->id);
                 }
             }
@@ -140,7 +154,7 @@ class StudentController extends Controller
             // To Filter The Reservation That Is Not Confirmed
             $tickets_data = array();
             foreach ($reservations as $reservation){
-                if ( $reservation->course->appointment->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+                if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
                     array_push($tickets_data, $reservation->id);
                 }
             }
@@ -165,22 +179,21 @@ class StudentController extends Controller
             'coupon_code' => 'nullable|string|min:3|max:30',
         ]);
         // Getting The Coupons Of The Course
-        $coupon = Coupon::where('coupon_code', $request->coupon_code)->where('course_id', $course->id)->first();
+        $coupon = Coupon::where('code', $request->coupon_code)->where('course_id', $course->id)->first();
         // Check If The User Coupon Is Exist
-        if (count($coupon) <= 0) {
+        if (count($coupon) < 1) {
             Reservation::create([
                 'student_id' => Auth::user()->student->id,
+                'coupon_id' => 0,
                 'course_id' => $course->id,
                 'identifier' => Str::random(10),
-                'appointment_id' => $course->appointment->id,
             ]);
         } else {
             Reservation::create([
                 'student_id' => Auth::user()->student->id,
-//                'course_id' => $course->id,
                 'coupon_id' => $coupon->id,
+                'course_id' => $course->id,
                 'identifier' => Str::random(10),
-                'appointment_id' => $course->appointment->id,
             ]);
         }
         // Redirect To The Page That Show All Tickets Of The User | Student
@@ -195,13 +208,12 @@ class StudentController extends Controller
         $cities = City::where('country_id',$user->student->city->country->id)->get();
         // Getting All Countries
         $countries = Country::all();
-
         // Get All Reservations To Filter It
         $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
         // To Filter The Reservation That Is Not Confirmed
         $tickets_data = array();
         foreach ($reservations as $reservation){
-            if ( $reservation->appointment->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+            if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
                 array_push($tickets_data, $reservation->id);
             }
         }
@@ -339,7 +351,7 @@ class StudentController extends Controller
         $tickets_data = array();
         // Fetching The Data To The Array
         foreach ($reservations as $reservation){
-            if ( $reservation->appointment->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+            if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
                 array_push($tickets_data, $reservation->id);
             }
         }
@@ -363,7 +375,7 @@ class StudentController extends Controller
         $tickets_data = array();
         // Fetching The Data Into The Array
         foreach ($reservations as $reservation){
-            if ( $reservation->appointment->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+            if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
                 array_push($tickets_data, $reservation->id);
             }
         }
@@ -410,7 +422,7 @@ class StudentController extends Controller
         $tickets_data = array();
         // Fetching The Data Into The Array
         foreach ($reservations as $reservation){
-            if ( $reservation->course->appointment->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+            if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
                 array_push($tickets_data, $reservation->id);
             }
         }
@@ -457,7 +469,7 @@ class StudentController extends Controller
         // Checking The Counter Is Greater Than 0 Then Save The Changes
         if ( $counter > 0 ){
             $payment->update();
-            return redirect()->route('account.ticket')->with('success', 'تم إضافة معلومات الدفع سيتم اصدار التذكرة بعد التأكدة من صحة معلومات الدفع');
+            return redirect()->route('account.ticket')->with('success', 'تم تعديل معلومات الدفع سيتم اصدار التذكرة بعد التأكدة من صحة معلومات الدفع');
         }
         // Comparing The Old Account Owner With New
         return redirect()->route('student.payment.confirmation.edit', $reservation->identifier)->withErrors(['لم يتم تعديل المعلومات']);
@@ -471,7 +483,7 @@ class StudentController extends Controller
         // To Filter The Reservation That Is Not Confirmed
         $tickets_data = array();
         foreach ($reservations as $reservation){
-            if ( $reservation->appointment->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+            if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
                 array_push($tickets_data, $reservation->id);
             }
         }

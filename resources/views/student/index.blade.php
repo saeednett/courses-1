@@ -43,28 +43,28 @@
                                 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                     <div class="carousel-inner">
                                         <div class="carousel-item active">
-                                            <img src="/storage/course-images/{{ $courses[0]->image[0]->url }}" class="banner-img"
+                                            <img src="/storage/course-images/{{ $courses[0]->image[0]->image }}" class="banner-img"
                                                  alt="{{ $courses[0]->title }}">
                                             <div class="carousel-caption d-block d-md-block">
                                                 <h5>{{ $courses[0]->title }}</h5>
-                                                <p>{{ $courses[0]->appointment->start_date }}</p>
+                                                <p>{{ $courses[0]->start_date }}</p>
                                             </div>
                                         </div>
                                         <div class="carousel-item">
-                                            <img src="/storage/course-images/{{ $courses[0]->image[0]->url }}" class="banner-img"
+                                            <img src="/storage/course-images/{{ $courses[0]->image[0]->image }}" class="banner-img"
                                                  alt="{{ $courses[0]->title }}">
                                             <div class="carousel-caption d-block d-md-block">
                                                 <h5>{{ $courses[0]->title }}</h5>
-                                                <p>{{ $courses[0]->appointment->date }}</p>
+                                                <p>{{ $courses[0]->start_date }}</p>
                                             </div>
                                         </div>
                                         <div class="carousel-item">
-                                            <img src="/storage/course-images/{{ $courses[0]->image[0]->url }}" class=""
+                                            <img src="/storage/course-images/{{ $courses[0]->image[0]->image }}" class=""
                                                  alt="{{ $courses[0]->title }}"
                                                  >
                                             <div class="carousel-caption d-block d-md-block">
                                                 <h5>{{ $courses[0]->title }}</h5>
-                                                <p>{{ $courses[0]->appointment->date }}</p>
+                                                <p>{{ $courses[0]->start_date }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -127,16 +127,16 @@
                                 <a class="card"
                                    href="{{ route('account.course_details', [$course->center->user->username, $course->identifier,] ) }}"
                                    title="{{ $course->title }}">
-                                    <img src="/storage/course-images/{{ $course->image[0]->url }}" class="card-img-top"
+                                    <img src="/storage/course-images/{{ $course->image[0]->image }}" class="card-img-top"
                                          alt="..." width="301" height="200">
                                     <div class="card-title text-center mt-2 mr-2">
                                         <h5>{{ $course->title }}</h5>
                                     </div>
                                     <div class="adv-footer">
-                                        @if($course->appointment->price == 0)
+                                        @if($course->type == 'free')
                                             <p class="adv-price">مجانًا</p>
                                         @else
-                                            <p class="adv-price rtl">{{ $course->appointment->price }} ريال</p>
+                                            <p class="adv-price rtl">{{ $course->price }} ريال</p>
                                         @endif
 
                                         <p class="adv-place">{{ $course->city->name }}</p>

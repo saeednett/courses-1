@@ -71,29 +71,28 @@
                                 @foreach($reservations as $reservation)
                                     <div class="col-lg-4 col-md-5 col-sm-8 col-10 mt-3">
                                         <div class="card">
-                                            <img src="/storage/course-images/{{ $reservation->appointment->course->image[0]->url }}"
+                                            <img src="/storage/course-images/{{ $reservation->course->image[0]->image }}"
                                                  class="card-img-top" alt="..." width="301" height="200">
                                             <div class="card-title text-center mt-2 mr-2">
-                                                <h5 title="اسم الدورة">{{ $reservation->appointment->course->title }}</h5>
+                                                <h5 title="اسم الدورة">{{ $reservation->course->title }}</h5>
                                                 <h5 class="text-muted"
-                                                    title="تاريخ الدورة">{{ $reservation->appointment->start_date }}</h5>
+                                                    title="تاريخ الدورة">{{ $reservation->start_date }}</h5>
                                             </div>
                                             <div class="adv-footer">
-
-                                                @if($reservation->appointment->course->appointment->price == 0)
+                                                @if($reservation->course->price == 0)
                                                     <p class="adv-price">مجانًا</p>
                                                 @else
-                                                    <p class="adv-price">{{ $reservation->appointment->course->appointment->price }}</p>
+                                                    <p class="adv-price">{{ $reservation->course->price }}</p>
                                                 @endif
-                                                <p class="adv-place">{{ $reservation->appointment->course->city->name }}</p>
+                                                <p class="adv-place">{{ $reservation->course->city->name }}</p>
                                             </div>
                                             <div class="clear"></div>
                                         </div>
                                         {{-- If The User Has Confirmed His Payment Fir The Course --}}
                                         @if(!is_null($reservation->payment))
                                             {{-- If The Date Of The Course Is Equal Or Greater Than Today's Date  --}}
-                                            @if($reservation->appointment->start_date >= date('y-m-d'))
-                                                @if($reservation->appointment->start_date > date('y-m-d') && $reservation->confirmation == 1)
+                                            @if($reservation->course->start_date >= date('y-m-d'))
+                                                @if($reservation->course->start_date > date('y-m-d') && $reservation->confirmation == 1)
                                                     <div class="status">
                                                         <div class="col-12 show-confirmed-ticket bg-success">
                                                             <p class="text-center mb-0"><b>عرض بطاقة الحضور</b></p>
@@ -104,7 +103,7 @@
                                                             <p class="text-white text-center mb-0"><b>مؤكدة</b></p>
                                                         </div>
                                                     </div>
-                                                @elseif($reservation->appointment->start_date > date('y-m-d') && $reservation->confirmation == 0)
+                                                @elseif($reservation->course->start_date > date('y-m-d') && $reservation->confirmation == 0)
                                                     <div class="status">
                                                         <div class="col-12 p-0 m-0">
                                                             <a href="{{ route('student.payment.confirmation.edit', $reservation->identifier) }}">
@@ -133,7 +132,7 @@
                                                 <div class="col-12 p-0 m-0">
                                                     <a href="{{ route('student.payment.confirmation', $reservation->identifier) }}">
                                                         <button class="btn btn-block payed-ticket rtl">
-                                                            <b>ابلاغ بدفع ({{ $reservation->appointment->price }}
+                                                            <b>ابلاغ بدفع ({{ $reservation->price }}
                                                                 ريال)</b>
                                                         </button>
                                                     </a>

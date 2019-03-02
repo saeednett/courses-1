@@ -8,6 +8,11 @@ class Reservation extends Model
 {
     protected $guarded = [];
 
+    public function course()
+    {
+        return $this->belongsTo('App\Course');
+    }
+
     public function student()
     {
         return $this->belongsTo('App\Student');

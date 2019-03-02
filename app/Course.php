@@ -44,6 +44,11 @@ class Course extends Model
         return $this->hasOne('App\Template');
     }
 
+    public function category()
+    {
+        return $this->belongsTo('App\Category');
+    }
+
     public function trainer()
     {
         return $this->hasMany('App\CourseTrainer');

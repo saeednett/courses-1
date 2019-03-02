@@ -41,15 +41,15 @@
                                             {{ $course->title }}
                                         </td>
 
-                                        @if($course->appointment->start_date > date('Y-m-d'))
+                                        @if($course->start_date > date('Y-m-d'))
                                             <td class="ltr">
                                                 <i class="icon-check icon-larger green-color" title="بقي لها"></i>
-                                                {{ date( 'Y-M-d h:i' ,strtotime($course->appointment->strat_date." ".$course->appointment->strat_time)) }}
+                                                {{ date( 'Y-M-d h:i' ,strtotime($course->strat_date." ".$course->strat_time)) }}
                                             </td>
-                                        @elseif($course->appointment->start_date == date('Y-m-d'))
+                                        @elseif($course->start_date == date('Y-m-d'))
                                             <td class="ltr">
                                                 <i class="icon-check icon-larger warning-color" title="اليوم"></i>
-                                                {{ date( 'Y-M-d h:i' ,strtotime($course->appointment->strat_date." ".$course->appointment->start_time)) }}
+                                                {{ date( 'Y-M-d h:i' ,strtotime($course->strat_date." ".$course->start_time)) }}
                                             </td>
                                         @else
                                             <td class="ltr">
@@ -58,7 +58,7 @@
                                             </td>
                                         @endif
                                         <td>{{ count($course->trainer) }}</td>
-                                        <td>{{ count($course->appointment->reservation) }}</td>
+                                        <td>{{ count($course->reservation) }}</td>
 
                                         @if($course->validation == 1)
                                             <td>

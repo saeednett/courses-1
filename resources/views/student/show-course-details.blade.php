@@ -25,7 +25,7 @@
             <div class="col-lg-10">
                 @if(\Illuminate\Support\Facades\Auth::check())
                     <?php $students = array(); ?>
-                    @foreach($course->appointment->reservation as $reservation)
+                    @foreach($course->reservation as $reservation)
                         @if($reservation->student_id == \Illuminate\Support\Facades\Auth::user()->student->id)
                             <? array_push($students, $reservation->student_id); ?>
                         @endif
@@ -47,7 +47,7 @@
                         <h3>{{ $course->title }}</h3>
                         <div class="main-info">
                             <div class="course-logo rounded-top">
-                                <img src="/storage/course-images/{{ $course->image[0]->url }}" alt="{{ $course->title }}">
+                                <img src="/storage/course-images/{{ $course->image[0]->image }}" alt="{{ $course->title }}">
                             </div>
                             <div class="block rounded-bottom mt-0">
                                 <div class="row">
@@ -110,7 +110,7 @@
                                         <span class="">التاريخ:</span>
                                     </div>
                                     <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
-                                        {{ date('F d l', strtotime($course->appointment->start_date)) }}
+                                        {{ date('F d l', strtotime($course->start_date)) }}
                                     </div>
                                 </div>
 
@@ -140,10 +140,10 @@
                                         <span class="">الوقت:</span>
                                     </div>
                                     <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
-                                        @if( date('a', strtotime($course->appointment->start_time)) == 'pm' )
-                                            {{ date('h:i', strtotime($course->appointment->start_time)).' مساء' }}
+                                        @if( date('a', strtotime($course->start_time)) == 'pm' )
+                                            {{ date('h:i', strtotime($course->start_time)).' مساء' }}
                                         @else
-                                            {{ date('h:i', strtotime($course->appointment->start_time)).' صباحا' }}
+                                            {{ date('h:i', strtotime($course->start_time)).' صباحا' }}
                                         @endif
                                     </div>
                                 </div>
@@ -155,8 +155,8 @@
                                     </div>
                                     <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
                                         <?php
-                                        $date1 = date_create($course->appointment->start_date);
-                                        $date2 = date_create($course->appointment->finish_date);
+                                        $date1 = date_create($course->start_date);
+                                        $date2 = date_create($course->finish_date);
                                         $diff = date_diff($date1, $date2);
                                         $days = $diff->format("%a");
                                         if ($days == 1) {
@@ -267,7 +267,7 @@
                     <div class="col-lg-7 col-12">
                         @if(\Illuminate\Support\Facades\Auth::check())
                             <?php $students = array(); ?>
-                            @foreach($course->appointment->reservation as $reservation)
+                            @foreach($course->reservation as $reservation)
                                 @if($reservation->student_id == \Illuminate\Support\Facades\Auth::user()->student->id)
                                     <?php array_push($students, $reservation->student_id); ?>
                                 @endif

@@ -59,19 +59,20 @@
                                            for="sign_up_phone">رقم الجوال</label>
                                 </div>
 
-                                <div class="col-lg-10">
-
+                                <div class="col-lg-10 text-center">
                                     <div class="input-group">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text form-control-sm">+966</span>
                                         </div>
                                         <input type="text" class="form-control {{ $errors->has('phone') ? ' is-invalid' : '' }} form-control-sm text-center" name="phone" value="{{ old('phone') }}" autocomplete="off">
-                                        @if ($errors->has('phone'))
-                                            <span class="invalid-feedback text-center" role="alert">
+                                    </div>
+                                    @if ($errors->has('phone'))
+                                        <span class="invalid-feedback text-center" role="alert">
                                                 <strong>{{ $errors->first('phone') }}</strong>
                                             </span>
-                                        @endif
-                                    </div>
+                                    @else
+                                        <small class="text-center text-muted">الرجاء الابتداء برمز الدولة.. +966</small>
+                                    @endif
                                 </div>
                             </div>
 
@@ -93,6 +94,56 @@
                                     @endif
                                 </div>
                             </div>
+
+                            <div class="form-group row justify-content-center">
+                                <div class="col-lg-10 col-md-10 col-sm-12 col-12 text-right">
+                                    <label class="col-form-label required-field rtl" for="sign_up_country">الدولة</label>
+                                </div>
+
+
+                                <div class="col-lg-10">
+                                    <select class="custom-select {{ $errors->has('country') ? ' is-invalid' : '' }}" name="country" required>
+                                        @foreach($countries as $country)
+                                            @if(old('country') == $country->id)
+                                                <option value="{{ $country->id }}" selected>{{ $country->name }}</option>
+                                            @else
+                                                <option value="{{ $country->id }}">{{ $country->name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('country'))
+                                        <span class="invalid-feedback text-center" role="alert">
+                                            <strong>{{ $errors->first('country') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group row justify-content-center">
+                                <div class="col-lg-10 col-md-10 col-sm-12 col-12 text-right">
+                                    <label class="col-form-label required-field rtl" for="sign_up_city">المدينة</label>
+                                </div>
+                                <div class="col-lg-10">
+                                    <select class="custom-select {{ $errors->has('city') ? ' is-invalid' : '' }}" name="city" required>
+                                        @foreach($cities as $city)
+                                            @if(old('city') == $city->id)
+                                                <option value="{{ $city->id }}" selected>{{ $city->name }}</option>
+                                            @else
+                                                <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                    @if ($errors->has('city'))
+                                        <span class="invalid-feedback text-center" role="alert">
+                                            <strong>{{ $errors->first('city') }}</strong>
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
+
 
                             <div class="form-group row justify-content-center">
                                 <div class="col-lg-10 col-md-10 col-sm-12 col-12 text-right">

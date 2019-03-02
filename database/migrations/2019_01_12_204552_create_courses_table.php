@@ -34,6 +34,7 @@ class CreateCoursesTable extends Migration
             $table->integer('visible')->default(1);
             $table->text('description');
             $table->integer('validation')->default(0);
+            $table->integer('activation')->default(0);
             $table->timestamps();
         });
     }

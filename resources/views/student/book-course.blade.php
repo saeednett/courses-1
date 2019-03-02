@@ -1,6 +1,6 @@
 @extends('student.master-v-1-1')
 
-@section('title', 'الفعالبات')
+@section('title', 'حجز دورة')
 
 @section('guest-links')
     <a class="dropdown-item" href="{{ route('account.login') }}">تسجيل الدخول</a>
@@ -73,9 +73,11 @@
                                                             <span class="">المبلغ:</span>
                                                         </div>
                                                         <div class="col-lg-8 col-md-9 col-sm-5 col-7 text-center">
-                                                            <p class="mt-0 mb-0 text-muted rtl">
-                                                                <b>{{ $course->appointment->price }}
-                                                                    ريال</b></p>
+                                                            @if($course->type == 'free')
+                                                                <p class="mt-0 mb-0 text-muted rtl"><b>مجانية</b></p>
+                                                            @else
+                                                                <p class="mt-0 mb-0 text-muted rtl"><b>{{ $course->price }}ريال</b></p>
+                                                            @endif
                                                         </div>
                                                     </div>
 
@@ -96,8 +98,8 @@
                                                         </div>
                                                         <div class="col-lg-8 col-md-9 col-sm-5 col-7 text-center rtl">
                                                             <?php
-                                                            $date1 = date_create($course->appointment->start_date);
-                                                            $date2 = date_create($course->appointment->finish_date);
+                                                            $date1 = date_create($course->start_date);
+                                                            $date2 = date_create($course->finish_date);
                                                             $diff = date_diff($date1, $date2);
                                                             $days = $diff->format("%a");
                                                             if ($days == 1) {
@@ -117,7 +119,7 @@
                                                     <div class="row info">
                                                         <div class="col-lg-12 text-center pt-2">
                                                             <h4 class="text-danger rtl mb-0 mt-0">الاجمالي
-                                                                : {{ $course->appointment->price }}
+                                                                : {{ $course->price }}
                                                                 ريال </h4>
                                                         </div>
                                                     </div>
@@ -227,6 +229,7 @@
                                     <div class="col-12">
                                         <div class="block mt-0 rounded">
                                             <div class="bank-selection">
+                                                <input type="hidden" name="center" value="{{ $course->center->id }}">
                                                 <select class="custom-select {{ $errors->has('bank') ? ' is-invalid' : '' }} custom-input"
                                                         name="bank" required>
                                                     <option>- البنك -</option>

@@ -72,7 +72,7 @@
                 <div class="panel-body">
                     <div class="table-responsive">
                         <div class="container-fluid">
-                            <form method="post" action="{{ route('center.reset.password.confirm') }}">
+                            <form method="post" action="{{ route('center.password.reset.confirm') }}">
                                 {{ csrf_field() }}
                                 <div class="row form-group">
                                     <div class="col-lg-6 col-lg-offset-3">

@@ -9,7 +9,7 @@
 @section('content')
     <div class="wrap text-md-center ">
         <div class="profile-wall h-lg-40 h-md-50 h-sm-30 h-25">
-            <img src="/storage/center-images/{{ $center->center->cover }}">
+            <img src="/storage/center-images/{{ $center->center->logo }}">
         </div>
         <div class="container mb-4">
             <div class="row justify-content-center">
@@ -63,13 +63,17 @@
                                                 <a class="card rounded" data-post="1452"
                                                    href="{{ route('account.course_details', [$course->center->user->username, $course->identifier,] ) }}"
                                                    title="#بسطة_ماركت4">
-                                                    <img src="/storage/course-images/{{ $course->image[0]->url }}"
+                                                    <img src="/storage/course-images/{{ $course->image[0]->image }}"
                                                          class="w-100" alt="{{ $course->title }}" height="200">
                                                     <div class="card-title text-center mt-4">
                                                         <h5>{{ $course->title }}</h5>
                                                     </div>
                                                     <div class="adv-footer">
-                                                        <p class="adv-price">{{ $course->appointment->price }}</p>
+                                                        @if($course->type == 'free')
+                                                            <p class="adv-price">مجانا</p>
+                                                        @else
+                                                            <p class="adv-price">{{ $course->price }}</p>
+                                                        @endif
                                                         <p class="adv-place">{{ $course->city->name }}</p>
                                                     </div>
                                                     <div class="clear"></div>

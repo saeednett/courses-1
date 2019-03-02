@@ -59,7 +59,7 @@
                                     <div class="col-12">
                                         <div class="main-info">
                                             <div class="course-logo rounded-top">
-                                                <img src="/storage/course-images/{{ $reservation->course->image[0]->url }}"
+                                                <img src="/storage/course-images/{{ $reservation->course->image[0]->image }}"
                                                      alt="$reservation->course->title">
                                             </div>
                                             <div class="block rounded-bottom mt-0">
@@ -125,7 +125,7 @@
                                                         <span class="">التاريخ:</span>
                                                     </div>
                                                     <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
-                                                        {{ date('F d l', strtotime($reservation->course->appointment->start_date)) }}
+                                                        {{ date('F d l', strtotime($reservation->course->start_date)) }}
                                                     </div>
                                                 </div>
 
@@ -155,10 +155,10 @@
                                                         <span class="">الوقت:</span>
                                                     </div>
                                                     <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
-                                                        @if( date('a', strtotime($reservation->course->appointment->start_time)) == 'pm' )
-                                                            {{ date('h:i', strtotime($reservation->course->appointment->start_time)).' مساء' }}
+                                                        @if( date('a', strtotime($reservation->course->start_time)) == 'pm' )
+                                                            {{ date('h:i', strtotime($reservation->course->start_time)).' مساء' }}
                                                         @else
-                                                            {{ date('h:i', strtotime($course->appointment->start_time)).' صباحا' }}
+                                                            {{ date('h:i', strtotime($course->start_time)).' صباحا' }}
                                                         @endif
                                                     </div>
                                                 </div>
@@ -170,8 +170,8 @@
                                                     </div>
                                                     <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
                                                         <?php
-                                                        $date1 = date_create($reservation->course->appointment->start_date);
-                                                        $date2 = date_create($reservation->course->appointment->finish_date);
+                                                        $date1 = date_create($reservation->course->start_date);
+                                                        $date2 = date_create($reservation->course->finish_date);
                                                         $diff = date_diff($date1, $date2);
                                                         $days = $diff->format("%a");
                                                         if ($days == 1) {
@@ -348,7 +348,6 @@
                                     </div>
                                 </div>
                             </div>
-
 
                             <div class="map-section col-12 order-lg-last">
                                 <div class="row mt-4">

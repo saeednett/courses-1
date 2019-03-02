@@ -48,7 +48,6 @@
         body {
             font-family: 'Tajawal', sans-serif;
         }
-
         .ltr {
             direction: ltr;
         }
@@ -69,10 +68,8 @@
 
             <!-- Site header  -->
             <header class="site-header">
-                <div class="site-logo"><a href="{{ route('admin.index', Auth::user()->username) }}"><img
-                                src="{{ asset('img/center/logo.png') }}" alt="Mouldifi"
-                                title="Mouldifi" style="height: 40px; width: 50px; display: block; margin: auto;"></a>
-                </div>
+                <div class="site-logo"><a href="{{ route('admin.index', Auth::user()->username) }}"><img src="{{ asset('img/center/logo.png') }}" alt="Mouldifi"
+                                                                                                         title="Mouldifi" style="height: 40px; width: 50px; display: block; margin: auto;"></a></div>
                 <div class="sidebar-collapse hidden-xs"><a class="sidebar-collapse-icon" href="#"><i
                                 class="icon-menu"></i></a></div>
                 <div class="sidebar-mobile-menu visible-xs"><a data-target="#side-nav" data-toggle="collapse"
@@ -84,25 +81,20 @@
             <!-- Main navigation -->
             <ul id="side-nav" class="main-menu navbar-collapse collapse">
 
-                <li class="has-sub"><a href="index.html"><i class="icon-book-open"></i><span
-                                class="title">الدورات</span></a>
+                <li class="has-sub"><a href="index.html"><i class="icon-book-open"></i><span class="title">الدورات</span></a>
                     <ul class="nav collapse">
                         <li><a href="{{ route('admin.courses.show') }}"><span class="title">عرض الدورات</span></a></li>
-                        <li><a href="{{ route('admin.courses.activation') }}"><span class="title">تفعيل الدورات</span></a>
-                        </li>
-                        <li><a href="{{ route('admin.courses.attendance') }}"><span class="title">سجل الحضور</span></a>
-                        </li>
+                        <li><a href="{{ route('admin.courses.activation') }}"><span class="title">تفعيل الدورات</span></a></li>
+                        <li><a href="{{ route('admin.courses.attendance') }}"><span class="title">سجل الحضور</span></a></li>
                     </ul>
                 </li>
 
                 <li class="has-sub"><a href="collapsed-sidebar.html"><i class="icon-users"></i><span
                                 class="title">الطلاب</span></a>
                     <ul class="nav">
-                        <li><a href="{{ route('admin.courses.payment.show') }}"><span
-                                        class="title">تأكيد الدفع</span></a></li>
+                        <li><a href="{{ route('admin.courses.payment.show') }}"><span class="title">تأكيد الدفع</span></a></li>
                         <li><a href="{{ route('admin.courses.take.attendance') }}"><span class="title">تحضير الطلاب</span></a>
-                        <li><a href="{{ route('admin.courses.student.show') }}"><span
-                                        class="title">عرض الطلاب</span></a>
+                        <li><a href="{{ route('admin.courses.student.show') }}"><span class="title">عرض الطلاب</span></a>
                         </li>
                     </ul>
                 </li>
@@ -110,8 +102,7 @@
                 <li class="has-sub"><a href="collapsed-sidebar.html"><i class="icon-book"></i><span
                                 class="title">الشهادات</span></a>
                     <ul class="nav">
-                        <li><a href="{{ route('center.trainer.create') }}"><span class="title">إصدار شهادة</span></a>
-                        </li>
+                        <li><a href="{{ route('center.trainer.create') }}"><span class="title">إصدار شهادة</span></a></li>
                         <li><a href="{{ route('center.trainer.show') }}"><span class="title">عرض الشهادات</span></a>
                         </li>
                     </ul>
@@ -124,11 +115,9 @@
                     </ul>
                 </li>
 
-                <li class="has-sub"><a href="form-basic.html"><i class="icon-user"></i><span
-                                class="title">الملف الاشخصي</span></a>
+                <li class="has-sub"><a href="form-basic.html"><i class="icon-user"></i><span class="title">الملف الاشخصي</span></a>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('admin.reset.password') }}"><span class="title">كلمة المرور</span></a>
-                        </li>
+                        <li><a href="{{ route('admin.reset.password') }}"><span class="title">كلمة المرور</span></a></li>
                     </ul>
                     <ul class="nav collapse">
                         <li><a href="{{ route('admin.edit') }}"><span class="title">بياناتي الشخصية</span></a></li>
@@ -194,8 +183,7 @@
                             <li><a href="{{ route('center.edit') }}"><i class="icon-user"></i>ملفي الشخصي</a></li>
                             <li class="divider"></li>
                             <li>
-                                <a class="dropdown-item" href="{{ route('logout') }}"
-                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="icon-logout"></i>تسجيل الخروج
                                 </a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST"
@@ -328,7 +316,58 @@
                     </ol>
                 </div>
             </div>
-
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-lg-offset-3 animatedParent animateOnce z-index-50">
+                    <div class="panel minimal panel-default animated fadeInUp">
+                        <div class="panel-heading clearfix">
+                            <div class="panel-title">مسؤول الدورات</div>
+                            <ul class="panel-tool-options">
+                                <li class="dropdown">
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"><i
+                                                class="icon-cog"></i></a>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li><a href="#"><i class="icon-doc-text"></i>عرض البيانات</a></li>
+                                        <li><a href="#"><i class="icon-arrows-ccw"></i>تحديث البيانات</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- panel body -->
+                        <div class="panel-body">
+                            <div class="stack-order">
+                                <h1 class="no-margins">{{ $course_admin }}</h1>
+                                <small>صلاحياتك كمسؤول</small>
+                            </div>
+                            <div class="bar-chart-icon"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 animatedParent animateOnce z-index-49">
+                    <div class="panel minimal panel-default animated fadeInUp">
+                        <div class="panel-heading clearfix">
+                            <div class="panel-title">محضر الدورات</div>
+                            <ul class="panel-tool-options">
+                                <li class="dropdown">
+                                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"><i
+                                                class="icon-cog"></i></a>
+                                    <ul class="dropdown-menu dropdown-menu-right">
+                                        <li><a href="{{ route('center.trainer.show') }}"><i class="icon-doc-text"></i>عرض البيانات</a></li>
+                                        <li><a href="#"><i class="icon-arrows-ccw"></i> تحديث البيانات</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- panel body -->
+                        <div class="panel-body">
+                            <div class="stack-order">
+                                <h1 class="no-margins">{{ $course_attender }}</h1>
+                                <small>صلاحياتك كمحضر</small>
+                            </div>
+                            <div class="bar-chart-icon"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         @yield('content')
         <!-- Footer -->
             <footer class="animatedParent animateOnce z-index-10">

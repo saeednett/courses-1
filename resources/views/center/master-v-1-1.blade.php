@@ -123,7 +123,7 @@
 
                 <li class="has-sub"><a href="form-basic.html"><i class="icon-doc-text"></i><span class="title">الملف الاشخصي</span></a>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('center.reset.password') }}"><span class="title">كلمة المرور</span></a></li>
+                        <li><a href="{{ route('center.password.reset') }}"><span class="title">كلمة المرور</span></a></li>
                     </ul>
                     <ul class="nav collapse">
                         <li><a href="{{ route('center.bank.account.edit') }}"><span class="title">بياناتي البنكية</span></a></li>

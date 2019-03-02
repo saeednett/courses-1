@@ -40,7 +40,8 @@ select {
     margin-top: 0;
     width: 100%;
     padding-top: 15px;
-    background: #00bdac url('https://lammt.com/resource/img/footer_bg_top.png') no-repeat bottom left;
+    background: #00bdac;
+    /* url('https://lammt.com/resource/img/footer_bg_top.png') no-repeat bottom left;*/
     font-size: 12px;
     font-weight: 400;
     color: #ecf4e0;
