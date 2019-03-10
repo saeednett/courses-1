@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateReservationsTable extends Migration
+class CreateAdvertisingBannersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,12 @@ class CreateReservationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('reservations', function (Blueprint $table) {
+        Schema::create('advertising_banners', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('student_id');
-            $table->integer('course_id');
-            $table->integer('coupon_id')->default(0);
-            $table->string('identifier',10)->unique();
-            $table->integer('confirmation')->default(0);
+            $table->string('banner', 100)->unique();
+            $table->string('title', 50)->unique();
+            $table->string('link', 100)->unique();
+            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ class CreateReservationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reservations');
+        Schema::dropIfExists('advertising_banners');
     }
 }

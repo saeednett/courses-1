@@ -162,11 +162,11 @@ class CenterController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:50|min:10|unique:users,name',
+            'name' => 'required|string|max:50|min:10|unique:centers,name',
             'verification_code' => 'required|string|max:10|min:4|unique:centers,verification_code',
             'verification_authority' => 'required|string|max:50|min:10',
-            'country' => 'required|integer|max:99|min:1|exists:countries,id',
-            'city' => 'required|integer|max:99|min:1|exists:cities,id',
+//            'country' => 'required|integer|max:99|min:1|exists:countries,id',
+//            'city' => 'required|integer|max:99|min:1|exists:cities,id',
             'email' => 'required|email|unique:users,email',
             'phone' => 'required|digits_between:9,20|unique:users,phone|',
             'username' => 'required|string|unique:users,username',
@@ -183,7 +183,6 @@ class CenterController extends Controller
 
         try {
         $user = User::create([
-            'name' => $request->name,
             'email' => $request->email,
             'username' => $request->username,
             'phone' => $request->phone,
@@ -198,11 +197,12 @@ class CenterController extends Controller
 
 
         $center = Center::create([
+            'name' => $request->name,
             'user_id' => $user->id,
             'verification_code' => $request->verification_code,
             'verification_authority' => $request->verification_authority,
             'website' => $request->website,
-            'city_id' => $request->city,
+            'city_id' => 1,
             'about' => $request->about,
             'status' => 1,
             'logo' => $logo,
@@ -461,7 +461,7 @@ class CenterController extends Controller
     {
 
         $request->validate([
-            'name' => 'required|string|max:50|min:6|unique:users,name',
+            'name' => 'required|string|max:50|min:6|unique:trainers,name',
             'username' => 'required|string|max:20|:min:5|unique:users,username',
             'phone' => 'required|starts_with:+|max:15|min:9|unique:users,phone',
             'email' => 'required|string|email|unique:users,email',
@@ -476,7 +476,6 @@ class CenterController extends Controller
         try {
 
             $user = User::create([
-                'name' => $request->name,
                 'email' => $request->email,
                 'username' => $request->username,
                 'phone' => $request->phone,
@@ -488,6 +487,7 @@ class CenterController extends Controller
             $file_name = basename($file);
 
             Trainer::create([
+                'name' => $request->name,
                 'user_id' => $user->id,
                 'center_id' => Auth::user()->center->id,
                 'title_id' => $request->title,
@@ -762,7 +762,7 @@ class CenterController extends Controller
             // The Start Date Of The Course
             'start_date' => 'required|date',
             // The Finish Date Of The Course
-            'finish_date' => 'required|date|after_or_equal:' . $request->start_date,
+            'end_date' => 'required|date|after_or_equal:' . $request->start_date,
             // The Deadline Of Reservation
             'end_reservation' => 'required|date|before_or_equal:' . $request->start_date,
             // The Start Time Of The Course
@@ -773,6 +773,10 @@ class CenterController extends Controller
             'price' => 'required_if:type,2|digits_between:1,4',
             // The Attendance Gender
             'gender' => 'required|digits_between:1,3|',
+            // Total Hours Of The Course
+            'hours' => 'required|digits_between:1,4|',
+            // The Activation of The Course
+            'activation' => 'required|digits_between:0,1|',
 
         ]);
 
@@ -804,12 +808,14 @@ class CenterController extends Controller
                 'price' => $price,
                 'type' => $type,
                 'start_date' => $request->start_date,
-                'finish_date' => $request->finish_date,
+                'end_date' => $request->end_date,
                 'start_time' => $request->start_time,
                 'end_reservation' => $request->end_reservation,
                 'attendance' => $request->attendance,
                 'gender' => $request->gender,
                 'coupon' => $coupon,
+                'hours' => $request->hours,
+                'activation' => $request->activation,
                 'category_id' => $request->category,
                 'city_id' => $request->city,
                 'template_id' => $request->template,
@@ -822,15 +828,17 @@ class CenterController extends Controller
 
             // Making Sure That The Data Has A Cover And Image For The Course
             if ($request->hasFile('course-poster-1') && $request->hasFile('course-poster-2')) {
-                for ($i = 1; $i <= 2; $i++) {
-                    $file = $request->file('course-poster-' . $i)->store('public/course-images');
-                    $file_name = basename($file);
+                $file = $request->file('course-poster-1')->store('public/course-images');
+                $file_name = basename($file);
 
-                    Image::create([
-                        'image' => $file_name,
-                        'course_id' => $course->id,
-                    ]);
-                }
+                $file_2 = $request->file('course-poster-1')->store('public/course-images');
+                $file_name_2 = basename($file_2);
+
+                Image::create([
+                    'image' => $file_name,
+                    'image_2' => $file_name_2,
+                    'course_id' => $course->id,
+                ]);
             }
 
             // Storing The Course Trainers
@@ -918,7 +926,7 @@ class CenterController extends Controller
     public function store_admin(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:50|min:6|unique:users,name',
+            'name' => 'required|string|max:50|min:6|unique:admins,name',
             'username' => 'required|string|max:20|:min:5|unique:users,username',
             'phone' => 'required|starts_with:+|max:15|min:9|unique:users,phone',
             'email' => 'required|string|email|unique:users,email',
@@ -931,7 +939,6 @@ class CenterController extends Controller
         try {
 
             $user = User::create([
-                'name' => $request->name,
                 'username' => $request->username,
                 'phone' => $request->phone,
                 'email' => $request->email,
@@ -943,6 +950,7 @@ class CenterController extends Controller
             $file_name = basename($file);
 
             Admin::create([
+                'name' => $request->name,
                 'user_id' => $user->id,
                 'center_id' => Auth::user()->center->id,
                 'image' => $file_name,

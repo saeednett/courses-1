@@ -8,7 +8,7 @@
 @endsection
 
 @section('style-file')
-    <link rel="stylesheet" href="{{ asset('css/student/courses-index.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/student/courses-index.css') }}"/>
 @endsection
 
 @section('script-file')
@@ -37,37 +37,38 @@
                 @endif
 
                 <div class="row justify-content-center">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-12 p-0 d-none">
-                        @if(count($courses) > 0)
-                            <div class="banner">
-                                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                                    <div class="carousel-inner">
-                                        <div class="carousel-item active">
-                                            <img src="/storage/course-images/{{ $courses[0]->image[0]->image }}" class="banner-img"
-                                                 alt="{{ $courses[0]->title }}">
-                                            <div class="carousel-caption d-block d-md-block">
-                                                <h5>{{ $courses[0]->title }}</h5>
-                                                <p>{{ $courses[0]->start_date }}</p>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-12 p-0">
+                        <div class="banner">
+                            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                                    <?php $counter = 1; ?>
+
+                                    @foreach($banners as $banner)
+                                        @if($counter == 1)
+                                            <div class="carousel-item active">
+                                                <a href="{{ $banner->link }}"> <img src="{{ $banner->banner }}"
+                                                                                    class="banner-img"
+                                                                                    alt="image"> </a>
+                                                <div class="carousel-caption d-block d-md-block">
+                                                    <h5>{{ $banner->title }}</h5>
+                                                    <p>{{ $banner->description }}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="/storage/course-images/{{ $courses[0]->image[0]->image }}" class="banner-img"
-                                                 alt="{{ $courses[0]->title }}">
-                                            <div class="carousel-caption d-block d-md-block">
-                                                <h5>{{ $courses[0]->title }}</h5>
-                                                <p>{{ $courses[0]->start_date }}</p>
+                                            <?php $counter++; ?>
+                                        @else
+                                            <div class="carousel-item">
+                                                <a href="{{ $banner->link }}"> <img src="{{ $banner->banner }}"
+                                                                                    class="banner-img"
+                                                                                    alt="image"> </a>
+                                                <div class="carousel-caption d-block d-md-block">
+                                                    <h5>{{ $banner->title }}</h5>
+                                                    <p>{{ $banner->description }}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="carousel-item">
-                                            <img src="/storage/course-images/{{ $courses[0]->image[0]->image }}" class=""
-                                                 alt="{{ $courses[0]->title }}"
-                                                 >
-                                            <div class="carousel-caption d-block d-md-block">
-                                                <h5>{{ $courses[0]->title }}</h5>
-                                                <p>{{ $courses[0]->start_date }}</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        @endif
+                                    @endforeach
+
+
                                     <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
                                        data-slide="prev">
                                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -80,19 +81,19 @@
                                     </a>
                                 </div>
                             </div>
-                        @endif
+                        </div>
                     </div>
                 </div>
 
                 <div class="row justify-content-center">
-                    <div class="col-lg-12 col-md-12 col-10 text-right mt-4">
+                    <div class="col-lg-12 col-md-12 col-10 text-right mt-4 pr-0">
                         <h1>احدث الدورات</h1>
                     </div>
                 </div>
 
                 <div class="row justify-content-center">
                     @if(count($courses) > 0)
-                        <div class="col-12 rtl text-lg-right text-center d-lg-block d-md-block d-none">
+                        <div class="col-12 rtl text-lg-right text-center d-lg-block d-md-block d-none pr-0">
                             <button class="btn filter-tabs custom-active">الجميع</button>
                             <button class="btn filter-tabs">دورات مدفوعة</button>
                             <button class="btn filter-tabs">دورات مجانية</button>
@@ -118,7 +119,7 @@
 
 
         <div class="row justify-content-center mt-2 mb-4">
-            <div class="col-lg-10 col-md-10 col-sm-10 col-10">
+            <div class="col-lg-10 col-md-10 col-sm-10 col-10 pr-0">
                 <div class="row justify-content-end">
                     @if( count($courses) > 0 )
 
@@ -127,7 +128,8 @@
                                 <a class="card"
                                    href="{{ route('account.course_details', [$course->center->user->username, $course->identifier,] ) }}"
                                    title="{{ $course->title }}">
-                                    <img src="/storage/course-images/{{ $course->image[0]->image }}" class="card-img-top"
+                                    <img src="/storage/course-images/{{ $course->image->image }}"
+                                         class="card-img-top"
                                          alt="..." width="301" height="200">
                                     <div class="card-title text-center mt-2 mr-2">
                                         <h5>{{ $course->title }}</h5>

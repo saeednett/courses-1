@@ -16,6 +16,7 @@ class CreateTrainersTable extends Migration
         Schema::create('trainers', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unique();
+            $table->string('name');
             $table->integer('center_id');
             $table->integer('title_id');
             $table->integer('nationality_id');

@@ -22,7 +22,9 @@ class CreateCoursesTable extends Migration
             $table->integer('price');
             $table->string('type');
             $table->date('start_date');
+            $table->date('end_date');
             $table->time('start_time');
+            $table->integer('hours');
             $table->date('end_reservation');
             $table->integer('attendance');
             $table->integer('gender');

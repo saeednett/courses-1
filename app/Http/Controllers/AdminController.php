@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Admin;
+use App\Attendance;
 use App\Category;
 use App\City;
 use App\Country;
 use App\Coupon;
 use App\CourseTrainer;
+use App\Student;
 use App\Trainer;
 use App\User;
 use App\Course;
@@ -440,16 +442,15 @@ class AdminController extends Controller
     // To Show The Form Of Editing Course
     public function course_edit($identifier)
     {
-
         $course = Course::where('identifier', $identifier)->first();
 
-        if (count($course) < 1) {
+        if (count($course) == 0) {
             abort(404);
         }
 
         $admin_courses = CourseAdmin::where('admin_id', Auth::user()->admin->id)->where('role_id', 1)->where('course_id', $course->id)->first();
 
-        if (count($admin_courses) < 1) {
+        if (count($admin_courses) == 0) {
             abort(404);
         }
 
@@ -461,14 +462,14 @@ class AdminController extends Controller
     }
 
     // The Data Of Editing Course Goes Here And The Process Happens Here
-    public function course_update(Request $request, $id)
+    public function course_update(Request $request, $identifier)
     {
-        $courseAdmin = CourseAdmin::where('course_id', $id)->where('role_id', 1)->where('admin_id', Auth::user()->admin->id)->first();
-        if (count($courseAdmin) < 1) {
+
+        $course = Course::where('identifier', $identifier)->first();
+        $courseAdmin = CourseAdmin::where('course_id', $course->id)->where('role_id', 1)->where('admin_id', Auth::user()->admin->id)->first();
+        if (count($courseAdmin) == 0) {
             abort(404);
         }
-
-        $course = Course::find($id);
 
         // Getting Center Main Information
         $center = Center::find(Auth::user()->admin->center->id);
@@ -813,11 +814,11 @@ class AdminController extends Controller
 
 
         if ($counter == 0) {
-            return redirect()->route('admin.course.edit', $course->id)->withErrors(['قم بتحديث بعض الحقول لكي يتم حفظها']);
+            return redirect()->route('admin.course.edit', $identifier)->withErrors(['قم بتحديث بعض الحقول لكي يتم حفظها']);
         }
 
         $course->save();
-        return redirect()->route('admin.course.edit', $course->id)->with('success', 'تم تحديث معلومات الدورة بنجاح');
+        return redirect()->route('admin.course.edit', $identifier)->with('success', 'تم تحديث معلومات الدورة بنجاح');
 
     }
 
@@ -942,9 +943,73 @@ class AdminController extends Controller
         return view('admin.show-course-schedule', compact('course','days'));
     }
 
-    public function take_students_attendance_confirm(Request $request)
+    public function take_students_attendance_confirm(Request $request, $identifier, $date)
     {
-        return "Hello";
+
+        $course = Course::where('identifier', $identifier)->first();
+        $total_student = array();
+        foreach ($course->reservation as $reservation){
+            if( $reservation->confirmation == 1 ){
+                array_push($total_student, $reservation->student_id);
+            }
+        }
+
+        $request->validate([
+            'attendance' => 'required|array|size:'.count($total_student),
+            'attendance.*' => 'required|integer|max:1|min:0',
+            'student' => 'required|array|size:'.count($total_student),
+            'student.*' => 'required|integer|max:1000|min:1|'. Rule::in($total_student),
+        ]);
+
+        $counter = 0;
+        for ($i = 0; $i < count($total_student); $i++){
+            $attendance = Attendance::where('course_id', $course->id)->where('student_id', $total_student[$i])->where('date', $date)->first();
+            if ( count($attendance) > 0 ){
+                if ( $attendance->status != $request->attendance[$i] ){
+                    $attendance->status = $request->attendance[$i];
+                    $attendance->save();
+                    $counter++;
+                }
+            }else{
+                if ( $request->attendance[$i] == 1 ){
+                    $counter++;
+                    Attendance::create([
+                        'course_id' => $course->id,
+                        'student_id' => $request->student[$i],
+                        'admin_id' => Auth::user()->Admin->id,
+                        'date' => date('Y-m-d'),
+                        'status' => 1
+                    ]);
+                }else{
+                    $counter++;
+                    Attendance::create([
+                        'course_id' => $course->id,
+                        'student_id' => $request->student[$i],
+                        'admin_id' => Auth::user()->Admin->id,
+                        'date' => date('Y-m-d'),
+                        'status' => 0
+                    ]);
+                }
+            }
+        }
+
+        if ( $counter == 0 ){
+            return redirect()->route('admin.course.take.attendance', [$identifier, $date])->withErrors(['قم بتحضير بعض الطلاب لكي يتم حفظ البيانات الجديدة']);
+        }
+
+        return redirect()->route('admin.course.take.attendance', [$identifier, $date])->with('success', 'تم حفظ البيانات الجديدة بنجاح');
+
+    }
+
+    public function course_preview($identifier){
+
+        $course = Course::where('identifier', $identifier)->first();
+
+        if ( count($course) < 1 ){
+            abort(404);
+        }
+
+        return view('admin.course-preview', compact('course'));
     }
 
     public function destroy($id)

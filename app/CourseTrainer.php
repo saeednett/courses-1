@@ -8,10 +8,10 @@ class CourseTrainer extends Model
 {
     protected $guarded = [];
     public function course(){
-        return $this->hasMany('App\Course');
+        return $this->belongsTo('App\Course');
     }
 
     public function trainer(){
-        return $this->hasMany('App\Trainer');
+        return $this->belongsTo('App\Trainer');
     }
 }

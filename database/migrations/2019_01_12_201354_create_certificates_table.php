@@ -15,10 +15,10 @@ class CreateCertificatesTable extends Migration
     {
         Schema::create('certificates', function (Blueprint $table) {
             $table->increments('id');
+            $table->date('date');
             $table->integer('student_id');
             $table->integer('course_id');
             $table->integer('admin_id');
-            $table->date('date');
             $table->timestamps();
         });
     }

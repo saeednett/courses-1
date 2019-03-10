@@ -189,7 +189,7 @@
                 </div>
                 <div class="panel-body">
                     <form id="rootwizard-2" class="form-wizard validate-form-wizard validate" method="post"
-                          action="{{ route('admin.course.update', $course->id) }}" enctype="multipart/form-data">
+                          action="{{ route('admin.course.update', $course->identifier) }}" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <input type="hidden" name="_method" value="PUT">
 

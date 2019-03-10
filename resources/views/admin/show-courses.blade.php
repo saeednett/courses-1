@@ -71,10 +71,10 @@
                                         <td>{{ $admin->course->city->name }}</td>
                                         @if($admin->role_id == 1)
                                             <td><a href="{{ route('admin.course.edit', $admin->course->identifier) }}">تعديل</a></td>
-                                            <td><a href="{{ route('account.course_details', [\Illuminate\Support\Facades\Auth::user()->admin->center->user->username, $admin->course->identifier]) }}" target="_blank">عرض</a></td>
+                                            <td><a href="{{ route('admin.courses.preview', [$admin->course->identifier]) }}" target="_blank">عرض</a></td>
                                         @else
                                             <td><a href="#">تحضير</a></td>
-                                            <td><a href="{{ route('account.course_details', [\Illuminate\Support\Facades\Auth::user()->admin->center->user->username, $admin->course->identifier]) }}" target="_blank">عرض</a></td>
+                                            <td><a href="{{ route('account.course_details', [$admin->course->identifier]) }}" target="_blank">عرض</a></td>
                                         @endif
                                     </tr>
                                 @endforeach

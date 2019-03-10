@@ -99,7 +99,7 @@
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     <nav class="navbar navbar-expand-lg navbar-dark align-self-start sticky-top" style="background: #6fcf8f;">
-                        <img class="navbar-brand" src="{{ asset('img/student/logo2.png') }}" alt="" height="70">
+                        <img class="navbar-brand" src="{{ asset('img/center/logo.png') }}" alt="" height="70">
                         <button class="navbar-toggler" type="button" data-toggle="collapse"
                                 data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                                 aria-expanded="false" aria-label="Toggle navigation">
@@ -483,7 +483,7 @@
 
             <div class="row justify-content-center mt-4">
                 <div class="col-lg-2 col-md-2 col-sm-5 col-5">
-                    <a href="a"><img src="{{ asset('img/student/logo2.png') }}"> </a>
+                    <a href="a"><img src="{{ asset('img/center/logo.png') }}" height="70"> </a>
                 </div>
             </div>
 

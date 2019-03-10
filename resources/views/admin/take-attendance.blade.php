@@ -35,6 +35,33 @@
 
     </style>
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+
+    @if($errors->any())
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="alert alert-danger">
+                    <ul class="text-right rtl">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if(session()->has('success'))
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="alert alert-success">
+                    <ul class="text-right rtl">
+                        <li>{{ session('success') }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div class="row">
         <div class="col-lg-12 animatedParent animateOnce z-index-50">
             <div class="block animated fadeInUp">
@@ -113,8 +140,8 @@
                                     <th class="text-center">رقم الهاتف</th>
                                     <th class="text-center">البريد الإلكتروني</th>
                                     <th class="text-center">الجنس</th>
-                                    <th class="text-center">تاريخ التحضير</th>
-                                    <th class="text-center">المزيد</th>
+                                    <th class="text-center">المدينة</th>
+                                    <th class="text-center">التحضير</th>
                                 </tr>
                                 </thead>
                                 <tbody class="text-center d-none">
@@ -126,7 +153,7 @@
                                                 <td class="pt-17 ltr">{{ $reservation->student->user->phone }}</td>
                                                 <td class="pt-17">{{ $reservation->student->user->email }}</td>
                                                 <td class="pt-17">{{ $reservation->student->gender->name }}</td>
-                                                <td class="pt-17">{{ date('Y-m-d') }}</td>
+                                                <td class="pt-17">{{ $reservation->student->city->name }}</td>
                                                 <td>
                                                     @if(isset($reservation->student->attendance[0]))
 
@@ -134,7 +161,7 @@
                                                             @if( $attendance->course_id == $reservation->course->id && $attendance->date == date('Y-m-d') )
                                                                 @if($attendance->status == 1)
                                                                     <input type="checkbox" data-toggle="toggle" class="attendance-toggle" checked>
-                                                                    <input type="hidden" name="attendance[]" value="0">
+                                                                    <input type="hidden" name="attendance[]" value="{{ $attendance->status }}">
                                                                     <input type="hidden" name="student[]" value="{{ $reservation->student->id }}">
                                                                 @else
                                                                     <input type="checkbox" data-toggle="toggle" class="attendance-toggle">
@@ -171,8 +198,8 @@
                                         <th class="text-center">رقم الهاتف</th>
                                         <th class="text-center">البريد الإلكتروني</th>
                                         <th class="text-center">الجنس</th>
-                                        <th class="text-center">تاريخ التحضير</th>
-                                        <th class="text-center">المزيد</th>
+                                        <th class="text-center">المدينة</th>
+                                        <th class="text-center">التحضير</th>
                                     </tr>
                                     </tfoot>
                                 @endif

@@ -15,13 +15,17 @@ class CreateStudentsTable extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id');
+            $table->integer('user_id')->unique();
+            $table->string('first_name', 50);
+            $table->string('second_name', 50);
+            $table->string('third_name', 50)->nullable();
+            $table->string('last_name', 50)->nullable();
+            $table->string('year', 4)->default("0000");
+            $table->string('month', 2)->default("00");
+            $table->string('day', 2)->default("00");
             $table->integer('gender_id');
             $table->integer('city_id');
-            $table->string('year', 4);
-            $table->string('month', 2);
-            $table->string('day', 2);
-            $table->integer('status');
+            $table->integer('status')->default(1);
             $table->string('image', 200)->default('account-profile.png');
             $table->timestamps();
         });

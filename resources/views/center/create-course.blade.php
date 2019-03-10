@@ -402,7 +402,7 @@
                                             <select class="form-control select2-placeholer {{ $errors->has('trainer') ? 'is-invalid' : '' }}"
                                                     name="trainer[]" id="not here" required>
                                                 @foreach($trainers as $trainer)
-                                                    <option value="{{ $trainer->id }}">{{ $trainer->user->name }}</option>
+                                                    <option value="{{ $trainer->id }}">{{ $trainer->name }}</option>
                                                 @endforeach
                                             </select>
                                             @if ($errors->has('trainer'))
@@ -451,7 +451,7 @@
                             <div class="tab-pane" id="tab2-4">
 
                                 <div class="row">
-                                    <div class="col-lg-6 col-lg-offset-3">
+                                    <div class="col-lg-6">
                                         <div class="form-group">
                                             <label class="required-field" for="start_date">تاريخ بدء الدورة</label>
                                             <input type="text"
@@ -466,28 +466,27 @@
                                             @endif
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="col-lg-6 col-lg-offset-3">
+                                    <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label class="required-field" for="start_time">وقت بدء الدورة</label>
+                                            <label class="required-field" for="start_date">تاريخ انتهاء الدورة</label>
                                             <input type="text"
-                                                   class="form-control {{ $errors->has('start_time') ? 'is-invalid' : '' }} custom-input text-center"
-                                                   name="start_time" id="start_time" value="{{ old('start_time') }}"
-                                                   placeholder="وقت بدء الدورة"
-                                                   autocomplete="off" required>
-                                            @if ($errors->has('start_time'))
+                                                   class="form-control {{ $errors->has('end_date') ? 'is-invalid' : '' }} custom-input text-center ltr"
+                                                   name="end_date" id="end_date" value="{{ old('end_date') }}"
+                                                   placeholder="تاريخ انتهاء الدورة"
+                                                   autocomplete="off" readonly disabled required>
+                                            @if ($errors->has('end_date'))
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $errors->first('start_time') }}</strong>
+                                                    <strong>{{ $errors->first('end_date') }}</strong>
                                                 </span>
                                             @endif
                                         </div>
                                     </div>
+
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-6 col-lg-offset-3">
+                                    <div class="col-lg-6">
                                         <div class="form-group">
                                             <label class="required-field" for="attendance">عدد المقاعد</label>
                                             <input type="text"
@@ -503,14 +502,8 @@
                                             @endif
                                         </div>
                                     </div>
-                                </div>
 
-                                {{--البرمجة بإستخدام لارافيل--}}
-                                {{--الشوقية خلف حلويات زمان--}}
-                                {{--سوف تتعلم في هذه الدورة اساسيات البرمجة بإستخدام لارافيل ومن ثم سوف ننتقل للتعمق قليلا ولنحول كل ما مررنا به الى تطبيق عملي--}}
-
-                                <div class="row">
-                                    <div class="col-lg-6 col-lg-offset-3">
+                                    <div class="col-lg-6">
                                         <div class="form-group">
                                             <label class="required-field" for="gender">الحضور</label>
                                             <select id="gender"
@@ -544,17 +537,36 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-6 col-lg-offset-3">
+
+
+                                    <div class="col-lg-6">
                                         <div class="form-group">
-                                            <label class="required-field" for="start_date">تاريخ انتهاء الدورة</label>
+                                            <label class="required-field" for="start_time">وقت بدء الدورة</label>
                                             <input type="text"
-                                                   class="form-control {{ $errors->has('finish_date') ? 'is-invalid' : '' }} custom-input text-center ltr"
-                                                   name="finish_date" id="finish_date" value="{{ old('finish_date') }}"
-                                                   placeholder="تاريخ انتهاء الدورة"
-                                                   autocomplete="off" readonly disabled required>
-                                            @if ($errors->has('finish_date'))
+                                                   class="form-control {{ $errors->has('start_time') ? 'is-invalid' : '' }} custom-input text-center"
+                                                   name="start_time" id="start_time" value="{{ old('start_time') }}"
+                                                   placeholder="وقت بدء الدورة"
+                                                   autocomplete="off" required>
+                                            @if ($errors->has('start_time'))
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $errors->first('finish_date') }}</strong>
+                                                    <strong>{{ $errors->first('start_time') }}</strong>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="required-field" for="end_reservation">عدد الساعات</label>
+                                            <input type="text"
+                                                   class="form-control {{ $errors->has('hours') ? 'is-invalid' : '' }} custom-input text-center num-only ltr"
+                                                   name="hours"
+                                                   value="{{ old('hours') }}"
+                                                   placeholder="عدد الساعات"
+                                                   autocomplete="off" maxlength="3" minlength="1" required>
+                                            @if ($errors->has('hours'))
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('hours') }}</strong>
                                                 </span>
                                             @endif
                                         </div>
@@ -562,7 +574,34 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-lg-6 col-lg-offset-3">
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="required-field" for="end_reservation">تفعيل الدورة</label>
+                                            <select id="gender"
+                                                    class="form-control select2-placeholer {{ $errors->has('activation') ? 'is-invalid' : '' }}"
+                                                    name="activation" required>
+                                                @if(old('activation') == 1)
+                                                    <option value="1" selected>فعالة</option>
+                                                    <option value="0">غير فعالة</option>
+                                                @elseif(old('activation') == 0)
+                                                    <option value="1">فعالة</option>
+                                                    <option value="0" selected>غير فعالة</option>
+                                                @else
+                                                    <option value="1">فعالة</option>
+                                                    <option value="0">غير فعالة</option>
+                                                @endif
+                                            </select>
+
+                                            @if ($errors->has('activation'))
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $errors->first('activation') }}</strong>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
                                         <div class="form-group">
                                             <label class="required-field" for="end_reservation">تاريخ انتهاء
                                                 التسجيل</label>
@@ -832,7 +871,7 @@
 
                 initializeFinishDate();
                 function initializeFinishDate() {
-                    $("input[name=finish_date]").datepicker({
+                    $("input[name=end_date]").datepicker({
                         keyboardNavigation: false,
                         forceParse: false,
                         todayHighlight: false,
@@ -847,11 +886,11 @@
 
                 function refreshFinishDate(date){
                     if (date.length < 10 || date.length > 10){
-                        $("input[name=finish_date]").prop({'readonly': false, 'disabled': true});
+                        $("input[name=end_date]").prop({'readonly': false, 'disabled': true});
                     }else {
-                        $("input[name=finish_date]").prop({'readonly': false, 'disabled': false});
-                        $("input[name=finish_date]").datepicker('update', '');
-                        $("input[name=finish_date]").datepicker( 'setStartDate', new Date(date));
+                        $("input[name=end_date]").prop({'readonly': false, 'disabled': false});
+                        $("input[name=end_date]").datepicker('update', '');
+                        $("input[name=end_date]").datepicker( 'setStartDate', new Date(date));
                     }
                 }
 

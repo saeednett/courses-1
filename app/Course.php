@@ -11,7 +11,7 @@ class Course extends Model
 
     public function image()
     {
-        return $this->hasMany('App\Image');
+        return $this->hasOne('App\Image');
     }
 
     public function center()

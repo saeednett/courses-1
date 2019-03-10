@@ -42,9 +42,9 @@ class LoginController extends Controller
     {
         $role = Auth::user()->role_id;
         Auth::logout();
-        if( $role < 5 ){
+        if ($role < 5) {
             return redirect()->route('center.login');
-        }elseif ($role == 5){
+        } elseif ($role == 5) {
             return redirect()->route('account.index');
         }
     }
@@ -56,11 +56,13 @@ class LoginController extends Controller
 
     protected function redirectTo()
     {
-        if ( Auth::user()->role_id < 5){
-            redirect()->route('center.index', Auth::user()->username);
-        }
-        if ( Auth::user()->role_id == 5){
-            redirect()->route('account.index');
+        $role = Auth::user()->role_id;
+        switch ($role) {
+            case 5:
+                redirect()->route('account.index');
+                break;
+            default:
+                redirect()->route('center.index', Auth::user()->username);
         }
     }
 }

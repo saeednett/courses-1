@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Bank;
-use App\Center;
+use App\AdvertisingBanner;
 use App\CenterAccount;
 use App\City;
 use App\Country;
@@ -27,13 +26,15 @@ class StudentController extends Controller
     // To Show All Courses That Are Visible To Public
     public function index()
     {
-        if ( Auth::check() ){
+        // Getting All Advertising Banners To Show Them In The Index Page
+        $banners = AdvertisingBanner::all();
+        if (Auth::check() && Auth::user()->role_id == 5) {
             // Get All Reservations To Filter It
             $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
             // To Filter The Reservation That Is Not Confirmed
             $tickets_data = array();
-            foreach ($reservations as $reservation){
-                if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+            foreach ($reservations as $reservation) {
+                if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
                     array_push($tickets_data, $reservation->id);
                 }
             }
@@ -41,13 +42,14 @@ class StudentController extends Controller
             $tickets = count($tickets_data);
             // Getting The Visible Courses
             $courses = Course::where('visible', 1)->get();
-            return view('student.index', compact('courses', 'tickets'));
-        }else{
+            return view('student.index', compact('courses', 'tickets', 'banners'));
+        } else {
             // Getting The Visible Courses
-            $courses = Course::where('visible', 1)->get();
-            return view('student.index', compact('courses'));
+            $courses = Course::where('visible', 1)->where('activation', 1)->get();
+            return view('student.index', compact('courses', 'banners'));
         }
     }
+
     // To Show The Form Of Registering Of The Student
     public function create()
     {
@@ -55,38 +57,44 @@ class StudentController extends Controller
         $cities = City::where('country_id', 1)->get();
         return view('student.register', compact('countries', 'cities'));
     }
+
     // The Registering Data Goes Here
     public function store(Request $request)
     {
 
+        // An Empty Array That Will Hold The Id Of The Cities
         $cities = array();
+        // Getting The Id Of The Cities
         $cities_data = City::where('country_id', $request->country)->get();
-
-        foreach ($cities_data as $city){
+        // Fetching The Id Into The Array
+        foreach ($cities_data as $city) {
             array_push($cities, $city->id);
         }
-
+        // Validating The Request Data
         $request->validate([
-            'name' => 'required|string|max:50|min:10',
+            'first_name' => 'required|string|max:20|min:3',
+            'second_name' => 'required|string|max:20|min:3',
             'email' => 'required|email|max:100|unique:users,email',
             'username' => 'required|string|max:20|min:5|unique:users,username',
-            'phone' => 'required|max:20|min:9|unique:users,phone',
+            'phone' => 'required|max:9|min:9|unique:users,phone',
             'gender' => 'required|max:99|min:1|exists:genders,id',
             'country' => 'required|integer|max:99|min:1|exists:countries,id',
-            'city' => 'required|integer|max:99|min:1|'.Rule::in($cities),
-            'password' => 'required|string|max:32|min:8|confirmed'
+            'city' => 'required|integer|max:99|min:1|' . Rule::in($cities),
+            'password' => 'required|string|max:32|min:6|confirmed'
         ]);
+        // Creating The User
         $student = User::create([
-            'name' => $request->name,
             'email' => $request->email,
             'username' => $request->username,
-            'phone' => $request->phone,
+            'phone' => "+966".$request->phone,
             'role_id' => 5,
             'password' => Hash::make($request->password),
         ]);
-
+        //Creating The Student
         Student::create([
             'user_id' => $student->id,
+            'first_name' => $request->first_name,
+            'second_name' => $request->second_name,
             'gender_id' => $request->gender,
             'city_id' => $request->city,
             'year' => 0,
@@ -94,15 +102,18 @@ class StudentController extends Controller
             'day' => 0,
             'status' => 1
         ]);
-
+        // Logging In The New User And Redirect Him To The Index
         auth()->login($student);
+        // Redirect To The Index After Creating And Logging In
         return redirect()->route('account.index');
     }
+
     // Unused Function
     public function show($id)
     {
         //
     }
+
     // To Show Course Details Before Reserving It
     public function show_course($center, $identifier)
     {
@@ -117,25 +128,29 @@ class StudentController extends Controller
         // If The Identifier Is Wrong
         if (count($course) == 0) {
             return abort(404);
-        }
-        if ( Auth::check() ){
-            // Get All Reservations To Filter It
-            $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
-            // To Filter The Reservation That Is Not Confirmed
-            $tickets_data = array();
-            foreach ($reservations as $reservation){
-                if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
-                    array_push($tickets_data, $reservation->id);
+        } else {
+            // Checking If The User Is Authenticated And His Role Is 5 That Mean He Is A User
+            if (Auth::check() && Auth::user()->role_id == 5) {
+                // Get All Reservations To Filter It
+                $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
+                // To Filter The Reservation That Is Not Confirmed
+                $tickets_data = array();
+                foreach ($reservations as $reservation) {
+                    if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
+                        array_push($tickets_data, $reservation->id);
+                    }
                 }
+                // Save The Total Count
+                $tickets = count($tickets_data);
+                // Return The View Of The Details
+                return view('student.show-course-details', compact('course', 'tickets'));
             }
-            // Save The Total Count
-            $tickets = count($tickets_data);
-            // Return The View Of The Details
-            return view('student.show-course-details', compact('course', 'tickets'));
-        }else{
-            return view('student.show-course-details', compact('course'));
         }
+//        else{
+//            return view('student.show-course-details', compact('course'));
+//        }
     }
+
     // To Show Final Step Before Reserving The Course
     public function book_course_form(Request $request, $identifier)
     {
@@ -153,8 +168,8 @@ class StudentController extends Controller
             $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
             // To Filter The Reservation That Is Not Confirmed
             $tickets_data = array();
-            foreach ($reservations as $reservation){
-                if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+            foreach ($reservations as $reservation) {
+                if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
                     array_push($tickets_data, $reservation->id);
                 }
             }
@@ -165,55 +180,58 @@ class StudentController extends Controller
         }
 
     }
+
     // The Data Of Reservation Goes Here And The Process Happens Here
     public function book_course_reservation(Request $request, $identifier)
     {
         // Getting The Course Information
         $course = Course::where('identifier', $identifier)->first();
         // Making Sure The Course Is Exist
-        if (count($course) <= 0) {
+        if (count($course) == 0) {
             abort(404);
-        }
-        // Validating The Request Data
-        $request->validate([
-            'coupon_code' => 'nullable|string|min:3|max:30',
-        ]);
-        // Getting The Coupons Of The Course
-        $coupon = Coupon::where('code', $request->coupon_code)->where('course_id', $course->id)->first();
-        // Check If The User Coupon Is Exist
-        if (count($coupon) < 1) {
-            Reservation::create([
-                'student_id' => Auth::user()->student->id,
-                'coupon_id' => 0,
-                'course_id' => $course->id,
-                'identifier' => Str::random(10),
-            ]);
         } else {
-            Reservation::create([
-                'student_id' => Auth::user()->student->id,
-                'coupon_id' => $coupon->id,
-                'course_id' => $course->id,
-                'identifier' => Str::random(10),
+            // Validating The Request Data
+            $request->validate([
+                'coupon_code' => 'nullable|string|min:3|max:30',
             ]);
+            // Getting The Coupons Of The Course
+            $coupon = Coupon::where('code', $request->coupon_code)->where('course_id', $course->id)->first();
+            // Check If The User Coupon Is Exist
+            if (count($coupon) < 1) {
+                Reservation::create([
+                    'student_id' => Auth::user()->student->id,
+                    'coupon_id' => 0,
+                    'course_id' => $course->id,
+                    'identifier' => Str::random(10),
+                ]);
+            } else {
+                Reservation::create([
+                    'student_id' => Auth::user()->student->id,
+                    'coupon_id' => $coupon->id,
+                    'course_id' => $course->id,
+                    'identifier' => Str::random(10),
+                ]);
+            }
+            // Redirect To The Page That Show All Tickets Of The User | Student
+            return redirect()->route('account.ticket')->with('success', 'تم حجز دورة ' . $course->title . ' بنجاح قم بتسديد المبلغ لكي يتم إصدار البطاقة');
         }
-        // Redirect To The Page That Show All Tickets Of The User | Student
-        return redirect()->route('account.ticket')->with('success', 'تم حجز دورة ' . $course->title . ' بنجاح قم بتسديد المبلغ لكي يتم إصدار البطاقة');
     }
+
     // To Edit The Information Of The Student
     public function edit()
     {
         // Getting The Information Of The Student
         $user = User::find(Auth::user()->id);
         // Getting All Cites
-        $cities = City::where('country_id',$user->student->city->country->id)->get();
+        $cities = City::where('country_id', $user->student->city->country->id)->get();
         // Getting All Countries
         $countries = Country::all();
         // Get All Reservations To Filter It
         $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
         // To Filter The Reservation That Is Not Confirmed
         $tickets_data = array();
-        foreach ($reservations as $reservation){
-            if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+        foreach ($reservations as $reservation) {
+            if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
                 array_push($tickets_data, $reservation->id);
             }
         }
@@ -222,19 +240,20 @@ class StudentController extends Controller
         // Return To The View Of Editing The Information
         return view('student.edit-account', compact('user', 'countries', 'cities', 'tickets'));
     }
+
     // the Data Of Editing Information Goes Here And The Process Happens Here
     public function update(Request $request)
     {
         // Getting All Cities Which Belongs To The Country That The User | Student Chose
         $cities = City::where('country_id', $request->country)->get();
         // Checking If The Country Id Is Valid
-        if ( count($cities) == 0 ){
+        if (count($cities) == 0) {
             abort(404);
         }
         // An Empty Array Of City Will Be Filled Soon
         $cities_data = array();
         // Fetching The Cities Data Into The Array
-        foreach ($cities as $city){
+        foreach ($cities as $city) {
             array_push($cities_data, $city->id);
         }
         // Validating The Request Data
@@ -243,7 +262,7 @@ class StudentController extends Controller
             'phone' => 'required|starts_with:+966|string|max:13|min:9|' . Rule::unique('users')->ignore(Auth()->user()->id),
             'email' => 'required|string|max:100|' . Rule::unique('users')->ignore(Auth()->user()->id),
             'username' => 'required|string|max:20:min:5|' . Rule::unique('users')->ignore(Auth()->user()->id),
-            'city' => 'required|digits:1,99|exists:cities,id|'.Rule::in($cities_data),
+            'city' => 'required|digits:1,99|exists:cities,id|' . Rule::in($cities_data),
             'country' => 'required|digits:1,99|exists:countries,id',
             'gender' => 'required|integer|max:99|exists:genders,id',
             'year' => 'required|integer|max:2019|min:1930',
@@ -322,26 +341,29 @@ class StudentController extends Controller
             }
         }
         // Checking If The Counter Is Greater Than 0 Then Do The Update
-        if ( $counter > 0 ){
+        if ($counter > 0) {
             $student->save();
             $student->user->save();
             return redirect()->route('account.edit')->with('success', 'تم تحديث البيانات بنجاح');
-        }else {
+        } else {
             return redirect()->route('account.edit')->withErrors(['لاتوجد بيانات جديدة لكي يتم حفظها']);
         }
 
     }
+
     // Unused Function
     public function destroy($id)
     {
         //
     }
+
     // To Show The Form Of Logging in For The Student
     public function create_sign_in()
     {
         // Returning The View
         return view('student.login');
     }
+
     // To Show All Tickets Of The User | Student
     public function tickets()
     {
@@ -350,8 +372,8 @@ class StudentController extends Controller
         // An Empty Array For The Tickets Will Be Filled Soon
         $tickets_data = array();
         // Fetching The Data To The Array
-        foreach ($reservations as $reservation){
-            if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+        foreach ($reservations as $reservation) {
+            if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
                 array_push($tickets_data, $reservation->id);
             }
         }
@@ -360,6 +382,7 @@ class StudentController extends Controller
         // Returning The View Of The Tickets
         return view('student.tickets', compact('reservations', 'tickets'));
     }
+
     // To Show The Form Of Confirming A Payment For The Course
     public function payment_confirmation(Request $request, $identifier)
     {
@@ -374,8 +397,8 @@ class StudentController extends Controller
         // An Empty Array Of Tickets
         $tickets_data = array();
         // Fetching The Data Into The Array
-        foreach ($reservations as $reservation){
-            if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+        foreach ($reservations as $reservation) {
+            if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
                 array_push($tickets_data, $reservation->id);
             }
         }
@@ -383,6 +406,7 @@ class StudentController extends Controller
         $tickets = count($tickets_data);
         return view('student.payment-confirmation', compact('reservation', 'tickets'));
     }
+
     // The Data Of Confirmation Goes Here And The Process Happens Here
     public function confirm(Request $request, $identifier)
     {
@@ -408,8 +432,10 @@ class StudentController extends Controller
         // Redirect After Saving The Data Of Confirmation
         return redirect()->route('account.ticket')->with('success', 'تم إضافة معلومات الدفع سيتم اصدار التذكرة بعد التأكدة من صحة معلومات الدفع');
     }
+
     // To Show The Form Of Editing The Payment Confirmation
-    public function edit_payment_confirmation_form($identifier){
+    public function edit_payment_confirmation_form($identifier)
+    {
         // All Confirmation Of The User | Student
         $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
         // The Confirmation That Will Be Edit
@@ -421,8 +447,8 @@ class StudentController extends Controller
         // An Empty Array Of The Tickets Will Be Filled Soon
         $tickets_data = array();
         // Fetching The Data Into The Array
-        foreach ($reservations as $reservation){
-            if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+        foreach ($reservations as $reservation) {
+            if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
                 array_push($tickets_data, $reservation->id);
             }
         }
@@ -430,8 +456,10 @@ class StudentController extends Controller
         $tickets = count($tickets_data);
         return view('student.edit-payment-confirmation', compact('reservation', 'tickets'));
     }
+
     // The Data Of Editing The Payment Confirmation Goes Here And The Process Happens Here
-    public function update_payment_confirmation_form(Request $request, $identifier){
+    public function update_payment_confirmation_form(Request $request, $identifier)
+    {
         // Validating The Request Data
         $request->validate([
             'account_owner' => 'string|max:50|min:10',
@@ -443,7 +471,7 @@ class StudentController extends Controller
         // Getting The Old payment Confirmation Data
         $payment = PaymentConfirmation::where('reservation_id', $reservation->id)->first();
         // Checking If The Request Has An Image
-        if ( $request->hasFile('receipt-image') ){
+        if ($request->hasFile('receipt-image')) {
             $file = $request->file('receipt-image')->store('public/receipt-images');
             $file_name = basename($file);
         }
@@ -452,22 +480,22 @@ class StudentController extends Controller
         // This Variable Will Change If The Is A New File With The Request
         $file_name = null;
         // Comparing The Old Account Owner With New
-        if ( $request->account_owner != $payment->account_owner){
+        if ($request->account_owner != $payment->account_owner) {
             $payment->account_owner = $request->account_owner;
             $counter++;
         }
         // Comparing The Old Account Number With New
-        if ( $request->account_number != $payment->account_number){
+        if ($request->account_number != $payment->account_number) {
             $payment->account_number = $request->account_number;
             $counter++;
         }
         // Comparing The Payment Image With New
-        if ( $file_name != null){
+        if ($file_name != null) {
             $payment->image = $file_name;
             $counter++;
         }
         // Checking The Counter Is Greater Than 0 Then Save The Changes
-        if ( $counter > 0 ){
+        if ($counter > 0) {
             $payment->update();
             return redirect()->route('account.ticket')->with('success', 'تم تعديل معلومات الدفع سيتم اصدار التذكرة بعد التأكدة من صحة معلومات الدفع');
         }
@@ -475,6 +503,7 @@ class StudentController extends Controller
         return redirect()->route('student.payment.confirmation.edit', $reservation->identifier)->withErrors(['لم يتم تعديل المعلومات']);
 
     }
+
     // To Show The Form Of Resetting The Password
     public function create_reset_password()
     {
@@ -482,8 +511,8 @@ class StudentController extends Controller
         $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
         // To Filter The Reservation That Is Not Confirmed
         $tickets_data = array();
-        foreach ($reservations as $reservation){
-            if ( $reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment) ){
+        foreach ($reservations as $reservation) {
+            if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
                 array_push($tickets_data, $reservation->id);
             }
         }
@@ -491,6 +520,7 @@ class StudentController extends Controller
         $tickets = count($tickets_data);
         return view('student.account-reset-password', compact('tickets'));
     }
+
     // The Data Of Resetting Password Goes Here And The Process Happens Here
     public function reset_password(Request $request)
     {

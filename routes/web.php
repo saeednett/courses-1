@@ -127,6 +127,8 @@ Route::post('admin/{course}/payments', 'AdminController@payment_confirmation_con
 Route::get('admin/courses/activation', 'AdminController@courses_activation')->name('admin.courses.activation')->middleware('auth-center');
 // To Show The List Of Courses To Activate Or Deactivate The Course
 Route::post('admin/courses/activation/confirm', 'AdminController@courses_activation_confirm')->name('admin.courses.activation.confirm')->middleware('auth-center');
+// To Review A Selected Course
+Route::get('admin/{course}/preview', 'AdminController@course_preview')->name('admin.courses.preview')->middleware('auth-center');
 
 
 // To Show All Courses That Are Available To Select One And Move To Another Page
