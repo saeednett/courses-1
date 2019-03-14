@@ -23,23 +23,183 @@ use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
+
+    // This Variable For Holding The Data That Going To Be Send Back To The Application
+    private $response = array(
+        'status' => array(),
+        'errors' => array(),
+        'response' => array(),
+    );
+    // This Variable For Holding The Data That Going To Be Send Back To The Application
+    private $data = array();
+
+    private function get_auth_tickets()
+    {
+        // Get All Reservations To Filter It
+        $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
+        // To Filter The Reservation That Is Not Confirmed
+        $tickets = array();
+        foreach ($reservations as $reservation) {
+            if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
+                array_push($tickets, $reservation->id);
+            }
+        }
+        // Save The Total Count
+        $tickets = count($tickets);
+
+        return $tickets;
+    }
+
+    // This Function Return All Courses
+    private function all_curses()
+    {
+        // Getting The Visible Courses
+        $courses = Course::where('visible', 1)->where('activation', 1)->get();
+
+        foreach ($courses as $course) {
+            $subData = array(
+                'title' => $course->title,
+                'type' => $course->type,
+                'price' => $course->price,
+                'city' => $course->city->name,
+                'identifier' => $course->identifier,
+                'poster_1' => $course->image->image,
+                'poster_2' => $course->image->image_2,
+                'center' => $course->center->user->username,
+            );
+
+            array_push($this->response['response'], $subData);
+        }
+
+        array_push($this->response['status'], 'success');
+        array_push($this->response['errors'], null);
+        return response()->json($this->response);
+    }
+
+    // This Function Return All Payed Courses
+    private function payed_curses()
+    {
+        // Getting The Visible Courses
+        $courses = Course::where('visible', 1)->where('type', 'payed')->where('activation', 1)->get();
+
+        foreach ($courses as $course) {
+            $subData = array(
+                'title' => $course->title,
+                'type' => $course->type,
+                'price' => $course->price,
+                'city' => $course->city->name,
+                'identifier' => $course->identifier,
+                'poster_1' => $course->image->image,
+                'poster_2' => $course->image->image_2,
+                'center' => $course->center->user->username,
+            );
+
+            array_push($this->response['response'], $subData);
+        }
+
+        array_push($this->response['status'], 'success');
+        array_push($this->response['errors'], null);
+        return response()->json($this->response);
+    }
+
+    // This Function Return All Free Courses
+    private function free_curses()
+    {
+        // Getting The Visible Courses
+        $courses = Course::where('visible', 1)->where('type', 'free')->where('activation', 1)->get();
+
+        foreach ($courses as $course) {
+            $subData = array(
+                'title' => $course->title,
+                'type' => $course->type,
+                'price' => $course->price,
+                'city' => $course->city->name,
+                'identifier' => $course->identifier,
+                'poster_1' => $course->image->image,
+                'poster_2' => $course->image->image_2,
+                'center' => $course->center->user->username,
+            );
+
+            array_push($this->response['response'], $subData);
+        }
+
+        array_push($this->response['status'], 'success');
+        array_push($this->response['errors'], null);
+        return response()->json($this->response);
+    }
+
+    // This Function Return All Available Courses
+    private function available_curses()
+    {
+
+        // Getting The Visible Courses
+        $courses = Course::where('visible', 1)->where('activation', 1)->get();
+        // Getting The Reservation Of The Course To Count The Remain Places
+        $courses_data = array();
+        foreach ($courses as $course) {
+            if (count($course->reservation) < $course->attendance) {
+                array_push($courses_data, $course->id);
+            }
+        }
+
+        $allCourses = Course::find($courses_data);
+
+        foreach ($allCourses as $course) {
+            $subData = array(
+                'title' => $course->title,
+                'type' => $course->type,
+                'price' => $course->price,
+                'city' => $course->city->name,
+                'identifier' => $course->identifier,
+                'poster_1' => $course->image->image,
+                'poster_2' => $course->image->image_2,
+                'center' => $course->center->user->username,
+            );
+
+            array_push($this->response['response'], $subData);
+        }
+
+        array_push($this->response['status'], 'success');
+        array_push($this->response['errors'], null);
+        return response()->json($this->response);
+    }
+
+    // This Function Handle The Filter Of Showing The Courses
+    public function filtered_index(Request $request)
+    {
+        $filter = $request->type;
+        switch ($filter) {
+            case "all":
+                return $this->all_curses();
+                break;
+
+            case "payed":
+                return $this->payed_curses();
+                break;
+
+            case "free":
+                return $this->free_curses();
+                break;
+
+            case "available":
+                return $this->available_curses();
+                break;
+
+            default:
+                return $this->all_curses();
+                break;
+        }
+    }
+
     // To Show All Courses That Are Visible To Public
     public function index()
     {
         // Getting All Advertising Banners To Show Them In The Index Page
         $banners = AdvertisingBanner::all();
         if (Auth::check() && Auth::user()->role_id == 5) {
-            // Get All Reservations To Filter It
-            $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
-            // To Filter The Reservation That Is Not Confirmed
-            $tickets_data = array();
-            foreach ($reservations as $reservation) {
-                if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
-                    array_push($tickets_data, $reservation->id);
-                }
-            }
+
             // Save The Total Count
-            $tickets = count($tickets_data);
+            $tickets = $this->get_auth_tickets();
             // Getting The Visible Courses
             $courses = Course::where('visible', 1)->get();
             return view('student.index', compact('courses', 'tickets', 'banners'));
@@ -86,7 +246,7 @@ class StudentController extends Controller
         $student = User::create([
             'email' => $request->email,
             'username' => $request->username,
-            'phone' => "+966".$request->phone,
+            'phone' => "+966" . $request->phone,
             'role_id' => 5,
             'password' => Hash::make($request->password),
         ]);
@@ -117,104 +277,111 @@ class StudentController extends Controller
     // To Show Course Details Before Reserving It
     public function show_course($center, $identifier)
     {
-        // Checking The Name Of The Center
+
+        $tickets = $this->get_auth_tickets();
+
+        // Checking The Username Of The Center
         $center = User::where('username', $center)->first();
-        // If The Name Is Wrong
-        if (count($center) == 0) {
-            return abort(404);
+        // If The Username Is Wrong
+        if (count($center) < 1) {
+            $error = "شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من اسم الجهة";
+            return view('student.error-page', compact('error', 'tickets'));
         }
+
         // Checking The Course Unique Identifier
-        $course = Course::where('identifier', $identifier)->first();
+        $course = Course::where('identifier', $identifier)->where('activation', 1)->first();
         // If The Identifier Is Wrong
-        if (count($course) == 0) {
-            return abort(404);
-        } else {
-            // Checking If The User Is Authenticated And His Role Is 5 That Mean He Is A User
-            if (Auth::check() && Auth::user()->role_id == 5) {
-                // Get All Reservations To Filter It
-                $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
-                // To Filter The Reservation That Is Not Confirmed
-                $tickets_data = array();
-                foreach ($reservations as $reservation) {
-                    if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
-                        array_push($tickets_data, $reservation->id);
-                    }
-                }
-                // Save The Total Count
-                $tickets = count($tickets_data);
-                // Return The View Of The Details
-                return view('student.show-course-details', compact('course', 'tickets'));
-            }
+        if (count($course) < 1) {
+            $error = "شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الدورة";
+            return view('student.error-page', compact('error', 'tickets'));
         }
-//        else{
-//            return view('student.show-course-details', compact('course'));
-//        }
+
+        // Checking If The User Is Authenticated And His Role Is 5 That Mean He Is A User
+        if (Auth::check() && Auth::user()->role_id == 5) {
+            // Return The View Of The Details
+            return view('student.show-course-details', compact('course', 'tickets'));
+        } else {
+
+            $course = Course::where('identifier', $identifier)->where('activation', 1)->first();
+
+            if (count($course) < 1) {
+                $error = "شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الدورة";
+                return view('student.error-page', compact('error', 'tickets'));
+            }
+            return view('student.show-course-details', compact('course'));
+
+        }
+
     }
 
     // To Show Final Step Before Reserving The Course
-    public function book_course_form(Request $request, $identifier)
+    public function reservation_course_form($identifier)
     {
         // Checking The Course Unique Identifier
-        $course = Course::where('identifier', $identifier)->first();
+        $course = Course::where('identifier', $identifier)->where('activation', 1)->first();
+
+        $tickets = $this->get_auth_tickets();
+
         // If The Identifier Is Wrong
-        if (count($course) == 0) {
-            abort(404);
-        } else {
-            // Getting All Center Bank Accounts
-            $accounts = CenterAccount::where('center_id', $course->center->id)->get();
-
-
-            // Get All Reservations To Filter It
-            $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
-            // To Filter The Reservation That Is Not Confirmed
-            $tickets_data = array();
-            foreach ($reservations as $reservation) {
-                if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
-                    array_push($tickets_data, $reservation->id);
-                }
-            }
-            // Save The Total Count
-            $tickets = count($tickets_data);
-            // Return The View Of Booking The Course
-            return view('student.book-course', compact('course', 'accounts', 'tickets'));
+        if (count($course) < 1) {
+            $error = "شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الدورة";
+            return view('student.error-page', compact('error', 'tickets'));
         }
+
+        // Getting All Center Bank Accounts
+        $accounts = CenterAccount::where('center_id', $course->center->id)->get();
+        // Return The View Of Booking The Course
+        return view('student.reserve-course', compact('course', 'accounts', 'tickets'));
 
     }
 
     // The Data Of Reservation Goes Here And The Process Happens Here
-    public function book_course_reservation(Request $request, $identifier)
+    public function course_reservation_confirm(Request $request, $identifier)
     {
+
         // Getting The Course Information
-        $course = Course::where('identifier', $identifier)->first();
+        $course = Course::where('identifier', $identifier)->where('activation', 1)->first();
+
+        $tickets = $this->get_auth_tickets();
+
         // Making Sure The Course Is Exist
-        if (count($course) == 0) {
-            abort(404);
-        } else {
-            // Validating The Request Data
-            $request->validate([
-                'coupon_code' => 'nullable|string|min:3|max:30',
-            ]);
-            // Getting The Coupons Of The Course
-            $coupon = Coupon::where('code', $request->coupon_code)->where('course_id', $course->id)->first();
-            // Check If The User Coupon Is Exist
-            if (count($coupon) < 1) {
-                Reservation::create([
-                    'student_id' => Auth::user()->student->id,
-                    'coupon_id' => 0,
-                    'course_id' => $course->id,
-                    'identifier' => Str::random(10),
-                ]);
-            } else {
-                Reservation::create([
-                    'student_id' => Auth::user()->student->id,
-                    'coupon_id' => $coupon->id,
-                    'course_id' => $course->id,
-                    'identifier' => Str::random(10),
-                ]);
-            }
-            // Redirect To The Page That Show All Tickets Of The User | Student
-            return redirect()->route('account.ticket')->with('success', 'تم حجز دورة ' . $course->title . ' بنجاح قم بتسديد المبلغ لكي يتم إصدار البطاقة');
+        if (count($course) < 1) {
+            $error = "شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الدورة";
+            return view('student.error-page', compact('error', 'tickets'));
         }
+
+        $reserve = Reservation::where('course_id', $course->id)->where('student_id', Auth::user()->student->id)->first();
+        if (count($reserve) > 0) {
+            return redirect()->route('account.ticket')->withErrors(['تم حجز الدورة مسبقا']);
+        }
+
+
+        // Validating The Request Data
+        $request->validate([
+            'coupon_code' => 'nullable|string|min:3|max:30',
+        ]);
+
+        // Getting The Coupons Of The Course
+        $coupon = Coupon::where('code', $request->coupon_code)->where('course_id', $course->id)->first();
+        // Check If The User Coupon Is Exist
+        if (count($coupon) < 1) {
+            Reservation::create([
+                'student_id' => Auth::user()->student->id,
+                'coupon_id' => 0,
+                'course_id' => $course->id,
+                'identifier' => Str::random(10),
+            ]);
+        } else {
+            Reservation::create([
+                'student_id' => Auth::user()->student->id,
+                'coupon_id' => $coupon->id,
+                'course_id' => $course->id,
+                'identifier' => Str::random(10),
+            ]);
+        }
+        // Redirect To The Page That Show All Tickets Of The User | Student
+        return redirect()->route('account.ticket')->with('success', 'تم حجز دورة ' . $course->title . ' بنجاح قم بتسديد المبلغ لكي يتم إصدار البطاقة');
+
     }
 
     // To Edit The Information Of The Student
@@ -247,7 +414,7 @@ class StudentController extends Controller
         // Getting All Cities Which Belongs To The Country That The User | Student Chose
         $cities = City::where('country_id', $request->country)->get();
         // Checking If The Country Id Is Valid
-        if (count($cities) == 0) {
+        if (count($cities) < 1) {
             abort(404);
         }
         // An Empty Array Of City Will Be Filled Soon
@@ -258,17 +425,20 @@ class StudentController extends Controller
         }
         // Validating The Request Data
         $request->validate([
-            'name' => 'required|string|max:50',
-            'phone' => 'required|starts_with:+966|string|max:13|min:9|' . Rule::unique('users')->ignore(Auth()->user()->id),
+            'first_name' => 'required|string|max:10|min:6',
+            'second_name' => 'required|string|max:10|min:6',
+            'third_name' => 'required|string|max:10|min:6',
+            'last_name' => 'required|string|max:10|min:6',
+            'phone' => 'required|starts_with:+966|string|max:9|min:9|' . Rule::unique('users')->ignore(Auth()->user()->id),
             'email' => 'required|string|max:100|' . Rule::unique('users')->ignore(Auth()->user()->id),
             'username' => 'required|string|max:20:min:5|' . Rule::unique('users')->ignore(Auth()->user()->id),
             'city' => 'required|digits:1,99|exists:cities,id|' . Rule::in($cities_data),
-            'country' => 'required|digits:1,99|exists:countries,id',
-            'gender' => 'required|integer|max:99|exists:genders,id',
+            'country' => 'required|exists:countries,id',
+            'gender' => 'required|integer|exists:genders,id',
             'year' => 'required|integer|max:2019|min:1930',
             'month' => 'required|integer|max:12|min:1',
             'day' => 'required|integer|max:31|min:1',
-            'profile-image' => 'sometimes|image|mimetypes:image/png,image/jpg,image/jpeg||max:500'
+            'profile-image' => 'sometimes|image|mimetypes:image/png,image/jpg,image/jpeg||max:400'
         ]);
         // The Id Of User | Student
         $id = Auth::user()->id;
@@ -276,9 +446,24 @@ class StudentController extends Controller
         $student = Student::where('user_id', $id)->first();
         // This Counter Will Increase If Any New Data Is Different To The Old One
         $counter = 0;
-        // Comparing Name Old Data To The New
-        if ($student->user->name != $request->name) {
-            $student->user->name = $request->name;
+        // Comparing The First Name Old Data To The New
+        if ($student->first_name != $request->first_name) {
+            $student->first_name = $request->first_name;
+            $counter++;
+        }
+        // Comparing The Second Name Old Data To The New
+        if ($student->second_name != $request->second_name) {
+            $student->second_name = $request->second_name;
+            $counter++;
+        }
+        // Comparing The Third Name Old Data To The New
+        if ($student->third_name != $request->third_name) {
+            $student->third_name = $request->third_name;
+            $counter++;
+        }
+        // Comparing The Last Name Old Data To The New
+        if ($student->last_name != $request->last_name) {
+            $student->last_name = $request->last_name;
             $counter++;
         }
         // Comparing Phone Old Data To The New
@@ -369,49 +554,253 @@ class StudentController extends Controller
     {
         // Getting All Reservation For The User | Student
         $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
-        // An Empty Array For The Tickets Will Be Filled Soon
-        $tickets_data = array();
-        // Fetching The Data To The Array
-        foreach ($reservations as $reservation) {
-            if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
-                array_push($tickets_data, $reservation->id);
-            }
-        }
-        // Getting Count Of The Tickets That Is Not Payed For
-        $tickets = count($tickets_data);
+        $tickets = $this->get_auth_tickets();
+
         // Returning The View Of The Tickets
         return view('student.tickets', compact('reservations', 'tickets'));
+    }
+
+    // To Show All Tickets Of The User | Student By Filter
+    private function all_tickets()
+    {
+        // Getting All Reservation For The User | Student
+        $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
+
+        // Getting Count Of The Tickets That Is Not Payed For
+
+        foreach ($reservations as $reservation) {
+
+
+            if (!is_null($reservation->payment)) {
+                if ($reservation->course->start_date >= date('y-m-d')) {
+
+                    if ($reservation->course->start_date > date('y-m-d') && $reservation->confirmation == 1) {
+
+                        $ticket_type = "confirmed";
+
+                    } else if ($reservation->course->start_date > date('y-m-d') && $reservation->confirmation == 0) {
+                        $ticket_type = "AdminUnconfirmed";
+                    }
+
+                } else {
+                    $ticket_type = "finished";
+                }
+            } else {
+                if ($reservation->course->type == "free") {
+
+                    $ticket_type = "FreeUnconfirmed";
+
+                } else {
+                    $ticket_type = "StudentUnconfirmed";
+                }
+            }
+
+
+            $subData = array(
+                'title' => $reservation->course->title,
+                'confirmation' => $reservation->confirmation,
+                'date' => $reservation->course->start_date,
+                'ticket_type' => $ticket_type,
+                'city' => $reservation->course->city->name,
+                'price' => $reservation->course->price,
+                'type' => $reservation->course->type,
+                'identifier' => $reservation->identifier,
+                'poster_1' => $reservation->course->image->image,
+            );
+            array_push($this->response['response'], $subData);
+        }
+
+        array_push($this->response['status'], 'success');
+        array_push($this->response['errors'], null);
+
+        return response()->json($this->response);
+    }
+
+    // To Show All The Finished Tickets Of The User | Student By Filter
+    private function finished_tickets()
+    {
+        // Getting All Reservation For The User | Student
+        $reservations = Reservation::where('student_id', Auth::user()->student->id)->where('confirmation', 1)->get();
+
+        // Getting Count Of The Tickets That Is Not Payed For
+        foreach ($reservations as $reservation) {
+
+            if ($reservation->course->start_date < date('y-m-d')) {
+
+                $ticket_type = "finished";
+                $subData = array(
+                    'title' => $reservation->course->title,
+                    'confirmation' => $reservation->confirmation,
+                    'date' => $reservation->course->start_date,
+                    'ticket_type' => $ticket_type,
+                    'city' => $reservation->course->city->name,
+                    'price' => $reservation->course->price,
+                    'type' => $reservation->course->type,
+                    'identifier' => $reservation->identifier,
+                    'poster_1' => $reservation->course->image->image,
+                );
+
+                array_push($this->response['response'], $subData);
+
+            }
+        }
+
+        array_push($this->response['status'], 'success');
+        array_push($this->response['errors'], null);
+
+        return response()->json($this->response);
+    }
+
+    // To Show All The Confirmed Tickets Of The User | Student By Filter
+    private function confirmed_tickets()
+    {
+        // Getting All Reservation For The User | Student
+        $reservations = Reservation::where('student_id', Auth::user()->student->id)->where('confirmation', 1)->get();
+
+        // Getting Count Of The Tickets That Is Not Payed For
+        foreach ($reservations as $reservation) {
+
+            if ($reservation->course->start_date >= date('y-m-d') && $reservation->confirmation == 1) {
+
+                $ticket_type = "confirmed";
+                $subData = array(
+                    'title' => $reservation->course->title,
+                    'confirmation' => $reservation->confirmation,
+                    'date' => $reservation->course->start_date,
+                    'ticket_type' => $ticket_type,
+                    'city' => $reservation->course->city->name,
+                    'price' => $reservation->course->price,
+                    'type' => $reservation->course->type,
+                    'identifier' => $reservation->identifier,
+                    'poster_1' => $reservation->course->image->image,
+                );
+
+                array_push($this->response['response'], $subData);
+
+            }
+        }
+
+        array_push($this->response['status'], 'success');
+        array_push($this->response['errors'], null);
+
+        return response()->json($this->response);
+    }
+
+    // To Show All The Unconfirmed Tickets Of The User | Student By Filter
+    private function unconfirmed_tickets()
+    {
+        // Getting All Reservation For The User | Student
+        $reservations = Reservation::where('student_id', Auth::user()->student->id)->where('confirmation', 0)->get();
+
+        // Getting Count Of The Tickets That Is Not Payed For
+        foreach ($reservations as $reservation) {
+
+            if ($reservation->course->start_date >= date('y-m-d') && $reservation->confirmation == 0) {
+                if ($reservation->course->type == "free") {
+                    $ticket_type = "FreeUnconfirmed";
+                } else {
+                    if (!is_null($reservation->payment)) {
+                        $ticket_type = "AdminUnconfirmed";
+                    } else {
+                        $ticket_type = "StudentUnconfirmed";
+                    }
+                }
+
+                $subData = array(
+                    'title' => $reservation->course->title,
+                    'confirmation' => $reservation->confirmation,
+                    'date' => $reservation->course->start_date,
+                    'ticket_type' => $ticket_type,
+                    'city' => $reservation->course->city->name,
+                    'price' => $reservation->course->price,
+                    'type' => $reservation->course->type,
+                    'identifier' => $reservation->identifier,
+                    'poster_1' => $reservation->course->image->image,
+                );
+
+                array_push($this->response['response'], $subData);
+
+            }
+        }
+
+        array_push($this->response['status'], 'success');
+        array_push($this->response['errors'], null);
+
+        return response()->json($this->response);
+    }
+
+    // This Function Handle The Filter Of Showing The Tickets
+    public function filtered_tickets(Request $request)
+    {
+        $filter = $request->type;
+
+        switch ($filter) {
+            case "all":
+                return $this->all_tickets();
+                break;
+
+            case "finished":
+                return $this->finished_tickets();
+                break;
+
+            case "confirmed":
+                return $this->confirmed_tickets();
+                break;
+
+            case "unconfirmed":
+                return $this->unconfirmed_tickets();
+                break;
+
+            default:
+                return $this->all_tickets();
+                break;
+        }
     }
 
     // To Show The Form Of Confirming A Payment For The Course
     public function payment_confirmation(Request $request, $identifier)
     {
-        // Getting All Reservation For The User | Student
-        $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
+
         // The Reservation That Wanted To Be Confirmed
-        $reservation = Reservation::where('identifier', $identifier)->first();
+        $reservation = Reservation::where('identifier', $identifier)->where('student_id', Auth::user()->student->id)->first();
+
+        $tickets = $this->get_auth_tickets();
+
         // Checking If The Reservation iIs Exist
-        if (count($reservation) <= 0) {
-            abort(404);
+        if (count($reservation) < 1) {
+            $error = "شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز";
+            return view('student.error-page', compact('error', 'tickets'));
         }
-        // An Empty Array Of Tickets
-        $tickets_data = array();
-        // Fetching The Data Into The Array
-        foreach ($reservations as $reservation) {
-            if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
-                array_push($tickets_data, $reservation->id);
-            }
+
+        if ($reservation->course->start_date < date("Y-m-d")) {
+            $error = "شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز او من تاريخ الحجز";
+            return view('student.error-page', compact('error', 'tickets'));
         }
-        // Getting Count Of The Tickets That Is Not Payed For
-        $tickets = count($tickets_data);
+
+        $tickets = $this->get_auth_tickets();
+
         return view('student.payment-confirmation', compact('reservation', 'tickets'));
     }
 
     // The Data Of Confirmation Goes Here And The Process Happens Here
     public function confirm(Request $request, $identifier)
     {
+
         // Getting The Reservation Of The User | Student
-        $reservation = Reservation::where('identifier', $identifier)->first();
+        $reservation = Reservation::where('identifier', $identifier)->where('student_id', Auth::user()->student->id)->first();
+        $tickets = $this->get_auth_tickets();
+
+        // Checking If The Reservation iIs Exist
+        if (count($reservation) < 1) {
+            $error = "شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز";
+            return view('student.error-page', compact('error', 'tickets'));
+        }
+
+        if ($reservation->course->start_date < date("Y-m-d")) {
+            $error = "شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز او من تاريخ الحجز";
+            return view('student.error-page', compact('error', 'tickets'));
+        }
+
         // Validation The Request Data
         $request->validate([
             'account_owner' => 'required|string|max:50|min:10',
@@ -436,38 +825,52 @@ class StudentController extends Controller
     // To Show The Form Of Editing The Payment Confirmation
     public function edit_payment_confirmation_form($identifier)
     {
-        // All Confirmation Of The User | Student
-        $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
+
         // The Confirmation That Will Be Edit
-        $reservation = Reservation::where('identifier', $identifier)->first();
+        $reservation = Reservation::where('identifier', $identifier)->where('student_id', Auth::user()->student->id)->first();
+
+        $tickets = $this->get_auth_tickets();
+
         // Checking If The Reservation Is Exist
-        if (count($reservation) <= 0) {
-            abort(404);
+        if (count($reservation) < 1) {
+            $error = "شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز";
+            return view('student.error-page', compact('error', 'tickets'));
         }
-        // An Empty Array Of The Tickets Will Be Filled Soon
-        $tickets_data = array();
-        // Fetching The Data Into The Array
-        foreach ($reservations as $reservation) {
-            if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
-                array_push($tickets_data, $reservation->id);
-            }
+
+        if ($reservation->course->start_date < date("Y-m-d")) {
+            $error = "شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز او من تاريخ الحجز";
+            return view('student.error-page', compact('error', 'tickets'));
         }
-        // Getting Count Of The Tickets That Is Not Payed For
-        $tickets = count($tickets_data);
+
         return view('student.edit-payment-confirmation', compact('reservation', 'tickets'));
     }
 
     // The Data Of Editing The Payment Confirmation Goes Here And The Process Happens Here
-    public function update_payment_confirmation_form(Request $request, $identifier)
+    public function update_payment_confirmation(Request $request, $identifier)
     {
+        // Getting The Reservation That Will Be Edit
+        $reservation = Reservation::where('identifier', $identifier)->where('student_id', Auth::user()->student->id)->first();
+
+        $tickets = $this->get_auth_tickets();
+
+        if (count($reservation) < 1) {
+            $error = "شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز";
+            return view('student.error-page', compact('error', 'tickets'));
+        }
+
+
+        if ($reservation->course->start_date < date("Y-m-d")) {
+            $error = "شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز او من تاريخ الحجز";
+            return view('student.error-page', compact('error', 'tickets'));
+        }
+
         // Validating The Request Data
         $request->validate([
             'account_owner' => 'string|max:50|min:10',
             'account_number' => 'max:30|min:10',
-            'receipt-image' => 'image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
+            'receipt-image' => 'image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
         ]);
-        // Getting The Reservation That Will Be Edit
-        $reservation = Reservation::where('identifier', $identifier)->first();
+
         // Getting The Old payment Confirmation Data
         $payment = PaymentConfirmation::where('reservation_id', $reservation->id)->first();
         // Checking If The Request Has An Image
@@ -507,17 +910,7 @@ class StudentController extends Controller
     // To Show The Form Of Resetting The Password
     public function create_reset_password()
     {
-        // Get All Reservations To Filter It
-        $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
-        // To Filter The Reservation That Is Not Confirmed
-        $tickets_data = array();
-        foreach ($reservations as $reservation) {
-            if ($reservation->course->start_date > date('Y-m-d') && $reservation->confirmation == 0 && is_null($reservation->payment)) {
-                array_push($tickets_data, $reservation->id);
-            }
-        }
-        // Save The Total Count
-        $tickets = count($tickets_data);
+        $tickets = $this->get_auth_tickets();
         return view('student.account-reset-password', compact('tickets'));
     }
 
@@ -530,7 +923,7 @@ class StudentController extends Controller
         if (Hash::check($request->old_password, $user->password)) {
             // Validating The Request Data
             $request->validate([
-                'password' => 'required|string|max:32|min:8|confirmed',
+                'password' => 'required|string|max:32|min:6|confirmed',
             ]);
             // Check If The New Password Equal The New Password
             if (Hash::check($request->password, $user->password)) {

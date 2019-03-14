@@ -47,7 +47,7 @@
                         <h3>{{ $course->title }}</h3>
                         <div class="main-info">
                             <div class="course-logo rounded-top">
-                                <img src="/storage/course-images/{{ $course->image[0]->image }}" alt="{{ $course->title }}">
+                                <img src="/storage/course-images/{{ $course->image->image }}" alt="{{ $course->title }}">
                             </div>
                             <div class="block rounded-bottom mt-0">
                                 <div class="row">
@@ -273,13 +273,13 @@
                                 @endif
                             @endforeach
                             @if(empty($students))
-                                <form method="post" action="{{ route('account.course.booking', $course->identifier) }}">
+                                <form method="post" action="{{ route('account.course.reservation.form', $course->identifier) }}">
                                     {{ csrf_field() }}
                                     <button type="submit" class="btn custom-btn">احجز الآن</button>
                                 </form>
                             @endif
                         @else
-                            <form method="post" action="{{ route('account.course.booking', $course->identifier) }}">
+                            <form method="post" action="{{ route('account.course.reservation.form', $course->identifier) }}">
                                 {{ csrf_field() }}
                                 <button type="submit" class="btn custom-btn">احجز الآن</button>
                             </form>

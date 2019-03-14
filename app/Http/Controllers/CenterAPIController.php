@@ -157,7 +157,7 @@ class CenterAPIController extends Controller
 
         $cities = array();
         $cities_data = City::where('country_id', $request->country)->get();
-        foreach ($cities_data as $city){
+        foreach ($cities_data as $city) {
             array_push($cities, $city->id);
         }
 
@@ -174,7 +174,7 @@ class CenterAPIController extends Controller
             // The Country Of The City
             'country' => 'required|integer|exists:countries,id',
             // The City Of The Course
-            'city' => 'required|integer|exists:cities,id|'.Rule::in($cities),
+            'city' => 'required|integer|exists:cities,id|' . Rule::in($cities),
             // The Address Of tHE Course
             'address' => 'required|string|max:150|min:10',
             // The Location The Course On Google Map
@@ -451,7 +451,7 @@ class CenterAPIController extends Controller
     {
         $course = Course::where('identifier', $request->identifier)->where('center_id', auth('api')->user()->center->id)->get();
 
-        if ( count($course) < 1 ){
+        if (count($course) < 1) {
             array_push($this->response['status'], 'failed');
             array_push($this->response['errors'], 'الرجاء التأكد من معرف الدورة');
             array_push($this->response['response'], null);
@@ -462,7 +462,7 @@ class CenterAPIController extends Controller
         $students_data = Reservation::where('course_id', $course->id)->where('confirmation', 1)->get();
         $students = array();
 
-        foreach ($students_data as $student){
+        foreach ($students_data as $student) {
             array_push($students, $student->id);
         }
 
@@ -471,25 +471,25 @@ class CenterAPIController extends Controller
         $date2 = date_create($course->finish_date);
         $diff = date_diff($date1, $date2);
         $days = $diff->format("%a");
-        for ($i = 1; $i <= $days; $i++){
-            array_push($date, date('Y-m-d', strtotime($course->start_date." +$i Day ")) );
+        for ($i = 1; $i <= $days; $i++) {
+            array_push($date, date('Y-m-d', strtotime($course->start_date . " +$i Day ")));
         }
 
         $request->validate([
-            'date' => 'required|date|'.Rule::in($date),
+            'date' => 'required|date|' . Rule::in($date),
             'identifier' => 'required|max:10|min:10',
-            'student' => 'required|integer|'.Rule::in($students),
+            'student' => 'required|integer|' . Rule::in($students),
             'attendance' => 'required|integer|max:1|min:0',
         ]);
 
         $attendance = Attendance::where('date', $request->date)->where('student_id', $request->student)->where('course_id', $course->id)->first();
-        if ( count($attendance) > 0 ){
+        if (count($attendance) > 0) {
             array_push($this->response['status'], 'failed');
             array_push($this->response['errors'], 'تم تحضير الطالب لهذا اليوم');
             array_push($this->response['response'], null);
 
             return response()->json($this->response);
-        }else {
+        } else {
             Attendance::create([
                 'date' => $request->date,
                 'course_id' => $course->id,
@@ -506,8 +506,10 @@ class CenterAPIController extends Controller
         return response()->json($this->response);
 
     }
+
     // This Function Show The Attendance Of A Specific Date
-    public function show_attendance(Request $request){
+    public function show_attendance(Request $request)
+    {
 
         $request->validate([
             'identifier' => 'required|string|max:10|min:10',
@@ -515,7 +517,7 @@ class CenterAPIController extends Controller
 
         $course = Course::where('identifier', $request->identifier)->first();
 
-        if ( count($course) < 1 ){
+        if (count($course) < 1) {
             array_push($this->response['status'], 'failed');
             array_push($this->response['errors'], 'الرجاء التأكد من معرف الدورة');
             array_push($this->response['response'], null);
@@ -530,27 +532,27 @@ class CenterAPIController extends Controller
         $diff = date_diff($date1, $date2);
         $days = $diff->format("%a");
 
-        for ($i = 1; $i <= $days; $i++){
-            array_push($date, date('Y-m-d', strtotime($course->start_date." +$i Day ")) );
+        for ($i = 1; $i <= $days; $i++) {
+            array_push($date, date('Y-m-d', strtotime($course->start_date . " +$i Day ")));
         }
 
         $request->validate([
-            'date' => 'required|date'.Rule::in($date),
+            'date' => 'required|date' . Rule::in($date),
         ]);
 
         $attendances = Attendance::where('date', $request->date)->where('course_id', $course->id)->get();
 
-        if ( count($attendances) < 1 ){
+        if (count($attendances) < 1) {
             array_push($this->response['status'], 'failed');
             array_push($this->response['errors'], 'لم يتم تحضير اي طالب لهذا التاريخ');
             array_push($this->response['response'], null);
 
             return response()->json($this->response);
-        }else {
-            foreach ($attendances as $attendance){
+        } else {
+            foreach ($attendances as $attendance) {
                 $subData = array(
                     'student_id' => $attendance->studentid,
-                    'student' => $attendance->student->first_name." ".$attendance->student->second_name,
+                    'student' => $attendance->student->first_name . " " . $attendance->student->second_name,
                     'date' => $attendance->date,
                     'admin' => $attendance->admin->name,
                 );
@@ -565,19 +567,21 @@ class CenterAPIController extends Controller
         }
 
     }
+
     // This Function Retrieve Courses And Admins To Assign
-    public function retrieve_courses(){
+    public function retrieve_courses()
+    {
         $courses = Course::where('center_id', auth('api')->user()->center->id)->get();
-        if ( count($courses) < 1 ){
+        if (count($courses) < 1) {
             array_push($this->response['status'], 'failed');
             array_push($this->response['errors'], 'لاتوجد دورات مسجلة في النظام');
             array_push($this->response['response'], null);
 
             return response()->json($this->response);
-        }else {
+        } else {
             $this->$this->data['trainers'] = array();
             $admins = Admin::where('center_id', auth('api')->user()->center->id)->get();
-            foreach ($admins as $admin){
+            foreach ($admins as $admin) {
                 $subData = array(
                     'id' => $admin->id,
                     'name' => $admin->name,
@@ -585,7 +589,7 @@ class CenterAPIController extends Controller
                 array_push($this->$this->data['trainers'], $subData);
             }
             $this->$this->data['courses'] = array();
-            foreach ($courses as $course){
+            foreach ($courses as $course) {
                 $subData = array(
                     'id' => $courses->id,
                     'title' => $courses->title,
@@ -600,8 +604,10 @@ class CenterAPIController extends Controller
             return response()->json($this->response);
         }
     }
+
     // This Function For Assigning Admin To One Course
-    public function assign_admin(Request $request){
+    public function assign_admin(Request $request)
+    {
 
         $courses = Course::select('id')->where('center_id', auth('api')->user()->center->id)->get();
         $course_data = array();
@@ -621,17 +627,17 @@ class CenterAPIController extends Controller
             array_push($this->response['errors'], 'لاتوجد دورات مسجلة لهذه الجهة');
             array_push($this->response['response'], null);
 
-            return response()->json($this->response,200);
+            return response()->json($this->response, 200);
         }
 
         $check = CourseAdmin::where('course_id', $request->course)->where('admin_id', $request->admin)->first();
 
-        if ( count($check) > 0 ){
+        if (count($check) > 0) {
             array_push($this->response['status'], 'failed');
             array_push($this->response['errors'], 'تم تعيين هذا الميد اهذه الدورة مسبقا');
             array_push($this->response['response'], null);
 
-            return response()->json($this->response,200);
+            return response()->json($this->response, 200);
         }
 
         $request->validate([
@@ -651,7 +657,7 @@ class CenterAPIController extends Controller
         array_push($this->response['errors'], null);
         array_push($this->response['response'], 'تم تعيين الميد بنجاح');
 
-        return response()->json($this->response,200);
+        return response()->json($this->response, 200);
     }
 
     // This Function For Confirming Payments For One Course
@@ -666,14 +672,14 @@ class CenterAPIController extends Controller
         $course = Course::where('identifier', $request->identifier)->get();
         $reservation = Reservation::where('student', $request->student)->where('course_id', $course->id)->first();
 
-        if ( count($reservation) < 1 ){
+        if (count($reservation) < 1) {
             array_push($this->response['status'], 'failed');
             array_push($this->response['errors'], 'لايوجد حجز لهذا الطالب');
             array_push($this->response['response'], null);
 
             return response()->json($this->response);
-        }else {
-            if ( $reservation->confirmation == 1 ){
+        } else {
+            if ($reservation->confirmation == 1) {
                 $reservation->confirmation = 1;
                 $reservation->save();
 
@@ -682,7 +688,7 @@ class CenterAPIController extends Controller
                 array_push($this->response['response'], 'تم تأكيد الحجز مسبقا');
 
                 return response()->json($this->response);
-            }else {
+            } else {
                 $reservation->confirmation = 1;
                 $reservation->save();
 
@@ -696,26 +702,27 @@ class CenterAPIController extends Controller
     }
 
     // This Function For Showing The Details Of Confirming The Payments
-    public function show_payment_confirmation(Request $request){
+    public function show_payment_confirmation(Request $request)
+    {
         $request->validate([
             'identifier' => 'required|string|exists:courses,identifier',
         ]);
 
         $course = Course::where('center_id', auth('api')->user()->center->id)->where('identifier', $request->identifier)->first();
 
-        if ( count($course) < 1 ){
+        if (count($course) < 1) {
             array_push($this->response['status'], 'failed');
             array_push($this->response['errors'], 'الرجاء التأكد من معرف الدورة');
             array_push($this->response['response'], null);
 
             return response()->json($this->response);
-        }else {
+        } else {
             $reservations = Reservation::where('course_id', $course->id)->get();
 
-            foreach ($reservations as $reservation){
+            foreach ($reservations as $reservation) {
                 $subData = array(
                     'student_id' => $reservation->student->id,
-                    'student' => $reservation->student->first_name." ".$reservation->student->second_name,
+                    'student' => $reservation->student->first_name . " " . $reservation->student->second_name,
                     'confirmation' => $reservation->confirmation,
                 );
 

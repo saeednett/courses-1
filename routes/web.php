@@ -13,40 +13,48 @@
 
 
 /* Account || User || Student Routes Part */
-
 // Show All Courses Are In The Database
 Route::get('/', 'StudentController@index')->name('account.index');
-// To Register An Account For The Student
-Route::get('account/sign-up', 'StudentController@create')->name('account.register')->middleware('guest');
-// The Data Of Registering Goes Here
-Route::post('account/sign-up', 'StudentController@store')->name('account.store')->middleware('guest');
-// To Login For Student Who Has An Account
-Route::get('account/sign-in', 'StudentController@create_sign_in')->name('account.login')->middleware('guest');
-// To Reset The Password For The Student Who Has An Account
-Route::get('account/account-password', 'StudentController@create_reset_password')->name('account.password')->middleware('auth');
-// the Data Of Resetting Password Goes Here
-Route::post('account/account-password', 'StudentController@reset_password')->name('account.password')->middleware('auth');
-// To Show The Tickets Of The Student That Was Reserved
-Route::get('account/tickets', 'StudentController@tickets')->name('account.ticket')->middleware('auth');
-// To Show And Edit The Profile Information Of The Student
-Route::get('account/profile/edit', 'StudentController@edit')->name('account.edit')->middleware('auth');
-// The New Information Goes Here
-Route::put('account/profile/update', 'StudentController@update')->name('account.update')->middleware('auth');
+// This Function Handle The Filter Of Courses
+Route::post('/', 'StudentController@filtered_index')->name('account.index.filtered');
 // To Show The Information Of A Course Before Reserved It
-Route::get('{center}/Course/{course}', 'StudentController@show_course')->name('account.course_details');
-// The Data Of Reserving A Course Goes Here
-Route::post('{course}/Booking', 'StudentController@book_course_form')->name('account.course.booking')->middleware('auth');
-// To Reserve The Course
-Route::post('{course}/Reserve', 'StudentController@book_course_reservation')->name('account.course.booking.reserve');
-// To Confirm The Payment Of A Course
-Route::get('{course}/PaymentConfirmation', 'StudentController@payment_confirmation')->name('student.payment.confirmation')->middleware('auth');
-// To Edit Payment Confirmation Of The Course
-Route::get('{reservation}/PaymentConfirmation/edit', 'StudentController@edit_payment_confirmation_form')->name('student.payment.confirmation.edit')->middleware('auth');
-// The Data Of Editing Payment Confirmation Goes Here
-Route::put('{reservation}/PaymentConfirmation/update', 'StudentController@update_payment_confirmation_form')->name('student.payment.confirmation.update')->middleware('auth');
-// The Data Of Confirmation Goes Here
-Route::post('{course}/Confirmed', 'StudentController@confirm')->name('student.payment.confirmation.confirm')->middleware('auth');
-
+Route::get('{center}/{course}/CourseDetails', 'StudentController@show_course')->name('account.course_details');
+// This Group For Guest Only
+Route::group(['middleware' => 'guest'], function () {
+    // To Register An Account For The Student
+    Route::get('/sign-up', 'StudentController@create')->name('account.register');
+    // To Login For Student Who Has An Account
+    Route::get('/sign-in', 'StudentController@create_sign_in')->name('account.login');
+    // The Data Of Registering Goes Here
+    Route::post('/sign-up', 'StudentController@store')->name('account.store');
+});
+// This Group For Auth Only
+Route::group(['middleware' => 'auth'], function () {
+    // To Reset The Password For The Student Who Has An Account
+    Route::post('/Password/Reset', 'StudentController@create_reset_password')->name('account.password.reset.form');
+    // The Data Of Resetting Password Goes Here
+    Route::post('/Password/Reset/Confirm', 'StudentController@reset_password')->name('account.password');
+    // To Show The Tickets Of The Student That Was Reserved
+    Route::get('/Tickets', 'StudentController@tickets')->name('account.ticket');
+    // To Show The Tickets Of The Student That Was Reserved Search By Filter
+    Route::post('/Tickets', 'StudentController@filtered_tickets')->name('account.ticket.filtered');
+    // To Show And Edit The Profile Information Of The Student
+    Route::get('/Profile/Edit', 'StudentController@edit')->name('account.edit');
+    // The New Information Goes Here
+    Route::put('/Profile/Update', 'StudentController@update')->name('account.update');
+    // To Reserve The Course
+    Route::post('{course}/ReserveCourse', 'StudentController@reservation_course_form')->name('account.course.reservation.form');
+    // The Data Of Reserving A Course Goes Here
+    Route::post('{course}/ReserveCourse/Confirm', 'StudentController@course_reservation_confirm')->name('account.course.reservation.confirm');
+    // To Confirm The Payment Of A Course
+    Route::get('{course}/PaymentConfirmation', 'StudentController@payment_confirmation')->name('student.payment.confirmation');
+    // The Data Of Confirmation Goes Here
+    Route::post('{course}/PaymentConfirmation/Confirm', 'StudentController@confirm')->name('student.payment.confirmation.confirm');
+    // To Edit Payment Confirmation Of The Course
+    Route::get('{reservation}/PaymentConfirmation/Edit', 'StudentController@edit_payment_confirmation_form')->name('student.payment.confirmation.edit');
+    // The Data Of Editing Payment Confirmation Goes Here
+    Route::put('{reservation}/PaymentConfirmation/Update', 'StudentController@update_payment_confirmation')->name('student.payment.confirmation.update');
+});
 /* End Of Account || User || Student Routes Part  */
 
 
@@ -91,11 +99,11 @@ Route::post('center/course/store', 'CenterController@store_course')->name('cente
 // To Show All Courses Who Belong To The Center
 Route::get('center/courses/show', 'CenterController@show_courses')->name('center.course.show')->middleware('auth-center');
 // To Register As A Center
-Route::get('sign-up', 'CenterController@register')->name('center.register')->middleware('guest');
+Route::get('center/sign-up', 'CenterController@register')->name('center.register')->middleware('guest');
 // The Data Of Registering Goes Here
-Route::post('sign-up', 'CenterController@store')->name('center.store')->middleware('guest');
+Route::post('center/sign-up', 'CenterController@store')->name('center.store')->middleware('guest');
 // To Login As A Center
-Route::get('sign-in', 'CenterController@login')->name('center.login')->middleware('guest');
+Route::get('center/sign-in', 'CenterController@login')->name('center.login')->middleware('guest');
 // To Show Contacts Information Of The Site
 Route::get('contact/contact-us', 'CenterController@contact_us')->name('contact.us');
 // To Show About Us Information Of The Site

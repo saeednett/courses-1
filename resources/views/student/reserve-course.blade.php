@@ -20,7 +20,8 @@
     <div class="container mb-2">
         <div class="row justify-content-center mt-lg-2">
             <div class="col-lg-10 col-md-12 col-sm-12 col-12">
-                <form class="mb-0" id="reserve-course" method="post" action="{{ route('account.course.booking.reserve', $course->identifier) }}">
+                <form class="mb-0" id="reserve-course" method="post"
+                      action="{{ route('account.course.reservation.confirm', $course->identifier) }}">
                     {{ csrf_field() }}
 
                     <div class="row justify-content-center mt-2">
@@ -76,7 +77,8 @@
                                                             @if($course->type == 'free')
                                                                 <p class="mt-0 mb-0 text-muted rtl"><b>مجانية</b></p>
                                                             @else
-                                                                <p class="mt-0 mb-0 text-muted rtl"><b>{{ $course->price }}ريال</b></p>
+                                                                <p class="mt-0 mb-0 text-muted rtl">
+                                                                    <b>{{ $course->price }}ريال</b></p>
                                                             @endif
                                                         </div>
                                                     </div>
@@ -99,7 +101,7 @@
                                                         <div class="col-lg-8 col-md-9 col-sm-5 col-7 text-center rtl">
                                                             <?php
                                                             $date1 = date_create($course->start_date);
-                                                            $date2 = date_create($course->finish_date);
+                                                            $date2 = date_create($course->end_date);
                                                             $diff = date_diff($date1, $date2);
                                                             $days = $diff->format("%a");
                                                             if ($days == 1) {
@@ -112,6 +114,21 @@
                                                                 echo $days . " يوم ";
                                                             }
                                                             ?>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row info">
+                                                        <div class="col-lg-4 col-md-3 col-sm-5 col-5 text-right rtl order-last">
+                                                            <i class="fa fa-users labels-icon"></i>
+                                                            <span class="">الحضور:</span>
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-9 col-sm-5 col-7 text-center rtl">
+                                                            @if($course->gender == 1)
+                                                                <span>رجال</span>
+                                                            @elseif($course->gender == 2)
+                                                                <span>نساء</span>
+                                                            @else
+                                                                <span>رجال ونساء</span>
+                                                            @endif
                                                         </div>
                                                     </div>
 
@@ -250,7 +267,7 @@
 
                                                     <div class="row justify-content-center">
                                                         <div class="col-lg-8">
-                                                            <img src="{{ $course->center->account[0]->bank->logo }}"
+                                                            <img src="{{ $course->center->account[0]->bank->image }}"
                                                                  class="d-block ml-auto w-100" alt="Bank Logo">
                                                         </div>
                                                     </div>

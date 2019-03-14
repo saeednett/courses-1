@@ -18,6 +18,11 @@
 </head>
 <body>
 
+<div class="blocker">
+    <div class="loader_holder"></div>
+    <div class="error_holder"></div>
+</div>
+
 <div class="wrap">
 
     <header class="header">
@@ -32,7 +37,7 @@
                                 <a class="navbar-brand rtl" href="#">
                                     <div class="row">
                                         <div class="col-4">
-                                            <img src="{{ asset('img/student/logo2.png') }}" alt="" height="70" width="50">
+                                            <img src="{{ asset('img/student/logo.png') }}" alt="" height="70" width="50">
                                         </div>
                                         <div class="col-8">
                                             <form class="text-center" style="margin-top: 25px;" action="" method="post">
@@ -94,12 +99,6 @@
                                         <li class="nav-item tap-link">
                                             <a class="nav-link" href="{{ route('contact.us') }}">اتصل بنا</a>
                                         </li>
-                                        {{--<li class="nav-item tap-link">--}}
-                                            {{--<a class="nav-link rtl" href="{{ route('account.ticket') }}">--}}
-                                                {{--تذاكري--}}
-                                                {{--<span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>--}}
-                                            {{--</a>--}}
-                                        {{--</li>--}}
                                     </ul>
 
                                     <ul class="navbar-nav d-lg-none d-md-none d-sm-block d-block" style="direction: ltr;">
@@ -131,7 +130,7 @@
                                                     </a>
                                                     <a href="{{ route('account.ticket') }}" class="dropdown-item rtl">
                                                         تذاكري
-                                                        @if(\Illuminate\Support\Facades\Auth::check())
+                                                        @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role_id == 5)
                                                             @if($tickets > 0)
                                                                 <span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>
                                                             @endif
@@ -186,7 +185,7 @@
                                 <li class="nav-item tap-link">
                                     <a class="nav-link rtl" href="{{ route('account.ticket') }}">
                                         تذاكري
-                                        @if(\Illuminate\Support\Facades\Auth::check())
+                                        @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role_id == 5)
                                             @if($tickets > 0)
                                                 <span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>
                                             @endif
@@ -323,7 +322,7 @@
 
             <div class="row justify-content-center mt-3 mb-3">
                 <div class="col-lg-2 col-md-2 col-sm-5 col-5">
-                    <a href="a"><img class="m-auto d-block" src="{{ asset('img/student/logo2.png') }}" width="70"> </a>
+                    <a href="a"><img class="m-auto d-block" src="{{ asset('img/student/logo.png') }}" width="70"> </a>
                 </div>
             </div>
 

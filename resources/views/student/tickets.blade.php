@@ -3,7 +3,11 @@
 @section('title', 'تذاكري')
 
 @section('style-file')
-    <link rel="stylesheet" href="{{ asset('css/student/tickets.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/student/tickets.css') }}"/>
+@endsection
+
+@section('script-file')
+    <script src="{{ asset('js/student/tickets.js') }}"></script>
 @endsection
 
 @section('content')
@@ -22,6 +26,17 @@
                                         تذاكري</h3>
                                 </div>
                             </div>
+
+                            <div class="row justify-content-end">
+                                <div class="col-12 text-right d-lg-block d-md-block d-none rtl">
+                                    <input type="hidden" name="token" value="{{ csrf_token() }}">
+                                    <button class="btn filter-tabs custom-active" data-filter="all">الجميع</button>
+                                    <button class="btn filter-tabs" data-filter="finished">المنتهية</button>
+                                    <button class="btn filter-tabs" data-filter="confirmed">المؤكدة</button>
+                                    <button class="btn filter-tabs" data-filter="unconfirmed">المعلقة</button>
+                                </div>
+                            </div>
+
                             <div class="row justify-content-center mt-2">
                                 <div class="col-10 text-center d-lg-none d-md-none d-sm-block d-block">
                                     <select class="custom-select" name="filter-type"
@@ -35,14 +50,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row justify-content-end">
-                                <div class="col-12 text-right d-lg-block d-md-block d-none rtl">
-                                    <button class="btn filter-tabs custom-active">الجميع</button>
-                                    <button class="btn filter-tabs">المنتهية</button>
-                                    <button class="btn filter-tabs">المؤكدة</button>
-                                    <button class="btn filter-tabs">المعلقة</button>
-                                </div>
-                            </div>
+
                             @if(session()->has('success'))
                                 <div class="row mt-4">
                                     <div class="col-lg-12 col-md-12 col-10">
@@ -67,11 +75,13 @@
                                     </div>
                                 </div>
                             @endif
-                            <div class="row justify-content-lg-end justify-content-md-end justify-content-sm-center justify-content-center mb-4">
+
+                            <div class="row justify-content-lg-end justify-content-md-end justify-content-sm-center justify-content-center mb-4" id="viewHolder">
                                 @foreach($reservations as $reservation)
                                     <div class="col-lg-4 col-md-5 col-sm-8 col-10 mt-3">
+
                                         <div class="card">
-                                            <img src="/storage/course-images/{{ $reservation->course->image[0]->image }}"
+                                            <img src="/storage/course-images/{{ $reservation->course->image->image }}"
                                                  class="card-img-top" alt="..." width="301" height="200">
                                             <div class="card-title text-center mt-2 mr-2">
                                                 <h5 title="اسم الدورة">{{ $reservation->course->title }}</h5>
@@ -88,6 +98,7 @@
                                             </div>
                                             <div class="clear"></div>
                                         </div>
+
                                         {{-- If The User Has Confirmed His Payment Fir The Course --}}
                                         @if(!is_null($reservation->payment))
                                             {{-- If The Date Of The Course Is Equal Or Greater Than Today's Date  --}}
@@ -128,25 +139,35 @@
                                                 </div>
                                             @endif
                                         @else
-                                            <div class="status">
-                                                <div class="col-12 p-0 m-0">
-                                                    <a href="{{ route('student.payment.confirmation', $reservation->identifier) }}">
-                                                        <button class="btn btn-block payed-ticket rtl">
-                                                            <b>ابلاغ بدفع ({{ $reservation->price }}
-                                                                ريال)</b>
-                                                        </button>
-                                                    </a>
+                                            @if($reservation->course->type == "payed")
+                                                <div class="status">
+                                                    <div class="col-12 p-0 m-0">
+                                                        <a href="{{ route('student.payment.confirmation', $reservation->identifier) }}">
+                                                            <button class="btn btn-block payed-ticket rtl">
+                                                                <b>ابلاغ بدفع ({{ $reservation->course->price }}
+                                                                    ريال)</b>
+                                                            </button>
+                                                        </a>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="status">
-                                                <div class="col-12 waiting-paying bg-danger">
-                                                    <p class="text-white text-center mb-0"><b>بنتظار الدفع</b></p>
+                                                <div class="status">
+                                                    <div class="col-12 waiting-paying bg-danger">
+                                                        <p class="text-white text-center mb-0"><b>بنتظار الدفع</b></p>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            @else
+                                                <div class="status">
+                                                    <div class="col-12 unconfirmed-ticket bg-warning">
+                                                        <p class="text-white text-center mb-0"><b>بنتظار تأكيد التذكرة</b></p>
+                                                    </div>
+                                                </div>
+                                            @endif
                                         @endif
                                     </div>
                                 @endforeach
                             </div>
+
+
                         </div>
                     </div>
                 </div>

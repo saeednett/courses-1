@@ -15,11 +15,14 @@
     <script>
         $('.carousel').carousel();
     </script>
+    <script src="{{ asset('js/student/courses-index.js') }}"></script>
+
 @endsection
 
 
 
 @section('content')
+
     <div class="container">
         <div class="row justify-content-center mt-lg-3 mt-2">
             <div class="col-lg-10 col-md-12 col-sm-12 col-12">
@@ -92,26 +95,25 @@
                 </div>
 
                 <div class="row justify-content-center">
-                    @if(count($courses) > 0)
-                        <div class="col-12 rtl text-lg-right text-center d-lg-block d-md-block d-none pr-0">
-                            <button class="btn filter-tabs custom-active">الجميع</button>
-                            <button class="btn filter-tabs">دورات مدفوعة</button>
-                            <button class="btn filter-tabs">دورات مجانية</button>
-                            <button class="btn filter-tabs">دورات متاحة</button>
-                        </div>
+                    <div class="col-12 rtl text-lg-right text-center d-lg-block d-md-block d-none pr-0">
+                        <input type="hidden" name="token" value="{{ csrf_token() }}">
+                        <button class="btn filter-tabs custom-active" data-filter="all">الجميع</button>
+                        <button class="btn filter-tabs" data-filter="payed">دورات مدفوعة</button>
+                        <button class="btn filter-tabs" data-filter="free">دورات مجانية</button>
+                        <button class="btn filter-tabs" data-filter="available">دورات متاحة</button>
+                    </div>
 
-                        <div class="col-10 rtl text-center d-lg-none d-md-none d-block">
-                            <select class="custom-select" name="filter-type"
-                                    onchange="alert($('select[name=filter-type]').val())">
-                                <optgroup label="تصفية البحث">
-                                    <option value="1" selected>الجميع</option>
-                                    <option value="2">دورات مدفوعة</option>
-                                    <option value="3">دورات مجانية</option>
-                                    <option value="4">دورات متاحة</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                    @endif
+                    <div class="col-10 rtl text-center d-lg-none d-md-none d-block">
+                        <select class="custom-select" name="filter-type"
+                                onchange="alert($('select[name=filter-type]').val())">
+                            <optgroup label="تصفية البحث">
+                                <option value="1" selected>الجميع</option>
+                                <option value="2">دورات مدفوعة</option>
+                                <option value="3">دورات مجانية</option>
+                                <option value="4">دورات متاحة</option>
+                            </optgroup>
+                        </select>
+                    </div>
                 </div>
 
             </div>
@@ -120,7 +122,8 @@
 
         <div class="row justify-content-center mt-2 mb-4">
             <div class="col-lg-10 col-md-10 col-sm-10 col-10 pr-0">
-                <div class="row justify-content-end">
+                <div class="row justify-content-end pb-3" id="viewHolder">
+
                     @if( count($courses) > 0 )
 
                         @foreach($courses as $course)

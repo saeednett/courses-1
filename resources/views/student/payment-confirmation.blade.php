@@ -31,7 +31,7 @@
                                 <div class="col-lg-12">
                                     <div class="main-info">
                                         <div class="course-logo rounded-top">
-                                            <img src="/storage/course-images/{{ $reservation->course->image[0]->image }}" alt="{{ $reservation->course->title }}">
+                                            <img src="/storage/course-images/{{ $reservation->course->image->image }}" alt="{{ $reservation->course->title }}">
                                         </div>
                                         <div class="block rounded-bottom mt-0">
                                             <div class="row">
@@ -116,8 +116,8 @@
                                                 </div>
                                                 <div class="col-lg-9 rtl">
                                                     <?php
-                                                    $date1 = date_create($reservation->start_date);
-                                                    $date2 = date_create($reservation->finish_date);
+                                                    $date1 = date_create($reservation->course->start_date);
+                                                    $date2 = date_create($reservation->course->end_date);
                                                     $diff = date_diff($date1,$date2);
                                                     $days = $diff->format("%a");
                                                     if ( $days == 1 ){

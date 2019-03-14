@@ -75,7 +75,8 @@
                             <div class="row">
                                 <div class="col-lg-12 text-lg-left order-first order-lg-first text-center">
                                     @if($user->student->image == 'account-profile.png')
-                                        <img src="{{ asset('img/student/'.$user->student->image) }}" class="img-thumbnail"
+                                        <img src="{{ asset('img/student/'.$user->student->image) }}"
+                                             class="img-thumbnail"
                                              style="height: 30%; width: 100%;">
                                     @else
                                         <img src="/storage/account-images/{{ $user->student->image }}"
@@ -92,26 +93,78 @@
                                                accept="image/png, image/jpg, image/jpeg">
                                     </div>
 
-                                    <label class="text-center rtl mt-2">(الحد الأعلى للصورة الشخصية 500 ك.ب. بالامتدادات
+                                    <label class="text-center rtl mt-2">(الحد الأعلى للصورة الشخصية 400 ك.ب. بالامتدادات
                                         التالية: . JPG, PNG.)</label>
                                 </div>
                             </div>
 
                             <div class="mt-4">
+
                                 <div class="form-group row mt-4">
                                     <div class="col-lg-8">
                                         <input type="text"
-                                               class="form-control {{ $errors->has('name') ? ' is-invalid' : '' }} text-center form-control-sm"
-                                               name="name"
-                                               value="{{ $user->name }}" required autocomplete="off">
-                                        @if ($errors->has('name'))
+                                               class="form-control {{ $errors->has('first_name') ? ' is-invalid' : '' }} text-center form-control-sm"
+                                               name="first_name"
+                                               value="{{ $user->student->first_name }}" required autocomplete="off">
+                                        @if ($errors->has('first_name'))
                                             <span class="invalid-feedback text-center" role="alert">
-                                                <strong>{{ $errors->first('name') }}</strong>
+                                                <strong>{{ $errors->first('first_name') }}</strong>
                                             </span>
                                         @endif
                                     </div>
                                     <div class="col-lg-4 text-right rtl order-lg-last order-md-last order-sm-first order-first">
-                                        <label class="col-form-label required-field">الاسم الكامل</label>
+                                        <label class="col-form-label required-field">الاسم الاأول</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-4">
+                                    <div class="col-lg-8">
+                                        <input type="text"
+                                               class="form-control {{ $errors->has('second_name') ? ' is-invalid' : '' }} text-center form-control-sm"
+                                               name="second_name"
+                                               value="{{ $user->student->second_name }}" required autocomplete="off">
+                                        @if ($errors->has('second_name'))
+                                            <span class="invalid-feedback text-center" role="alert">
+                                                <strong>{{ $errors->first('second_name') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-lg-4 text-right rtl order-lg-last order-md-last order-sm-first order-first">
+                                        <label class="col-form-label required-field">الاسم الثاني</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-4">
+                                    <div class="col-lg-8">
+                                        <input type="text"
+                                               class="form-control {{ $errors->has('third_name') ? ' is-invalid' : '' }} text-center form-control-sm"
+                                               name="third_name"
+                                               value="{{ $user->student->third_name }}" required autocomplete="off">
+                                        @if ($errors->has('third_name'))
+                                            <span class="invalid-feedback text-center" role="alert">
+                                                <strong>{{ $errors->first('third_name') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-lg-4 text-right rtl order-lg-last order-md-last order-sm-first order-first">
+                                        <label class="col-form-label required-field">الاسم الثالث</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row mt-4">
+                                    <div class="col-lg-8">
+                                        <input type="text"
+                                               class="form-control {{ $errors->has('last_name') ? ' is-invalid' : '' }} text-center form-control-sm"
+                                               name="last_name"
+                                               value="{{ $user->student->last_name }}" required autocomplete="off">
+                                        @if ($errors->has('last_name'))
+                                            <span class="invalid-feedback text-center" role="alert">
+                                                <strong>{{ $errors->first('last_name') }}</strong>
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="col-lg-4 text-right rtl order-lg-last order-md-last order-sm-first order-first">
+                                        <label class="col-form-label required-field">الاسم الأخير</label>
                                     </div>
                                 </div>
 
@@ -294,7 +347,8 @@
                                                         @if($user->student->month != 0)
                                                             @for($i = 1; $i <= 12; $i++)
                                                                 @if($user->student->month == $i)
-                                                                    <option value="{{ $user->student->month  }}" selected>{{ $user->student->month }}</option>
+                                                                    <option value="{{ $user->student->month  }}"
+                                                                            selected>{{ $user->student->month }}</option>
                                                                 @else
                                                                     <option value="{{ $i }}">{{ $i }}</option>
                                                                 @endif
@@ -323,7 +377,8 @@
                                                         @if($user->student->day != 0)
                                                             @for($i = 1; $i <= 31; $i++)
                                                                 @if($user->student->day == $i)
-                                                                    <option value="{{ $user->student->day }}" selected>{{ $user->student->day }}</option>
+                                                                    <option value="{{ $user->student->day }}"
+                                                                            selected>{{ $user->student->day }}</option>
                                                                 @else
                                                                     <option value="{{ $i }}">{{ $i }}</option>
                                                                 @endif
@@ -380,9 +435,10 @@
                         </form>
                         <div class="form-group row">
                             <div class="col-lg-12">
-                                <form action="{{ route('account.password') }}" method="get" id="reset-password"></form>
-                                <button type="submit" class="btn custom-btn" form="reset-password">تغير كلمة المرور
-                                </button>
+                                <form action="{{ route('account.password.reset.form') }}" method="post" id="reset-password">
+                                    {{ csrf_field() }}
+                                    <button class="btn custom-btn" form="reset-password">تغير كلمة المرور</button>
+                                </form>
                             </div>
                         </div>
                     </div>
