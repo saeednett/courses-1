@@ -35,11 +35,11 @@
                             </thead>
                             <tbody class="text-center">
                             <?php
-                            $course_admin = 0;
-                            $course_attendance = 0;
+                                $course_admin = 0;
+                                $course_attendance = 0;
                             ?>
-                            @if(count($admins) > 0)
-                                @foreach($admins as $admin)
+                            @if(count($all_admins) > 0)
+                                @foreach($all_admins as $admin)
                                     <tr class="gradeX">
                                         <td>{{ $admin->user->name }}</td>
                                         <td class="ltr">{{ date( 'Y-M-D h:i' ,strtotime($admin->user->created_at)) }}</td>
@@ -106,7 +106,7 @@
                                 </tr>
                             @endif
                             </tbody>
-                            @if(count($admins) < 0)
+                            @if(count($all_admins) < 0)
                                 <tfoot>
                                 <tr>
                                     <th class="text-center">اسم المسؤول</th>

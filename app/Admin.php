@@ -23,4 +23,14 @@ class Admin extends Model
         return $this->hasMany('App\CourseAdmin');
     }
 
+    public function certificate()
+    {
+        return $this->hasMany('App\Certificate');
+    }
+
+    public function attendance()
+    {
+        return $this->hasMany('App\Attendance');
+    }
+
 }

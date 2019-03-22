@@ -10,93 +10,17 @@
 
 @section('style-file')
     <link rel="stylesheet" href="{{ asset('css/center/plugins/select2/select2.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/center/assign-course-admin.css') }}">
 @endsection
 
 
 @section('content')
-    <style>
-        .required-field:after {
-            color: #ff6771;
-            content: " *";
-            text-align: right;
-        }
 
-        .rtl {
-            direction: rtl;
-        }
-
-        .ltr {
-            direction: ltr;
-        }
-
-        select {
-            direction: rtl;
-            text-align: center !important;
-            text-align-last: center !important;
-        }
-
-        .custom-input {
-            height: 50px;
-            border-radius: 30px;
-            border: 1px solid rgba(34, 36, 38, .15);
-        }
-
-        .custom-input:hover {
-            border: 2px solid #1bc3a1;
-        }
-
-        .custom-input:focus {
-            box-shadow: none !important;
-            border: 2px solid #1bc3a1;
-        }
-
-        .custom-btn {
-            height: 60px;
-            border-radius: 30px;
-            background-image: linear-gradient(to right, #1bc3a1 0%, #6fcf8f);
-            display: block;
-            border: none;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .custom-btn:hover {
-            box-shadow: 0 4px 10px 0 rgba(11, 121, 99, 0.31);
-        }
-
-        .select2-container--default .select2-selection--single {
-            height: 50px !important;
-            border-radius: 30px !important;
-        }
-
-        .select2-selection__arrow {
-            height: 100% !important;
-        }
-
-        .select2-selection__rendered {
-            margin-top: 11px !important;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-        }
-
-        .invalid-feedback {
-            color: #ab1717;
-            width: 100%;
-            display: block;
-            direction: rtl;
-            text-align: center;
-        }
-
-        .is-invalid {
-            border-color: #ab1717 !important;
-        }
-    </style>
     <div class="row">
         @if($errors->any())
             <div class="col-lg-12 animatedParent animateOnce z-index-50">
                 <div class="alert alert-danger animated fadeInUp">
-                    <ul class="text-right rtl" style="margin-bottom: 0;">
+                    <ul class="text-right mb-0 rtl">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -108,7 +32,7 @@
         @if(session('success'))
             <div class="col-lg-12 animatedParent animateOnce z-index-50">
                 <div class="alert alert-success animated fadeInUp">
-                    <ul class="text-right rtl" style="margin-bottom: 0;">
+                    <ul class="text-right mb-0 rtl">
                         <li>{{ session('success') }}</li>
                     </ul>
                 </div>
@@ -133,12 +57,12 @@
                         {{ csrf_field() }}
 
                         <div class="row">
-                            <div class="col-lg-6 col-lg-offset-3">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                 <div class="form-group">
                                     <label class="required-field" for="country">الدورة</label>
                                     <select class="form-control select2-placeholer {{ $errors->has('course') ? 'is-invalid' : '' }} is-invalid"
                                             name="course">
-                                        @foreach($courses as $course)
+                                        @foreach($all_courses as $course)
                                             @if(old('course') == $course->id)
                                                 <option value="{{ $course->id }}" selected>{{ $course->title }}</option>
                                             @else
@@ -153,20 +77,18 @@
                                     @endif
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-lg-6 col-lg-offset-3">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                 <div class="form-group">
                                     <label class="required-field" for="country">المسؤول</label>
                                     <select class="form-control select2-placeholer {{ $errors->has('admin') ? 'is-invalid' : '' }}"
                                             name="admin">
-                                        @foreach($admins as $admin)
+                                        @foreach($all_admins as $admin)
                                             @if(old('admin') == $admin->id)
                                                 <option value="{{ $admin->id }}"
-                                                        selected>{{ $admin->user->name }}</option>
+                                                        selected>{{ $admin->name }}</option>
                                             @else
-                                                <option value="{{ $admin->id }}">{{ $admin->user->name }}</option>
+                                                <option value="{{ $admin->id }}">{{ $admin->name }}</option>
                                             @endif
                                         @endforeach
                                     </select>
@@ -177,10 +99,8 @@
                                     @endif
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-lg-6 col-lg-offset-3">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                 <div class="form-group">
                                     <label class="required-field" for="country">الصلاحية</label>
                                     <select class="form-control select2-placeholer {{ $errors->has('role') ? 'is-invalid' : '' }}"
@@ -205,7 +125,7 @@
                             </div>
                         </div>
 
-                        <div class="row" style="margin-top: 15px;">
+                        <div class="row mt-15">
                             <div class="col-lg-6 col-lg-offset-3">
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-block custom-btn">حفظ</button>
@@ -221,13 +141,6 @@
 @endsection
 
 @section('script-file')
-    <script>
-        $(document).ready(function () {
-
-            $(".select2").select2();
-            $(".select2-placeholer").select2({});
-        });
-    </script>
-
+    <script src="{{ asset('js/center/assign-course-admin.js') }}"></script>
     <script src="{{ asset('js/center/plugins/select2/select2.full.min.js') }}"></script>
 @endsection

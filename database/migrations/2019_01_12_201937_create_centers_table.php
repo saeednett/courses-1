@@ -23,7 +23,6 @@ class CreateCentersTable extends Migration
             $table->integer('city_id');
             $table->text('about');
             $table->string('logo');
-            $table->integer('status');
             $table->timestamps();
         });
     }

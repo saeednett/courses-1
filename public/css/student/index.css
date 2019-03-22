@@ -179,6 +179,18 @@ ul.navbar-nav li:hover {
     text-align: center;
     width: 23px;
 }
+
+.count-certificates {
+    background-color: #34ff37;
+    border-radius: 50%;
+    color: #fff;
+    display: inline-block;
+    font-size: 12px;
+    margin-left: 5px;
+    padding: 2px 0;
+    text-align: center;
+    width: 23px;
+}
 /* To Clear Above The Div */
 .clear {
     clear: both;

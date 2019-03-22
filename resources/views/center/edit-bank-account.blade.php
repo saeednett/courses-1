@@ -159,6 +159,7 @@
                         <div class="container-fluid">
                             <form method="post" action="{{ route('center.bank.account.update') }}" id="form">
                                 {{ csrf_field() }}
+                                <input type="hidden" name="_method" value="PUT">
                                 <?php $counter = 1; ?>
                                 @foreach($accounts as $account)
                                     @if($counter == 1)

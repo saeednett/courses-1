@@ -1,7 +1,11 @@
 .card {
     border-radius: 0;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    /*border-top-left-radius: 5px;*/
+    /*border-top-right-radius: 5px;*/
+}
+
+.no-border{
+    border-radius: 0 !important;
 }
 
 .show-confirmed-ticket {
@@ -43,4 +47,14 @@
     padding-top: 8px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+}
+
+.cancel-reservation{
+    padding-top: 8px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.cancel-reservation a {
+    text-decoration: none;
 }

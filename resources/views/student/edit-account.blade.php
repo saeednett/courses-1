@@ -401,28 +401,28 @@
 
                                 </div>
 
-                                <div class="form-group row mt-4">
-                                    <div class="col-lg-8">
-                                        <select class="form-control {{ $errors->has('gender') ? ' is-invalid' : '' }} form-control-sm"
-                                                name="gender">
-                                            @if($user->student->gender_id == 1)
-                                                <option value="1" selected> ذكر</option>
-                                                <option value="2">أنثى</option>
-                                            @else
-                                                <option value="1"> ذكر</option>
-                                                <option value="2" selected>أنثى</option>
-                                            @endif
-                                        </select>
-                                        @if ($errors->has('gender'))
-                                            <span class="invalid-feedback text-center" role="alert">
-                                                <strong>{{ $errors->first('gender') }}</strong>
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <div class="col-lg-4 text-right rtl order-lg-last order-md-last order-sm-first order-first">
-                                        <label class="col-form-label required-field">الجنس</label>
-                                    </div>
-                                </div>
+                                {{--<div class="form-group row mt-4">--}}
+                                    {{--<div class="col-lg-8">--}}
+                                        {{--<select class="form-control {{ $errors->has('gender') ? ' is-invalid' : '' }} form-control-sm"--}}
+                                                {{--name="gender">--}}
+                                            {{--@if($user->student->gender_id == 1)--}}
+                                                {{--<option value="1" selected> ذكر</option>--}}
+                                                {{--<option value="2">أنثى</option>--}}
+                                            {{--@else--}}
+                                                {{--<option value="1"> ذكر</option>--}}
+                                                {{--<option value="2" selected>أنثى</option>--}}
+                                            {{--@endif--}}
+                                        {{--</select>--}}
+                                        {{--@if ($errors->has('gender'))--}}
+                                            {{--<span class="invalid-feedback text-center" role="alert">--}}
+                                                {{--<strong>{{ $errors->first('gender') }}</strong>--}}
+                                            {{--</span>--}}
+                                        {{--@endif--}}
+                                    {{--</div>--}}
+                                    {{--<div class="col-lg-4 text-right rtl order-lg-last order-md-last order-sm-first order-first">--}}
+                                        {{--<label class="col-form-label required-field">الجنس</label>--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
 
 
                                 <div class="form-group row mb-0">

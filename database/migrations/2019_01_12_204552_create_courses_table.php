@@ -28,6 +28,8 @@ class CreateCoursesTable extends Migration
             $table->date('end_reservation');
             $table->integer('attendance');
             $table->integer('gender');
+            $table->integer('men');
+            $table->integer('women');
             $table->integer('coupon');
             $table->integer('category_id');
             $table->integer('city_id');

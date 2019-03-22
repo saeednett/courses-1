@@ -1,0 +1,77 @@
+select {
+    direction: rtl;
+    width: 100%;
+    text-align: center !important;
+    text-align-last: center !important;
+}
+
+.custom-input {
+    height: 50px;
+    font-size: 16px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid rgba(34, 36, 38, .15);
+}
+
+.custom-input:hover {
+    border: 2px solid #1bc3a1;
+}
+
+.custom-input:focus {
+    box-shadow: none !important;
+    border: 2px solid #1bc3a1;
+}
+
+.required-field:after {
+    color: #ff6771;
+    content: " *";
+    text-align: right;
+}
+
+.custom-btn {
+    height: 60px;
+    border-radius: 30px;
+    background-image: linear-gradient(to right, #1bc3a1 0%, #6fcf8f);
+    display: block;
+    border: none;
+    font-size: 18px;
+    color: #fff;
+}
+
+.custom-btn:hover {
+    box-shadow: 0 4px 10px 0 rgba(11, 121, 99, 0.31);
+}
+
+.invalid-feedback {
+    color: #ab1717;
+    width: 100% !important;
+    display: block !important;
+    direction: rtl !important;
+    text-align: center !important;
+}
+
+.add-account {
+    padding-top: 13px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+.remove-account {
+    padding-top: 13px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.opacity-0 {
+    opacity: 0;
+}

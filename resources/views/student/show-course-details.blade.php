@@ -53,10 +53,10 @@
                                 <div class="row">
                                     <div class="col-lg-9 col-md-8 col-sm-8 col-8">
                                         <h5 class="text-right d-lg-block d-none rtl"><span>اسم المنظم:</span> <a
-                                                    href="{{ route('center.profile', $course->center->user->username) }}">{{ $course->center->user->name }}</a>
+                                                    href="{{ route('student.center.profile.show', $course->center->user->username) }}">{{ $course->center->name }}</a>
                                         </h5>
                                         <h5 class="text-right d-lg-none d-block rtl"><a
-                                                    href="{{ route('center.profile', $course->center->user->username) }}">{{ $course->center->user->name }}</a>
+                                                    href="{{ route('student.center.profile.show', $course->center->user->username) }}">{{ $course->center->user->name }}</a>
                                         </h5>
                                         <div class="social-media mt-4">
                                             <div class="row justify-content-end">
@@ -85,7 +85,7 @@
                                     <div class="col-lg-3 col-md-4 col-sm-4 col-4">
                                         <div class="logo-holder">
                                             <img class="border"
-                                                 src="/storage/center-images/{{ $course->center->logo }}"
+                                                 src="/storage/center-images/{{ $course->center->image }}"
                                                  alt="{{ $course->center->user->name }}">
                                         </div>
                                     </div>
@@ -144,6 +144,24 @@
                                             {{ date('h:i', strtotime($course->start_time)).' مساء' }}
                                         @else
                                             {{ date('h:i', strtotime($course->start_time)).' صباحا' }}
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="row info">
+                                    <div class="col-lg-3 col-md-3 col-sm-4 col-4 text-right order-last rtl">
+                                        <i class="fa fa-clock-o labels-icon"></i>
+                                        <span class="">الساعات:</span>
+                                    </div>
+                                    <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
+                                        @if($course->hours == 1)
+                                            {{ $course->hours." " }}ساعة
+                                        @elseif($course->hours == 2)
+                                            {{ $course->hours." " }}ساعتين
+                                        @elseif($course->hours > 2 && $course->hours <= 10)
+                                             {{ $course->hours." " }}ساعات
+                                        @else
+                                             {{ $course->hours." " }}ساعة
                                         @endif
                                     </div>
                                 </div>

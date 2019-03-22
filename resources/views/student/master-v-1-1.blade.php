@@ -22,11 +22,15 @@
     <div class="loader_holder"></div>
     <div class="error_holder"></div>
 </div>
+<div class="ticket-blocker">
+    <div class="barcode">
+
+    </div>
+</div>
 
 <div class="wrap">
 
     <header class="header">
-
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-lg-8 col-md-10 col-sm-12 col-12">
@@ -93,11 +97,11 @@
                                         </li>
 
                                         <li class="nav-item tap-link">
-                                            <a class="nav-link" href="{{ route('about.us') }}">من نحن</a>
+                                            <a class="nav-link" href="{{ route('account.contact_us') }}">من نحن</a>
                                         </li>
 
                                         <li class="nav-item tap-link">
-                                            <a class="nav-link" href="{{ route('contact.us') }}">اتصل بنا</a>
+                                            <a class="nav-link" href="{{ route('account.contact_us') }}">اتصل بنا</a>
                                         </li>
                                     </ul>
 
@@ -175,11 +179,11 @@
                                 </li>
 
                                 <li class="nav-item tap-link">
-                                    <a class="nav-link" href="{{ route('about.us') }}">من نحن</a>
+                                    <a class="nav-link" href="{{ route('account.contact_us') }}">من نحن</a>
                                 </li>
 
                                 <li class="nav-item tap-link">
-                                    <a class="nav-link" href="{{ route('contact.us') }}">اتصل بنا</a>
+                                    <a class="nav-link" href="{{ route('account.contact_us') }}">اتصل بنا</a>
                                 </li>
 
                                 <li class="nav-item tap-link">
@@ -188,6 +192,17 @@
                                         @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role_id == 5)
                                             @if($tickets > 0)
                                                 <span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>
+                                            @endif
+                                        @endif
+                                    </a>
+                                </li>
+
+                                <li class="nav-item tap-link">
+                                    <a class="nav-link rtl" href="{{ route('account.certificates') }}">
+                                        شهاداتي
+                                        @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role_id == 5)
+                                            @if($certificates > 0)
+                                                <span class="rounded-circle count-certificates">{{ $certificates }}</span>
                                             @endif
                                         @endif
                                     </a>

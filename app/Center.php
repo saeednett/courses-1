@@ -32,4 +32,14 @@ class Center extends Model
     {
         return $this->hasMany('App\CenterAccount');
     }
+
+    public function socialMediaAccount()
+    {
+        return $this->hasMany('App\CenterSocialMedia');
+    }
+
+    public function halalah()
+    {
+        return $this->hasOne('App\Halalah');
+    }
 }

@@ -48,6 +48,7 @@
         body {
             font-family: 'Tajawal', sans-serif;
         }
+
         .ltr {
             direction: ltr;
         }
@@ -58,7 +59,6 @@
 
 </head>
 <body>
-
 <!-- Page container -->
 <div class="page-container">
 
@@ -80,16 +80,19 @@
             <!-- Main navigation -->
             <ul id="side-nav" class="main-menu navbar-collapse collapse">
 
-                <li class="has-sub"><a href="index.html"><i class="icon-gauge"></i><span class="title">الدورات</span></a>
+                <li class="has-sub"><a href="index.html"><i class="icon-gauge"></i><span
+                                class="title">الدورات</span></a>
                     <ul class="nav collapse">
                         <li><a href="{{ route('center.course.create') }}"><span class="title">إضافة دورة</span></a></li>
                         <li><a href="{{ route('center.course.show') }}"><span class="title">عرض الدورات</span></a></li>
                         <li><a href="{{ route('center.course.create') }}"><span class="title">عرض الطلاب</span></a></li>
-                        <li><a href="{{ route('center.course.create') }}"><span class="title">تأكيد الدفع</span></a></li>
+                        <li><a href="{{ route('center.course.create') }}"><span class="title">تأكيد الدفع</span></a>
+                        </li>
                     </ul>
                 </li>
 
-                <li class="has-sub"><a href="index.html"><i class="icon-gauge"></i><span class="title">الشهادات</span></a>
+                <li class="has-sub"><a href="index.html"><i class="icon-gauge"></i><span
+                                class="title">الشهادات</span></a>
                     <ul class="nav collapse">
                         <li><a href="{{ route('center.course.show') }}"><span class="title">إصدار شهادة</span></a></li>
                         <li><a href="{{ route('center.course.show') }}"><span class="title">عرض الشهادات</span></a></li>
@@ -99,7 +102,8 @@
                 <li class="has-sub"><a href="collapsed-sidebar.html"><i class="icon-layout"></i><span
                                 class="title">المدربين</span></a>
                     <ul class="nav">
-                        <li><a href="{{ route('center.trainer.create') }}"><span class="title">إضافة مدرب</span></a></li>
+                        <li><a href="{{ route('center.trainer.create') }}"><span class="title">إضافة مدرب</span></a>
+                        </li>
                         <li><a href="{{ route('center.trainer.show') }}"><span class="title">عرض المدربين</span></a>
                         </li>
                     </ul>
@@ -110,7 +114,8 @@
                     <ul class="nav collapse">
                         <li><a href="{{ route('center.admin.create') }}"><span class="title">إضافة مسؤول</span></a></li>
                         <li><a href="{{ route('center.admin.show') }}"><span class="title">عرض المسؤولين</span></a></li>
-                        <li><a href="{{ route('center.course.admin.assign') }}"><span class="title">تعيين مسؤولين الدورات</span></a></li>
+                        <li><a href="{{ route('center.course.admin.assign') }}"><span class="title">تعيين مسؤولين الدورات</span></a>
+                        </li>
                     </ul>
                 </li>
 
@@ -123,13 +128,18 @@
 
                 <li class="has-sub"><a href="form-basic.html"><i class="icon-doc-text"></i><span class="title">الملف الاشخصي</span></a>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('center.password.reset') }}"><span class="title">كلمة المرور</span></a></li>
+                        <li><a href="{{ route('center.password.reset') }}"><span class="title">كلمة المرور</span></a>
+                        </li>
                     </ul>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('center.bank.account.edit') }}"><span class="title">بياناتي البنكية</span></a></li>
+                        <li><a href="{{ route('center.bank.account.edit') }}"><span class="title">بياناتي البنكية</span></a>
+                        </li>
                     </ul>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('center.edit') }}"><span class="title">بيانات التواصل</span></a></li>
+                        <li><a href="{{ route('center.social.media.account.edit') }}"><span class="title">بيانات التواصل</span></a></li>
+                    </ul>
+                    <ul class="nav collapse">
+                        <li><a href="{{ route('center.halalah.account.edit') }}"><span class="title">بيانات موقع هللة</span></a></li>
                     </ul>
                     <ul class="nav collapse">
                         <li><a href="{{ route('center.edit') }}"><span class="title">بياناتي الشخصية</span></a></li>
@@ -180,12 +190,9 @@
                     <li class="profile-info dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"> <img
                                     width="44" class="img-circle avatar" alt=""
-                                    src="/storage/center-images/{{ \Illuminate\Support\Facades\Auth::user()->center->logo }}">
-                            @auth()
-                                {{ \Illuminate\Support\Facades\Auth::user()->username }}
-                            @else
-                                hello word
-                            @endauth
+                                    src="/storage/center-images/{{ \Illuminate\Support\Facades\Auth::user()->center->image }}">
+
+                            {{ \Illuminate\Support\Facades\Auth::user()->username }}
                             <span class="caret"></span>
                         </a>
 
@@ -195,7 +202,8 @@
                             <li><a href="{{ route('center.edit') }}"><i class="icon-user"></i>ملفي الشخصي</a></li>
                             <li class="divider"></li>
                             <li>
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                     <i class="icon-logout"></i>تسجيل الخروج
                                 </a>
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST"
@@ -347,7 +355,7 @@
                         <!-- panel body -->
                         <div class="panel-body">
                             <div class="stack-order">
-                                <h1 class="no-margins">{{ count($courses) }}</h1>
+                                <h1 class="no-margins">{{ $courses }}</h1>
                                 <small>الدورات المسجلة في النظام</small>
                             </div>
                             <div class="bar-chart-icon"></div>
@@ -363,7 +371,8 @@
                                     <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false"><i
                                                 class="icon-cog"></i></a>
                                     <ul class="dropdown-menu dropdown-menu-right">
-                                        <li><a href="{{ route('center.trainer.show') }}"><i class="icon-doc-text"></i>عرض البيانات</a></li>
+                                        <li><a href="{{ route('center.trainer.show') }}"><i class="icon-doc-text"></i>عرض
+                                                البيانات</a></li>
                                         <li><a href="#"><i class="icon-arrows-ccw"></i> تحديث البيانات</a></li>
                                     </ul>
                                 </li>
@@ -372,7 +381,7 @@
                         <!-- panel body -->
                         <div class="panel-body">
                             <div class="stack-order">
-                                <h1 class="no-margins">{{ count($trainers) }}</h1>
+                                <h1 class="no-margins">{{ $trainers }}</h1>
                                 <small>المدربين لكل الدورات</small>
                             </div>
                             <div class="bar-chart-icon"></div>
@@ -397,7 +406,7 @@
                         <!-- panel body -->
                         <div class="panel-body">
                             <div class="stack-order">
-                                <h1 class="no-margins">{{ count($admins) }}</h1>
+                                <h1 class="no-margins">{{ $admins }}</h1>
                                 <small>جميع مسؤولين الدورات</small>
                             </div>
                             <div class="like-icon"></div>
@@ -430,7 +439,7 @@
                     </div>
                 </div>
             </div>
-            @yield('content')
+        @yield('content')
         <!-- Footer -->
             <footer class="animatedParent animateOnce z-index-10">
                 <div class="footer-main animated fadeInUp slow">&copy; 2016 <strong>Mouldifi</strong> Admin Theme by <a

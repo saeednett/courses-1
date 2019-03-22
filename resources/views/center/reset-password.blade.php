@@ -1,52 +1,10 @@
 @extends('center.master-v-1-1')
 
+@section('style-file')
+    <link rel="stylesheet" href="{{ asset('css/center/reset-password.css') }}" />
+@endsection
+
 @section('content')
-    <style>
-        .custom-input {
-            height: 50px;
-            font-size: 20px;
-            border-radius: 30px;
-            border: 1px solid rgba(34, 36, 38, .15);
-        }
-
-        .custom-input:hover {
-            border: 2px solid #1bc3a1;
-        }
-
-        .custom-input:focus {
-            box-shadow: none !important;
-            border: 2px solid #1bc3a1;
-        }
-
-        .required-field:after {
-            color: #ff6771;
-            content: " *";
-            text-align: right;
-        }
-
-        .custom-btn {
-            height: 60px;
-            border-radius: 30px;
-            background-image: linear-gradient(to right, #1bc3a1 0%, #6fcf8f);
-            display: block;
-            border: none;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .custom-btn:hover {
-            box-shadow: 0 4px 10px 0 rgba(11, 121, 99, 0.31);
-        }
-
-        .invalid-feedback {
-            color: #ab1717;
-            width: 100% !important;
-            display: block !important;
-            direction: rtl !important;
-            text-align: center !important;
-        }
-
-    </style>
     @if(session()->has('success'))
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 col-12 animatedParent animateOnce z-index-50">
@@ -75,9 +33,8 @@
                             <form method="post" action="{{ route('center.password.reset.confirm') }}">
                                 {{ csrf_field() }}
                                 <div class="row form-group">
-                                    <div class="col-lg-6 col-lg-offset-3">
-                                        <label for="old_password" class="col-form-label required-field">تأكيد كلمة
-                                            المرور الجديدة</label>
+                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <label for="old_password" class="col-form-label required-field">كلمة المرور القديمة</label>
                                         <input type="password" id="old_password"
                                                class="form-control {{ $errors->has('old_password') ? 'is-invalid' : '' }} custom-input text-center"
                                                name="old_password"
@@ -88,13 +45,9 @@
                                                 </span>
                                         @endif
                                     </div>
-                                </div>
-
-                                <div class="row form-group">
-                                    <div class="col-lg-6 col-lg-offset-3">
-                                        <label for="password" class="col-form-label required-field">تأكيد كلمة
-                                            المرور
-                                            الجديدة</label>
+                                
+                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                        <label for="password" class="col-form-label required-field"> كلمة المرور الجديدة</label>
                                         <input type="password" id="password"
                                                class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }} custom-input text-center"
                                                name="password"
@@ -105,10 +58,8 @@
                                                 </span>
                                         @endif
                                     </div>
-                                </div>
-
-                                <div class="row form-group">
-                                    <div class="col-lg-6 col-lg-offset-3">
+                                
+                                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                                         <label for="password_confirmation" class="col-form-label required-field">تأكيد
                                             كلمة المرور الجديدة</label>
                                         <input type="password" id="password_confirmation"
@@ -124,7 +75,7 @@
                                 </div>
 
 
-                                <div class="row form-group">
+                                <div class="row form-group mt-20">
                                     <div class="col-lg-4 col-lg-offset-4">
                                         <button class="btn btn-block custom-btn">حفظ</button>
                                     </div>

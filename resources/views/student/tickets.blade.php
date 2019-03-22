@@ -76,13 +76,34 @@
                                 </div>
                             @endif
 
-                            <div class="row justify-content-lg-end justify-content-md-end justify-content-sm-center justify-content-center mb-4" id="viewHolder">
+                            <div class="row justify-content-lg-end justify-content-md-end justify-content-sm-center justify-content-center mb-4"
+                                 id="viewHolder">
                                 @foreach($reservations as $reservation)
                                     <div class="col-lg-4 col-md-5 col-sm-8 col-10 mt-3">
 
+                                        @if($reservation->confirmation == 0)
+
+                                            <?php $class = "no-border"; ?>
+                                            <div class="status">
+                                                <div class="col-12 cancel-reservation bg-danger">
+                                                    <a href="{{ route('student.reservation.destroy', $reservation->identifier) }}">
+                                                        <button class="btn btn-block rtl">
+                                                            <p class="text-white text-center mb-0"><b>إلغاء الحجز</b></p>
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+
+                                        @else
+                                            <?php $class = ""; ?>
+                                        @endif
+
                                         <div class="card">
                                             <img src="/storage/course-images/{{ $reservation->course->image->image }}"
-                                                 class="card-img-top" alt="..." width="301" height="200">
+                                                 class="card-img-top {{ $class }}" alt="..." width="301"
+                                                 height="200">
+
+
                                             <div class="card-title text-center mt-2 mr-2">
                                                 <h5 title="اسم الدورة">{{ $reservation->course->title }}</h5>
                                                 <h5 class="text-muted"
@@ -106,12 +127,17 @@
                                                 @if($reservation->course->start_date > date('y-m-d') && $reservation->confirmation == 1)
                                                     <div class="status">
                                                         <div class="col-12 show-confirmed-ticket bg-success">
-                                                            <p class="text-center mb-0"><b>عرض بطاقة الحضور</b></p>
+                                                            <a href="{{ route('account.course.ticket.show', $reservation->identifier) }}">
+                                                                <button class="btn btn-block rtl">
+                                                                    <p class="text-center mb-0"><b>عرض بطاقة الحضور</b></p>
+                                                                </button>
+                                                            </a>
                                                         </div>
                                                     </div>
-                                                    <div class="status">
+                                                    <div class="status border-top">
                                                         <div class="col-12 confirmed-ticket-label bg-success">
-                                                            <p class="text-white text-center mb-0"><b>مؤكدة</b></p>
+                                                            <p class="text-white text-center mb-0"><b>مؤكدة</b>
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 @elseif($reservation->course->start_date > date('y-m-d') && $reservation->confirmation == 0)
@@ -126,7 +152,8 @@
                                                     </div>
                                                     <div class="status">
                                                         <div class="col-12 unconfirmed-ticket bg-warning">
-                                                            <p class="text-white text-center mb-0"><b>بنتظار التأكد من
+                                                            <p class="text-white text-center mb-0"><b>بنتظار
+                                                                    التأكد من
                                                                     الدفع</b></p>
                                                         </div>
                                                     </div>
@@ -134,7 +161,8 @@
                                             @else
                                                 <div class="status">
                                                     <div class="col-12 finish-ticket bg-danger">
-                                                        <p class="text-white text-center mb-0"><b>الدورة منتهية</b></p>
+                                                        <p class="text-white text-center mb-0"><b>الدورة
+                                                                منتهية</b></p>
                                                     </div>
                                                 </div>
                                             @endif
@@ -152,13 +180,15 @@
                                                 </div>
                                                 <div class="status">
                                                     <div class="col-12 waiting-paying bg-danger">
-                                                        <p class="text-white text-center mb-0"><b>بنتظار الدفع</b></p>
+                                                        <p class="text-white text-center mb-0"><b>بنتظار
+                                                                الدفع</b></p>
                                                     </div>
                                                 </div>
                                             @else
                                                 <div class="status">
                                                     <div class="col-12 unconfirmed-ticket bg-warning">
-                                                        <p class="text-white text-center mb-0"><b>بنتظار تأكيد التذكرة</b></p>
+                                                        <p class="text-white text-center mb-0"><b>بنتظار تأكيد
+                                                                التذكرة</b></p>
                                                     </div>
                                                 </div>
                                             @endif

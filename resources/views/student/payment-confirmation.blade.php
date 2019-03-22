@@ -37,7 +37,7 @@
                                             <div class="row">
                                                 <div class="col-lg-9">
                                                     <h5 class="text-right rtl"><span>اسم المنظم:</span> <a
-                                                                href="{{ route('center.profile', $reservation->course->center->user->username) }}">{{ $reservation->course->center->user->name }}</a></h5>
+                                                                href="{{ route('student.center.profile.show', $reservation->course->center->user->username) }}">{{ $reservation->course->center->user->name }}</a></h5>
                                                     <div class="social-media mt-4">
                                                         <div class="row justify-content-end">
                                                             <div class="col-lg-8 text-center h-100">
@@ -62,7 +62,7 @@
                                                 <div class="col-lg-3">
                                                     <div class="logo-holder">
                                                         <img class="border"
-                                                             src="/storage/center-images/{{ $reservation->course->center->logo }}"
+                                                             src="/storage/center-images/{{ $reservation->course->center->image }}"
                                                              alt="{{ $reservation->course->title }}">
                                                     </div>
                                                 </div>
@@ -178,7 +178,7 @@
                                        <div class="form-group row mt-2">
                                            <div class="col-lg-12 text-right">
                                                <label class="col-form-label required-field rtl" for="account_number">رقم الحساب</label>
-                                               <input type="text" id="account_number" class="form-control {{ $errors->has('account_number') ? ' is-invalid' : '' }}  num-only text-center" name="account_number" value="{{ old('account_number') }}" placeholder="رقم الحساب" autocomplete="off" maxlength="30" minlength="10" required>
+                                               <input type="text" id="account_number" class="form-control {{ $errors->has('account_number') ? ' is-invalid' : '' }}  num-only text-center" name="account_number" value="{{ old('account_number') }}" placeholder="رقم الحساب" autocomplete="off" maxlength="20" minlength="10" required>
                                                @if ($errors->has('account_number'))
                                                    <span class="invalid-feedback text-center" role="alert">
                                                        <strong>{{ $errors->first('account_number') }}</strong>

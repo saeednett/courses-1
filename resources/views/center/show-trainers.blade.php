@@ -34,10 +34,10 @@
                             </tr>
                             </thead>
                             <tbody class="text-center">
-                            @if(count($trainers) > 0)
-                                @foreach($trainers as $trainer)
+                            @if(count($all_trainers) > 0)
+                                @foreach($all_trainers as $trainer)
                                     <tr class="gradeX">
-                                        <td>{{ $trainer->user->name }}</td>
+                                        <td>{{ $trainer->name }}</td>
                                         <td class="ltr">{{ date( 'Y-M-D h:i' ,strtotime($trainer->user->created_at)) }}</td>
                                         <td>{{ count($trainer->course) }}</td>
                                         <td>{{ $trainer->title->name }}</td>
@@ -75,7 +75,7 @@
                                 </tr>
                             @endif
                             </tbody>
-                            @if(count($trainers) < 0)
+                            @if(count($all_trainers) < 0)
                                 <tfoot>
                                 <tr>
                                     <th class="text-center">اسم المدرب</th>
