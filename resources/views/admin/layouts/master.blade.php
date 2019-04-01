@@ -110,17 +110,15 @@
                 <li class="has-sub"><a href="collapsed-sidebar.html"><i class="icon-book"></i><span
                                 class="title">الشهادات</span></a>
                     <ul class="nav">
-                        <li><a href="{{ route('center.trainer.create') }}"><span class="title">إصدار شهادة</span></a>
-                        </li>
-                        <li><a href="{{ route('center.trainer.show') }}"><span class="title">عرض الشهادات</span></a>
-                        </li>
+                        <li><a href="{{ route('admin.courses.certificate.create') }}"><span class="title">إصدار شهادة</span></a></li>
+                        {{--<li><a href="{{ route('admin.courses.certificate.store') }}"><span class="title">عرض الشهادات</span></a></li>--}}
                     </ul>
                 </li>
 
                 <li class="has-sub"><a href="basic-tables.html"><i class="icon-paypal"></i><span
                                 class="title">التقارير المالية</span></a>
                     <ul class="nav collapse">
-                        <li><a href="ecommerce-dashboard.html"><span class="title">السجل المالي</span></a></li>
+                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">السجل المالي</span></a></li>
                     </ul>
                 </li>
 

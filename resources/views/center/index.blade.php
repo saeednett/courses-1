@@ -130,7 +130,7 @@
                             @if(count($all_admins) > 0)
                                 @foreach($all_admins as $admin)
                                     <tr class="gradeX">
-                                        <td>{{ $admin->user->name }}</td>
+                                        <td>{{ $admin->name }}</td>
                                         <td class="ltr">{{ date( 'Y-M-D h:i' ,strtotime($admin->user->created_at)) }}</td>
                                         <td>{{ count($admin->course) }}</td>
                                         @if(count($admin->course) > 0)
@@ -202,7 +202,7 @@
                             @if(count($all_trainers) > 0)
                                 @foreach($all_trainers as $trainer)
                                     <tr class="gradeX">
-                                        <td>{{ $trainer->user->name }}</td>
+                                        <td>{{ $trainer->name }}</td>
                                         <td class="ltr">{{ date( 'Y-M-D h:i' ,strtotime($trainer->user->created_at)) }}</td>
                                         <td>{{ count($trainer->course) }}</td>
                                         <td>{{ $trainer->title->name }}</td>

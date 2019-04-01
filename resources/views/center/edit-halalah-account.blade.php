@@ -6,6 +6,10 @@
     <link rel="stylesheet" href="{{ asset('css/center/edit-halalah-account.css') }}">
 @endsection
 
+@section('script-file')
+    <script src="{{ asset('js/center/edit-halalah-account.js') }}"></script>
+@endsection
+
 @section('content')
     @if($errors->any())
         <div class="row">
@@ -46,48 +50,69 @@
                 <div class="panel-body">
                     <div class="table-responsive">
                         <div class="container-fluid">
-                            <form method="post" action="{{ route('center.social.media.account.update') }}">
+                            <form method="post" action="{{ route('center.halalah.account.update') }}" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="_method" value="PUT">
-                                <?php $counter = 1; ?>
 
-                                @foreach($center_social_media as $social)
-                                    <div class="row">
-
-                                        <div class="col-lg-4 col-lg-offset-2 col-md-4 col-md-offset-2 col-sm-6 col-xs-6">
-                                            <label class="col-form-label required-field"
-                                                   for="{{ $social->socialMediaInformation->name }}">موقع التواصل
-                                                الإجتماعي</label>
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-{{ strtolower($social->socialMediaInformation->name)  }}"></i></span>
-                                                <input type="text"
-                                                       class="form-control custom-input"
-                                                       id="{{ $social->socialMediaInformation->name }}"
-                                                       value="{{ $social->socialMediaInformation->name }}"
-                                                       autocomplete="off" disabled readonly required>
-                                            </div>
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-4 col-md-offset-2 col-sm-6 col-xs-6">
+                                        <div class="pr-10 w-100">
+                                            @if($halalah->image == "default.jpg")
+                                                <?php $image = "default.jpg"; ?>
+                                            @else
+                                                <?php $image = "/storage/halalah-images/$halalah->image"; ?>
+                                            @endif
+                                            <img class="img-rounded img-thumbnail w-100 h-300-px" id="barcode"
+                                                 src="{{ $image }}">
                                         </div>
 
 
-                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
-                                            <div class="form-group">
-                                                <label class="col-form-label required-field"
-                                                       for="{{ $social->socialMediaInformation->name."_username" }}">اسم
-                                                    المستخدم</label>
-                                                <input type="text" class="form-control custom-input"
-                                                       id="{{ $social->socialMediaInformation->name."_username" }}"
-                                                       minlength="5" maxlength="20"
-                                                       name="{{ strtolower($social->socialMediaInformation->name)."_username" }}"
-                                                       value="{{ $social->username }}" autocomplete="off">
-                                            </div>
+                                        <div class="form-group mt-20">
+                                            <label class="required-field pr-10" for="barcode-image">صورة
+                                                الباركود</label>
+                                            <input type="text" id="barcode-image"
+                                                   class="form-control custom-input text-center"
+                                                   placeholder='اختر صورة الباركود' readonly/>
+                                            <input type="file" class="opacity-0" name="barcode-image"
+                                                   accept="image/png, image/jpg" onchange="readCover(this);">
                                         </div>
 
-                                        <?php $counter++; ?>
                                     </div>
+                                </div>
 
-                                @endforeach
-                                <div id="accounts">
 
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-4 col-md-offset-2 col-sm-6 col-xs-6">
+                                        <div class="form-group">
+                                            <label class="required-field pr-10" for="account_owner">اسم المستخدم</label>
+                                            <input type="text" class="form-control custom-input"
+                                                   id="account_owner" maxlength="50" placeholder="اسم صاحب الحساب"
+                                                   value="{{ $halalah->name }}"
+                                                   name="account_owner" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-lg-offset-3 col-md-4 col-md-offset-2 col-sm-6 col-xs-6">
+                                        <div class="form-group">
+                                            <label class="required-field pr-10" for="status">حالة الحساب</label>
+                                            <select class="form-control custom-input"
+                                                    id="status"
+                                                    name="status" required>
+                                                @if($halalah->status == 1)
+                                                    <option value="1" selected>مفعل</option>
+                                                    <option value="0">غير مفعل</option>
+                                                @elseif($halalah->status == 0)
+                                                    <option value="1">مفعل</option>
+                                                    <option value="0" selected>غير مفعل</option>
+                                                @else
+                                                    <option value="1">مفعل</option>
+                                                    <option value="0">غير مفعل</option>
+                                                @endif
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="row form-group">

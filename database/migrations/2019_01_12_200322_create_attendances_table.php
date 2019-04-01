@@ -19,6 +19,7 @@ class CreateAttendancesTable extends Migration
             $table->integer('student_id');
             $table->integer('course_id');
             $table->integer('admin_id');
+            $table->integer('reservation_id');
             $table->integer('status')->default(0);
             $table->timestamps();
         });

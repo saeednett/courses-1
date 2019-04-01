@@ -75,3 +75,15 @@ select {
 .opacity-0 {
     opacity: 0;
 }
+
+.pr-10{
+    padding-right: 10px;
+}
+
+.w-100{
+    width: 100%;
+}
+
+.h-300-px{
+    height: 300px;
+}

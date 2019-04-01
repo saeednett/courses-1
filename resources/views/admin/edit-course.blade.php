@@ -14,122 +14,10 @@
     <link rel="stylesheet" href="{{ asset('css/center/plugins/select2/select2.css') }}">
     <link href="{{ asset('css/center/plugins/datepicker/bootstrap-datepicker.css') }}" rel="stylesheet">
     <link href="{{ asset('css/center/bootstrap-clockpicker.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/admin/edit-course.css') }}" rel="stylesheet">
 @endsection
 
-
 @section('content')
-
-    <style>
-        .required-field:after {
-            color: #ff6771;
-            content: " *";
-            text-align: right;
-        }
-
-        .rtl {
-            direction: rtl;
-        }
-
-        .ltr {
-            direction: ltr;
-        }
-
-        select {
-            direction: rtl;
-            width: 100%;
-            text-align: center !important;
-            text-align-last: center !important;
-        }
-
-        .custom-input {
-            height: 50px;
-            border-radius: 30px;
-            border: 1px solid rgba(34, 36, 38, .15);
-        }
-
-        .custom-input:hover {
-            border: 2px solid #1bc3a1;
-        }
-
-        .custom-input:focus {
-            box-shadow: none !important;
-            border: 2px solid #1bc3a1;
-        }
-
-        .custom-btn {
-            height: 60px;
-            border-radius: 30px;
-            background-image: linear-gradient(to right, #1bc3a1 0%, #6fcf8f);
-            display: block;
-            border: none;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .custom-btn:hover {
-            box-shadow: 0 4px 10px 0 rgba(11, 121, 99, 0.31);
-        }
-
-        .select2-container--default .select2-selection--single {
-            height: 50px !important;
-            border-radius: 30px !important;
-        }
-
-        .select2-selection__arrow {
-            height: 100% !important;
-        }
-
-        .select2-selection__rendered {
-            margin-top: 11px !important;
-            width: 100% !important;
-            height: 100% !important;
-            text-align: center !important;
-        }
-
-        .invalid-feedback {
-            color: #ab1717;
-            width: 100% !important;
-            display: block !important;
-            direction: rtl !important;
-            text-align: center !important;
-        }
-
-        .is-invalid {
-            border-color: #ab1717 !important;
-        }
-
-        .popover-title {
-            direction: ltr !important;
-        }
-    </style>
-
-    <script>
-        function readCover(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-
-                reader.onload = function (e) {
-                    $('#course-cover')
-                        .attr('src', e.target.result)
-                };
-
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function readCover_2(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-
-                reader.onload = function (e) {
-                    $('#course-cover-2')
-                        .attr('src', e.target.result)
-                };
-
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-    </script>
 
     <div class="row">
         <div class="modal fade" id="warning-model" role="dialog">
@@ -154,7 +42,7 @@
         <div class="row">
             <div class="col-lg-12 animatedParent animateOnce z-index-49">
                 <div class="alert alert-danger animated fadeInUp">
-                    <ul class="text-right rtl" style="margin-bottom: 0;">
+                    <ul class="text-right mb-0 rtl">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -168,7 +56,7 @@
         <div class="row">
             <div class="col-lg-12 animatedParent animateOnce z-index-49">
                 <div class="alert alert-success animated fadeInUp">
-                    <ul class="text-right rtl" style="margin-bottom: 0;">
+                    <ul class="text-right mb-0 rtl">
                         <li>{{ session('success') }}</li>
                     </ul>
                 </div>
@@ -386,8 +274,8 @@
                                 <div class="row">
                                     <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 
-                                        <div style="padding: 10px; width: 100%;">
-                                            <img class="img-rounded img-thumbnail" id="course-cover" src="/storage/course-images/{{ $course->image[0]->image }}" style="width: 100%; height: 300px;">
+                                        <div class="p-10-px w-100">
+                                            <img class="img-rounded img-thumbnail w-100 h-300-px" id="course-cover" src="/storage/course-images/{{ $course->image->image }}">
                                         </div>
 
                                         <div class="form-group">
@@ -395,15 +283,15 @@
                                             <input type="text" id="course-poster-1"
                                                    class="form-control custom-input text-center"
                                                    placeholder='اختر غلاف الدورة' readonly/>
-                                            <input type="file" name="course-poster-1" style="opacity: 0;"
+                                            <input type="file" class="op-0" name="course-poster-1"
                                                    accept="image/png, image/jpg" onchange="readCover(this);">
                                         </div>
                                     </div>
 
                                     <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
 
-                                        <div style="padding: 10px; width: 100%;">
-                                            <img class="img-rounded img-thumbnail" id="course-cover-2" src="/storage/course-images/{{ $course->image[1]->image }}" style="width: 100%; height: 300px;">
+                                        <div class="p-10-px w-100">
+                                            <img class="img-rounded img-thumbnail w-100 h-300-px" id="course-cover-2" src="/storage/course-images/{{ $course->image->image_2 }}">
                                         </div>
 
                                         <div class="form-group">
@@ -412,7 +300,7 @@
                                             <input type="text" id="course-poster-2"
                                                    class="form-control custom-input text-center"
                                                    placeholder='اختر غلاف الدورة - 02' readonly/>
-                                            <input type="file" name="course-poster-2" style="opacity: 0;"
+                                            <input type="file" class="op-0" name="course-poster-2"
                                                    accept="image/png, image/jpg" onchange="readCover_2(this);">
                                         </div>
                                     </div>
@@ -422,10 +310,9 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="description">وصف الدورة</label>
-                                            <textarea id="description" class="form-control text-center required"
+                                            <textarea id="description" class="form-control text-center required resize-none"
                                                       name="description"
                                                       minlength="10" placeholder="وصف الدورة" rows="10"
-                                                      style="resize: none;"
                                                       required>{{ $course->description }}</textarea>
                                         </div>
                                     </div>
@@ -445,9 +332,9 @@
                                                     @foreach($trainers as $trainer)
                                                         @if($course_trainer->trainer_id == $trainer->id)
                                                             <option value="{{ $trainer->id }}"
-                                                                    selected>{{ $trainer->user->name }}</option>
+                                                                    selected>{{ $trainer->name }}</option>
                                                         @else
-                                                            <option value="{{ $trainer->id }}">{{ $trainer->user->name }}</option>
+                                                            <option value="{{ $trainer->id }}">{{ $trainer->name }}</option>
                                                         @endif
                                                     @endforeach
                                                 </select>
@@ -543,7 +430,7 @@
                                         <?php $counter = 0; ?>
                                         @foreach($course->discountCoupon as $coupon)
                                                 @if($counter == 0)
-                                                <div class='row' style='margin-top:20px;'>
+                                                <div class='row mt-20'>
                                                     <div class='col-lg-4 col-lg-offset-2'>
                                                         <div class='form-group'>
                                                             <label class='required-field' for='coupon'>كود الخصم</label>
@@ -559,7 +446,7 @@
                                                 </div>
                                                 <?php $counter++; ?>
                                                 @else
-                                                <div class='row' style='margin-top:20px;'>
+                                                <div class='row mt-20'>
                                                     <div class='col-lg-4 col-lg-offset-2'>
                                                         <div class='form-group'>
                                                             <label class='required-field' for='coupon'>كود الخصم</label>
@@ -667,17 +554,36 @@
                                     </div>
                                 </div>
 
+                                @if($course->gender == 3)
+
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <label class="required-field" for="men-amount">مقاعد الرجال</label>
+                                                <input type="text" class="form-control custom-input text-center num-only ltr" name="men_amount" id="men-amount" placeholder="مقاعد الرجال" value="{{ $course->men }}" minlength="1" maxlength="4" autocomplete="off" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                            <div class="form-group">
+                                                <label class="required-field" for="women-amount">مقاعد النساء</label>
+                                                <input type="text" class="form-control custom-input text-center num-only ltr" name="women_amount" id="women-amount" placeholder="مقاعد النساء" value="{{ $course->women }}" minlength="1" maxlength="4" autocomplete="off" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                @endif
+
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="start_date">تاريخ انتهاء الدورة</label>
                                             <input type="text"
                                                    class="form-control {{ $errors->has('finish_date') ? 'is-invalid' : '' }} custom-input text-center ltr"
-                                                   name="finish_date" id="finish_date" value="{{ $course->finish_date }}"
+                                                   name="finish_date" id="finish_date" value="{{ $course->end_date }}"
                                                    autocomplete="off" required>
-                                            @if ($errors->has('finish_date'))
+                                            @if ($errors->has('end_date'))
                                                 <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $errors->first('finish_date') }}</strong>
+                                                    <strong>{{ $errors->first('end_date') }}</strong>
                                                 </span>
                                             @endif
                                         </div>
@@ -701,7 +607,7 @@
                                     </div>
                                 </div>
 
-                                <div class="row" style="margin-top: 20px;">
+                                <div class="row mt-20">
                                     <div class="col-lg-4 col-lg-offset-4">
                                         <div class="form-group">
                                             <button type="submit" class="btn btn-block custom-btn" id="submit">حفظ
@@ -727,348 +633,10 @@
 
 
 @section('script-file')
-    <!--Ajax Validattion-->
     <script src="{{ asset('js/center/jquery.validate.min.js') }}"></script>
-    <!--Bootstrap Wizard-->
     <script src="{{ asset('js/center/bootstrap-clockpicker.min.js') }}"></script>
     <script src="{{ asset('js/center/plugins/wizard/jquery.bootstrap.wizard.min.js') }}"></script>
     <script src="{{ asset('js/center/plugins/select2/select2.full.min.js') }}"></script>
     <script src="{{ asset('js/center/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
-    <script>
-        $(document).ready(function () {
-
-            function refreshSelect() {
-                // $(".select2").select2();
-                $(".select2-placeholer").select2({});
-            }
-
-            // Form Wizard
-            if ($.isFunction($.fn.bootstrapWizard)) {
-
-                $('#rootwizard').bootstrapWizard({
-                    tabClass: 'wizard-steps',
-                    onTabShow: function ($tab, $navigation, index) {
-                        $tab.prevAll().addClass('completed');
-                        $tab.nextAll().removeClass('completed');
-                        $tab.removeClass('completed');
-                    }
-
-                });
-
-                $(".validate-form-wizard").each(function (i, formwizard) {
-                    var $this = $(formwizard);
-                    var $progress = $this.find(".steps-progress div");
-
-                    var $validator = $this.validate({
-                        rules: {
-                            name: {
-                                required: true,
-                                minlength: 10,
-                            },
-
-                            category: {
-                                required: true,
-                                minlength: 1,
-                                maxlength: 99,
-                            },
-
-                            template: {
-                                required: true,
-                                minlength: 1,
-                                maxlength: 3,
-                            },
-
-                            type: {
-                                required: true,
-                                minlength: 1,
-                                maxlength: 2,
-                            },
-
-                            city: {
-                                required: true,
-                                minlength: 1,
-                                maxlength: 99,
-                            },
-
-                            country: {
-                                required: true,
-                                minlength: 1,
-                                maxlength: 99,
-                            },
-
-                            address: {
-                                required: true,
-                                minlength: 10,
-                                maxlength: 200,
-                            },
-
-                            location: {
-                                required: true,
-                                minlength: 10,
-                                maxlength: 50,
-                            },
-
-                            password: {
-                                required: true,
-                                minlength: 3
-                            },
-                            confirmpassword: {
-                                required: true,
-                                minlength: 3
-                            },
-                            email: {
-                                required: true,
-                                email: true,
-                                minlength: 3,
-                            }
-                        }
-                    });
-
-                    // Validation
-                    var checkValidaion = function (tab, navigation, index) {
-                        if ($this.hasClass('validate')) {
-                            var $valid = $this.valid();
-                            if (!$valid) {
-                                $validator.focusInvalid();
-                                return false;
-                            }
-                        }
-
-                        return true;
-                    };
-
-                    $this.bootstrapWizard({
-                        tabClass: 'wizard-steps',
-                        onNext: checkValidaion,
-                        onTabClick: checkValidaion,
-                        onTabShow: function ($tab, $navigation, index) {
-                            $tab.removeClass('completed');
-                            $tab.prevAll().addClass('completed');
-                            $tab.nextAll().removeClass('completed');
-                            refreshSelect();
-                        }
-                    });
-                });
-            }
-
-            $('select[name=country]').on('change', function () {
-                var country = $(this).val();
-                $.ajax({
-                    url: "http://127.0.0.1:8000/api/v-1/cities/country=" + country,
-                    type: "get",
-                    success: function (data, result) {
-                        $('select[name=city]').children().remove();
-                        $('select[name=city]').val(null).trigger('change');
-                        for (let i = 0; i < data['data'].length; i++) {
-                            $('select[name=city]').append("<option value='" + data['data'][i]['id'] + "'>" + data['data'][i]['name'] + "</option>");
-                        }
-
-                        $('select[name=city]').val(data['data'][0]['id']); // Select the option with a value of '1'
-                        $('select[name=city]').trigger('change');
-                    },
-                    error: function () {
-                        alert("هناك خطأ الرجاء المحاولة لاحقا");
-                    }
-                });
-            });
-
-            refreshSelect();
-
-
-            $("#add-trainer").on('click', function () {
-                let select = $("select[name='trainer[]']");
-                let options = $("select[name='trainer[]']:first").children();
-
-                if (parseInt(select.length) >= parseInt(options.length)) {
-                    $("#warning-model").modal("show");
-                } else {
-                    $('#tab2-2').append("<div class='row'><div class='col-lg-6 col-lg-offset-2 col-md-6 col-md-offset-2 col-sm-10 col-xs-10'> <div class='form-group'><label class='required-field' for='trainer'>المدرب</label><select class='form-control select2-placeholer {{ $errors->has('trainer') ? 'is-invalid' : '' }} custom-input' name='trainer[]'></select></div></div> <div class='col-lg-2 col-md-2 col-sm-2 col-xs-2'> <label for='trainer'></label><button type='button' class='btn btn-danger btn-block custom-input remove'><i class='fa fa-trash'></i></button> </div> </div>");
-                    for (let i = 0; i < options.length; i++) {
-                        let select = $("select[name='trainer[]']:last");
-                        select.append("<option value='" + options.eq(i).attr('value') + "' >" + options.eq(i).text() + "</option>");
-                    }
-                    refreshSelect();
-                }
-            });
-
-            $(document).on('click', '.remove', function () {
-                $(this).parent().parent().remove();
-            });
-
-
-            $("select[name=type]").on('change', function () {
-                let value = $(this).val();
-                if (value == 2) {
-                    $("#tab2-3").append("<div class='row'> <div class='col-lg-6 col-lg-offset-3'> <div class='form-group'> <label class='required-field' for='price'>قيمة الدورة</label> <input type='text' class='form-control custom-input text-center num-only ltr' name='price' id='price'  placeholder='قيمة الدورة' autocomplete='off' required> </div></div> </div>   <div class='row'> <div class='col-lg-6 col-lg-offset-3'> <div class='form-group'> <label class='required-field' for='coupon'>كوبونات الخصم</label> <select class='form-control select2-placeholer {{ $errors->has('coupon') ? 'is-invalid' : '' }}' name='coupon' id='coupon'> <option value='0'> لا يوجد كوبونات خصم</option><option value='1'>يوجد كوبونات خصم</option></select></div></div> </div>");
-                    refreshSelect();
-                } else {
-                    $("#tab2-3 > div:not(#tab2-3 > div:eq(0))").remove();
-                }
-            });
-
-            $(document).on('change', 'select[name=coupon]', function () {
-                let value = $(this).val();
-                if (value == 1) {
-                    $("#tab2-3").append("<div class='row'><div class='col-lg-6 col-lg-offset-3'> <label for='trainer'></label><button type='button' class='btn btn-success btn-block custom-input' id='add-coupon'><i class='fa fa-plus-circle'></i></button> </div> </div>");
-                    $("#tab2-3").append("<div class='row' style='margin-top:20px;'><div class='col-lg-4'> <div class='form-group'> <label class='required-field' for='coupon'>كود الخصم</label> <input type='text' class='form-control custom-input text-center ltr' name='coupon_code[]'  placeholder='كود الخصم' autocomplete='off' required> </div></div> <div class='col-lg-4'> <div class='form-group'> <label class='required-field' for='coupon'>قيمة الخصم</label> <input type='text' class='form-control custom-input text-center num-only ltr' name='coupon_discount[]'  placeholder='قيمة الخصم بالنسبة المئوية' autocomplete='off' required> </div></div> <div class='col-lg-4'> <label for='trainer'></label><button type='button' class='btn btn-danger btn-block custom-input remove'><i class='fa fa-trash'></i></button> </div> </div>");
-                } else {
-                    $("#tab2-3 > div:not(#tab2-3 > div:eq(0), #tab2-3 > div:eq(1))").remove();
-                }
-            });
-
-            $(document).on('click', '#add-coupon', function () {
-                $("#tab2-3").append("<div class='row' style='margin-top:20px;'><div class='col-lg-3 col-lg-offset-2'> <div class='form-group'> <label class='required-field' for='coupon'>كود الخصم</label> <input type='text' class='form-control custom-input text-center ltr' name='coupon_code[]'  placeholder='كود الخصم' autocomplete='off' required> </div></div> <div class='col-lg-3'> <div class='form-group'> <label class='required-field' for='coupon'>قيمة الخصم</label> <input type='text' class='form-control custom-input text-center num-only ltr' name='coupon_discount[]'  placeholder='قيمة الخصم بالنسبة المئوية' autocomplete='off' required> </div></div> <div class='col-lg-2'> <label for='trainer'></label><button type='button' class='btn btn-danger btn-block custom-input remove'><i class='fa fa-trash'></i></button> </div> </div>");
-            });
-
-            refreshTimePicker();
-
-            function refreshTimePicker() {
-
-                $.fn.datepicker.dates['ar'] = {
-                    days: ["الاأحد", "الاإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"],
-                    daysShort: ["احد", "اثن", "ثلا", "ارب", "خمي", "جمع", "سبت"],
-                    daysMin: ["اح", "اث", "ثل", "ار", "خم", "جم", "سب"],
-                    months: ["يناير", "فبراير", "مارس", "ابريل", "مايو", "يونيو", "يوليو", "اغصطس", "سبتمبر", "اكتوبر", "نوفمبر", "ديسمبر"],
-                    monthsShort: ["ينا", "فبر", "مار", "ابر", "ماي", "يون", "يول", "اغسط", "سبت", "اكت", "نوف", "ديس"],
-                    today: "اليوم",
-                    clear: "حذف",
-                    format: "yyyy/mm/dd",
-                    titleFormat: "yyyy MM", /* Leverages same syntax as 'format' */
-                    weekStart: 0,
-                };
-
-                $("input[name=start_date]").datepicker({
-                    keyboardNavigation: false,
-                    forceParse: false,
-                    todayHighlight: true,
-                    format: 'yyyy/mm/dd',
-                    autoclose: true,
-                    clearBtn: true,
-                    startDate: new Date(),
-                    title: "تاريخ الدورة",
-                    language: "ar"
-
-                });
-
-                initializeFinishDate();
-
-                function initializeFinishDate() {
-                    $("input[name=finish_date]").datepicker({
-                        keyboardNavigation: false,
-                        forceParse: false,
-                        todayHighlight: false,
-                        format: 'yyyy/mm/dd',
-                        autoclose: true,
-                        clearBtn: true,
-                        title: "تاريخ انتهاء الدورة",
-                        language: "ar"
-
-                    });
-                }
-
-                function refreshFinishDate(date) {
-                    if (date.length < 10 || date.length > 10) {
-                        $("input[name=finish_date]").prop({'readonly': false, 'disabled': true});
-                    } else {
-                        $("input[name=finish_date]").prop({'readonly': false, 'disabled': false});
-                        $("input[name=finish_date]").datepicker('update', '');
-                        $("input[name=finish_date]").datepicker('setStartDate', new Date(date));
-                    }
-                }
-
-
-                initializeEndReservation();
-
-                function initializeEndReservation() {
-                    $("input[name=end_reservation]").datepicker({
-                        keyboardNavigation: false,
-                        forceParse: false,
-                        todayHighlight: false,
-                        format: 'yyyy/mm/dd',
-                        autoclose: true,
-                        clearBtn: true,
-                        title: "تاريخ انتهاء التسجيل",
-                        language: "ar"
-
-                    });
-                }
-
-                function refreshEndReservation(date) {
-                    if (date.length < 10 || date.length > 10) {
-                        $("input[name=end_reservation]").prop({'readonly': false, 'disabled': true});
-                    } else {
-                        $("input[name=end_reservation]").prop({'readonly': false, 'disabled': false});
-                        $("input[name=end_reservation]").datepicker('update', '');
-                        $("input[name=end_reservation]").datepicker('setEndDate', new Date(date));
-                        $("input[name=end_reservation]").datepicker('setStartDate', new Date());
-                    }
-                }
-
-
-                $("input[name=start_date]").on('change', function () {
-                    refreshFinishDate($("input[name=start_date]").val());
-                    refreshEndReservation($("input[name=start_date]").val());
-
-                });
-
-                // For First Load
-                function refreshFinishDateOnLoad(date) {
-                    if (date.length < 10 || date.length > 10) {
-                        $("input[name=finish_date]").prop({'readonly': false, 'disabled': true});
-                    } else {
-                        $("input[name=finish_date]").prop({'readonly': false, 'disabled': false});
-                        $("input[name=finish_date]").datepicker('setStartDate', new Date(date));
-                    }
-                }
-                function refreshEndReservationOnLoad(date) {
-                    if (date.length < 10 || date.length > 10) {
-                        $("input[name=end_reservation]").prop({'readonly': false, 'disabled': true});
-                    } else {
-                        $("input[name=end_reservation]").prop({'readonly': false, 'disabled': false});
-                        $("input[name=end_reservation]").datepicker('setEndDate', new Date(date));
-                        $("input[name=end_reservation]").datepicker('setStartDate', new Date());
-                    }
-                }
-                refreshFinishDateOnLoad($("input[name=start_date]").val());
-                refreshEndReservationOnLoad($("input[name=start_date]").val());
-
-                $("input[name=start_time]").clockpicker({
-                    autoclose: true,
-                    placement: "top",
-                    align: "right",
-                    donetext: "موافق",
-                    // twelvehour: true,
-                    default: 'now'
-                });
-
-            }
-
-            $("#course-poster-1").on('click', function () {
-                $("input[name=course-poster-1]").trigger('click');
-            });
-
-            $("input[name=course-poster-1]").on('change', function () {
-                let file = $("input[name=course-poster-1]")[0].files[0];
-                $("#course-poster-1").val(file.name);
-            });
-
-            $("#course-poster-2").on('click', function () {
-                $("input[name=course-poster-2]").trigger('click');
-            });
-
-            $("input[name=course-poster-2]").on('change', function () {
-                let file = $("input[name=course-poster-2]")[0].files[0];
-                $("#course-poster-2").val(file.name);
-            });
-
-
-            $(document).on("keypress", '.num-only', function (evt) {
-                let charCode = (evt.which) ? evt.which : event.keyCode;
-                if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                    return false;
-                }
-                return true;
-            });
-        });
-    </script>
+    <script src="{{ asset('js/admin/edit-course.js') }}"></script>
 @endsection

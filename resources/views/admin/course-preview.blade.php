@@ -7,13 +7,7 @@
 @endsection
 
 @section('script-file')
-    <script>
-        $('.carousel').carousel();
-
-        $('.preview').on('click', function () {
-            $("#warning-model").modal("show");
-        });
-    </script>
+    <script src="{{ asset('js/admin/course-preview.js') }}"></script>
 @endsection
 
 
@@ -46,16 +40,16 @@
                         <h3>{{ $course->title }}</h3>
                         <div class="main-info">
                             <div class="course-logo rounded-top">
-                                <img src="/storage/course-images/{{ $course->image[0]->image }}" alt="{{ $course->title }}">
+                                <img src="/storage/course-images/{{ $course->image->image }}" alt="{{ $course->title }}">
                             </div>
                             <div class="block rounded-bottom mt-0">
                                 <div class="row">
                                     <div class="col-lg-9 col-md-8 col-sm-8 col-8">
                                         <h5 class="text-right d-lg-block d-none rtl"><span>اسم المنظم:</span> <a class="preview"
-                                                    href="#">{{ $course->center->user->name }}</a>
+                                                    href="#">{{ $course->center->name }}</a>
                                         </h5>
                                         <h5 class="text-right d-lg-none d-block rtl"><a class="preview"
-                                                    href="#">{{ $course->center->user->name }}</a>
+                                                    href="#">{{ $course->center->name }}</a>
                                         </h5>
                                         <div class="social-media mt-4">
                                             <div class="row justify-content-end">
@@ -84,7 +78,7 @@
                                     <div class="col-lg-3 col-md-4 col-sm-4 col-4">
                                         <div class="logo-holder">
                                             <img class="border"
-                                                 src="/storage/center-images/{{ $course->center->logo }}"
+                                                 src="/storage/center-images/{{ $course->center->image }}"
                                                  alt="{{ $course->center->user->name }}">
                                         </div>
                                     </div>

@@ -71,169 +71,151 @@
                                         <th class="text-center">اليوم العاشر</th>
                                         @break
 
+                                        @case(10)
+                                        <th class="text-center">اليوم الحادي عشر</th>
+                                        @break
+
+                                        @case(11)
+                                        <th class="text-center">اليوم الثاني عشر</th>
+                                        @break
+
+                                        @case(12)
+                                        <th class="text-center">اليوم الثالث عشر</th>
+                                        @break
+
+                                        @case(13)
+                                        <th class="text-center">اليوم الرابع عشر</th>
+                                        @break
+
+                                        @case(14)
+                                        <th class="text-center">اليوم الخامس عشر</th>
+                                        @break
+
+                                        @case(15)
+                                        <th class="text-center">اليوم السادس عشر</th>
+                                        @break
+
+                                        @case(16)
+                                        <th class="text-center">اليوم السابع عشر</th>
+                                        @break
+
+                                        @case(17)
+                                        <th class="text-center">اليوم الثامن عشر</th>
+                                        @break
+
+                                        @case(18)
+                                        <th class="text-center">اليوم التاسع عشر</th>
+                                        @break
+
+                                        @case(19)
+                                        <th class="text-center">اليوم العشرون</th>
+                                        @break
+
+                                        @case(20)
+                                        <th class="text-center">اليوم الحادي والعشرون</th>
+                                        @break
+
+                                        @case(21)
+                                        <th class="text-center">اليوم الثاني والعشرون</th>
+                                        @break
+
+                                        @case(22)
+                                        <th class="text-center">اليوم الثالث والعشرون</th>
+                                        @break
+
+                                        @case(23)
+                                        <th class="text-center">اليوم الرايع والعشرون</th>
+                                        @break
+
+                                        @case(24)
+                                        <th class="text-center">اليوم الخامس والعشرون</th>
+                                        @break
+
+                                        @case(25)
+                                        <th class="text-center">اليوم السادس والعشرون</th>
+                                        @break
+
+                                        @case(26)
+                                        <th class="text-center">اليوم السايع والعشرون</th>
+                                        @break
+
+                                        @case(27)
+                                        <th class="text-center">اليوم الثامن والعشرون</th>
+                                        @break
+
+
+
                                     @endswitch
                                 @endfor
                             </tr>
                             </thead>
                             <tbody class="text-center d-none">
-                            @if(count($days) > 0)
+                            @if($days > 0)
                                 <tr class="gradeX">
-                                    @for($i = 1; $i <= $days; $i++)
-                                        @if(date("Y-m-d", strtotime($course->start_date." +$i Day")) == date('Y-m-d'))
+                                    @for($i = 0; $i < $days; $i++)
+
+                                        @if($i == 0 && $course->start_date == date("Y-m-d"))
+
                                             <td class="text-center bg-success"><a class="text-success"
-                                                                                  href="{{ route('admin.course.take.attendance', [$course->identifier, date("Y-m-d", strtotime($course->start_date." +$i Day"))]) }}">{{ date("Y-m-d", strtotime($course->start_date." +$i Day")) }}</a>
+                                                                                  href="{{ route('admin.course.take.attendance', [$course->identifier, date("Y-m-d")]) }}">{{ date("Y-m-d", strtotime($course->start_date)) }}</a>
                                             </td>
-                                        @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) < date('Y-m-d'))
-                                            <td class="text-center bg-danger"><a class="text-danger"
-                                                                                 href="{{ route('admin.course.take.attendance', [$course->identifier, date("Y-m-d", strtotime($course->start_date." +$i Day"))]) }}">{{ date($course->start_date, strtotime("+$i Day")) }}</a>
-                                            </td>
-                                        @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) > date('Y-m-d'))
-                                            <td class="text-center bg-warning"><a class="text-warning"
-                                                                                  href="{{ route('admin.course.take.attendance', [$course->identifier, date("Y-m-d", strtotime($course->start_date." +$i Day"))]) }}">{{ date($course->start_date, strtotime("+$i Day")) }}</a>
-                                            </td>
+
+                                        @else
+
+                                            @if(date("Y-m-d", strtotime($course->start_date." +$i Day")) == date('Y-m-d'))
+                                                <td class="text-center bg-success"><a class="text-success"
+                                                                                      href="{{ route('admin.course.take.attendance', [$course->identifier, date("Y-m-d", strtotime($course->start_date." +$i Day"))]) }}">{{ date("Y-m-d", strtotime($course->start_date." +$i Day")) }}</a>
+                                                </td>
+                                            @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) < date('Y-m-d'))
+                                                <td class="text-center bg-danger"><a class="text-danger"
+                                                                                     href="{{ route('admin.course.take.attendance', [$course->identifier, date("Y-m-d", strtotime($course->start_date." +$i Day"))]) }}">{{ date("Y-m-d", strtotime($course->start_date." +$i Day")) }}</a>
+                                                </td>
+                                            @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) > date('Y-m-d'))
+                                                <td class="text-center bg-warning"><a class="text-warning"
+                                                                                      href="{{ route('admin.course.take.attendance', [$course->identifier, date("Y-m-d", strtotime($course->start_date." +$i Day"))]) }}">{{ date("Y-m-d", strtotime($course->start_date." +$i Day")) }}</a>
+                                                </td>
+                                            @endif
+
                                         @endif
+
+
                                     @endfor
                                 </tr>
                             @else
+
                             @endif
                             </tbody>
                             @if($days > 0)
                                 <tfoot>
                                 <tr>
-                                    @for($i = 1; $i <= $days; $i++)
+                                    @for($i = 0; $i < $days; $i++)
                                         <?php $class = ""; ?>
-                                        @switch($i)
-                                            @case(1)
+
+
+                                            @if($i == 0 && $course->start_date == date("Y-m-d"))
+
+                                                <?php $class = "text-success"; ?>
+                                                <th class="text-center {{ $class }}"><span
+                                                            class="fa fa-check-circle-o"></span></th>
+
+                                            @else
+
                                                 @if(date("Y-m-d", strtotime($course->start_date." +$i Day")) < date('Y-m-d'))
                                                     <?php $class = "text-danger"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
+                                                    <th class="text-center {{ $class }}"><span
+                                                                class="fa fa-check-circle-o"></span></th>
                                                 @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) > date('Y-m-d'))
                                                     <?php $class = "text-warning"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-question-circle"></span></th>
+                                                    <th class="text-center {{ $class }}"><span
+                                                                class="fa fa-question-circle"></span></th>
                                                 @else
                                                     <?php $class = "text-success"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
+                                                    <th class="text-center {{ $class }}"><span
+                                                                class="fa fa-check-circle-o"></span></th>
                                                 @endif
-                                            @break
 
-                                            @case(2)
-                                                @if(date("Y-m-d", strtotime($course->start_date." +$i Day")) < date('Y-m-d'))
-                                                    <?php $class = "text-danger"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) > date('Y-m-d'))
-                                                    <?php $class = "text-warning"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-question-circle"></span></th>
-                                                @else
-                                                    <?php $class = "text-success"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @endif
-                                            @break
+                                            @endif
 
-                                            @case(3)
-                                                @if(date("Y-m-d", strtotime($course->start_date." +$i Day")) < date('Y-m-d'))
-                                                    <?php $class = "text-danger"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) > date('Y-m-d'))
-                                                    <?php $class = "text-warning"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-question-circle"></span></th>
-                                                @else
-                                                    <?php $class = "text-success"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @endif
-                                            @break
-
-                                            @case(4)
-                                                @if(date("Y-m-d", strtotime($course->start_date." +$i Day")) < date('Y-m-d'))
-                                                    <?php $class = "text-danger"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) > date('Y-m-d'))
-                                                    <?php $class = "text-warning"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-question-circle"></span></th>
-                                                @else
-                                                    <?php $class = "text-success"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @endif
-                                            @break
-
-                                            @case(5)
-                                                @if(date("Y-m-d", strtotime($course->start_date." +$i Day")) < date('Y-m-d'))
-                                                    <?php $class = "text-danger"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) > date('Y-m-d'))
-                                                    <?php $class = "text-warning"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-question-circle"></span></th>
-                                                @else
-                                                    <?php $class = "text-success"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @endif
-                                            @break
-
-                                            @case(6)
-                                                @if(date("Y-m-d", strtotime($course->start_date." +$i Day")) < date('Y-m-d'))
-                                                    <?php $class = "text-danger"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) > date('Y-m-d'))
-                                                    <?php $class = "text-warning"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-question-circle"></span></th>
-                                                @else
-                                                    <?php $class = "text-success"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @endif
-                                            @break
-
-                                            @case(7)
-                                                @if(date("Y-m-d", strtotime($course->start_date." +$i Day")) < date('Y-m-d'))
-                                                    <?php $class = "text-danger"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) > date('Y-m-d'))
-                                                    <?php $class = "text-warning"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-question-circle"></span></th>
-                                                @else
-                                                    <?php $class = "text-success"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @endif
-                                            @break
-
-                                            @case(8)
-                                                @if(date("Y-m-d", strtotime($course->start_date." +$i Day")) < date('Y-m-d'))
-                                                    <?php $class = "text-danger"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) > date('Y-m-d'))
-                                                    <?php $class = "text-warning"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-question-circle"></span></th>
-                                                @else
-                                                    <?php $class = "text-success"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @endif
-                                            @break
-
-                                            @case(9)
-                                                @if(date("Y-m-d", strtotime($course->start_date." +$i Day")) < date('Y-m-d'))
-                                                    <?php $class = "text-danger"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) > date('Y-m-d'))
-                                                    <?php $class = "text-warning"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-question-circle"></span></th>
-                                                @else
-                                                    <?php $class = "text-success"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @endif
-                                            @break
-
-                                            @case(10)
-                                                @if(date("Y-m-d", strtotime($course->start_date." +$i Day")) < date('Y-m-d'))
-                                                    <?php $class = "text-danger"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @elseif(date("Y-m-d", strtotime($course->start_date." +$i Day")) > date('Y-m-d'))
-                                                    <?php $class = "text-warning"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-question-circle"></span></th>
-                                                @else
-                                                    <?php $class = "text-success"; ?>
-                                                    <th class="text-center {{ $class }}"><span class="fa fa-check-circle-o"></span></th>
-                                                @endif
-                                            @break
-
-                                        @endswitch
                                     @endfor
                                 </tr>
                                 </tfoot>

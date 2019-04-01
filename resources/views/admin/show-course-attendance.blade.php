@@ -83,14 +83,10 @@
                                 @foreach($course->reservation as $reservation)
                                     @if($reservation->confirmation == 1)
                                         <tr class="gradeX">
-                                            <td>{{ $reservation->student->user->name }}</td>
+                                            <td>{{ $reservation->student->first_name." ".$reservation->student->second_name." ".$reservation->student->third_name }}</td>
                                             <td style="direction: ltr;">{{ $reservation->student->user->phone }}</td>
                                             @for($i = 0; $i < $days; $i++)
 
-
-
-
-                                                {{--// $course->id == $reservation->student->attendance[$i]->course_id--}}
                                                 @if(isset($reservation->student->attendance[$i]))
                                                     @if($reservation->student->attendance[$i]->status > 0)
                                                         <td>

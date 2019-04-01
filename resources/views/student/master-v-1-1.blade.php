@@ -4,6 +4,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     @yield('mete')
+    <link rel="shortcut icon" href="{{ asset('img/logo.png') }}"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title')</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -41,48 +42,51 @@
                                 <a class="navbar-brand rtl" href="#">
                                     <div class="row">
                                         <div class="col-4">
-                                            <img src="{{ asset('img/student/logo.png') }}" alt="" height="70" width="50">
+                                            <img src="{{ asset('img/student/logo.png') }}" alt="" height="70"
+                                                 width="50">
                                         </div>
                                         <div class="col-8">
                                             <form class="text-center" style="margin-top: 25px;" action="" method="post">
-                                                <select data-placeholder="" class="chosen-select col-lg-12 col-md-8 col-sm-12 col-12">
+                                                <select data-placeholder=""
+                                                        class="chosen-select col-lg-12 col-md-8 col-sm-12 col-12">
                                                     <option value="all">كل المدن</option>
-                                                    <option value="Jeddah" >جدة</option>
-                                                    <option value="Riyadh" >الرياض</option>
-                                                    <option value="Dammam" >الدمام</option>
-                                                    <option value="Mecca" >مكة المكرمة</option>
-                                                    <option value="Medina" >المدينة المنورة</option>
-                                                    <option value="Khobar" >الخبر</option>
-                                                    <option value="Al-Ahsa" >الأحساء</option>
-                                                    <option value="Ta&#39;if" >الطائف</option>
-                                                    <option value="Khamis Mushait" >خميس مشيط</option>
-                                                    <option value="Buraidah" >بريدة</option>
-                                                    <option value="Jubail" >الجبيل</option>
-                                                    <option value="AlJouf" >الجوف</option>
-                                                    <option value="Yunba" >ينبع</option>
-                                                    <option value="Njran" >نجران</option>
-                                                    <option value="Tabuk" >تبوك</option>
-                                                    <option value="Hail" >حائل</option>
-                                                    <option value="Assir" >عسير</option>
-                                                    <option value="Abha" >أبها</option>
-                                                    <option value="Qassim" >القصيم</option>
-                                                    <option value="HaferAlbaten" >حفرالباطن</option>
-                                                    <option value="Unaizah" >عنيزة</option>
-                                                    <option value="ِAlkharg" >الخرج</option>
-                                                    <option value="AlOla" >العلا</option>
-                                                    <option value="Bahrain" >البحرين</option>
-                                                    <option value="Jazan" >جازان</option>
-                                                    <option value="Dhahran" >الظهران</option>
-                                                    <option value="Kuwait" >الكويت</option>
-                                                    <option value="Arar" >عرعر</option>
-                                                    <option value="Qatif" >القطيف</option>
+                                                    <option value="Jeddah">جدة</option>
+                                                    <option value="Riyadh">الرياض</option>
+                                                    <option value="Dammam">الدمام</option>
+                                                    <option value="Mecca">مكة المكرمة</option>
+                                                    <option value="Medina">المدينة المنورة</option>
+                                                    <option value="Khobar">الخبر</option>
+                                                    <option value="Al-Ahsa">الأحساء</option>
+                                                    <option value="Ta&#39;if">الطائف</option>
+                                                    <option value="Khamis Mushait">خميس مشيط</option>
+                                                    <option value="Buraidah">بريدة</option>
+                                                    <option value="Jubail">الجبيل</option>
+                                                    <option value="AlJouf">الجوف</option>
+                                                    <option value="Yunba">ينبع</option>
+                                                    <option value="Njran">نجران</option>
+                                                    <option value="Tabuk">تبوك</option>
+                                                    <option value="Hail">حائل</option>
+                                                    <option value="Assir">عسير</option>
+                                                    <option value="Abha">أبها</option>
+                                                    <option value="Qassim">القصيم</option>
+                                                    <option value="HaferAlbaten">حفرالباطن</option>
+                                                    <option value="Unaizah">عنيزة</option>
+                                                    <option value="ِAlkharg">الخرج</option>
+                                                    <option value="AlOla">العلا</option>
+                                                    <option value="Bahrain">البحرين</option>
+                                                    <option value="Jazan">جازان</option>
+                                                    <option value="Dhahran">الظهران</option>
+                                                    <option value="Kuwait">الكويت</option>
+                                                    <option value="Arar">عرعر</option>
+                                                    <option value="Qatif">القطيف</option>
                                                 </select>
                                             </form>
                                         </div>
                                     </div>
                                 </a>
 
-                                <button class="navbar-toggler d-lg-none d-md-none d-sm-block d-block" type="button" data-toggle="collapse"
+                                <button class="navbar-toggler d-lg-none d-md-none d-sm-block d-block" type="button"
+                                        data-toggle="collapse"
                                         data-target="#navbarSupportedContent"
                                         aria-controls="navbarSupportedContent" aria-expanded="false"
                                         aria-label="{{ __('Toggle navigation') }}">
@@ -105,12 +109,16 @@
                                         </li>
                                     </ul>
 
-                                    <ul class="navbar-nav d-lg-none d-md-none d-sm-block d-block" style="direction: ltr;">
+                                    <ul class="navbar-nav d-lg-none d-md-none d-sm-block d-block"
+                                        style="direction: ltr;">
                                         <!-- Authentication Links -->
                                         @guest
-                                            <li class="nav-item dropdown tap-link text-center" style="display: block; text-align: left; direction: rtl;">
-                                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                            <li class="nav-item dropdown tap-link text-center"
+                                                style="display: block; text-align: left; direction: rtl;">
+                                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
+                                                   role="button"
+                                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                                   v-pre>
                                                     دخول
                                                     <span class="fa fa-user"></span>
                                                     <span class="caret"></span>
@@ -122,37 +130,44 @@
                                                 </div>
                                             </li>
                                         @else
-                                            <li class="nav-item dropdown">
-                                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                                    {{ Auth::user()->username }} <span class="caret"></span>
-                                                </a>
-
-                                                <div class="dropdown-menu dropdown-menu-right text-center" aria-labelledby="navbarDropdown">
-                                                    <a href="{{ route('account.edit') }}" class="dropdown-item">
-                                                        بياناتي
+                                            @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role_id == 5)
+                                                <li class="nav-item dropdown">
+                                                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
+                                                       role="button"
+                                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                                       v-pre>
+                                                        {{ Auth::user()->username }} <span class="caret"></span>
                                                     </a>
-                                                    <a href="{{ route('account.ticket') }}" class="dropdown-item rtl">
-                                                        تذاكري
-                                                        @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role_id == 5)
-                                                            @if($tickets > 0)
-                                                                <span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>
+
+                                                    <div class="dropdown-menu dropdown-menu-right text-center"
+                                                         aria-labelledby="navbarDropdown">
+                                                        <a href="{{ route('account.edit') }}" class="dropdown-item">
+                                                            بياناتي
+                                                        </a>
+                                                        <a href="{{ route('account.ticket') }}"
+                                                           class="dropdown-item rtl">
+                                                            تذاكري
+                                                            @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role_id == 5)
+                                                                @if($tickets > 0)
+                                                                    <span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>
+                                                                @endif
                                                             @endif
-                                                        @endif
-                                                    </a>
-                                                    <div class="dropdown-divider"></div>
-                                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                                       onclick="event.preventDefault();
+                                                        </a>
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item" href="{{ route('logout') }}"
+                                                           onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                                        تسجيل الخروج
-                                                    </a>
+                                                            تسجيل الخروج
+                                                        </a>
 
-                                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                                          style="display: none;">
-                                                        @csrf
-                                                    </form>
-                                                </div>
-                                            </li>
+                                                        <form id="logout-form" action="{{ route('logout') }}"
+                                                              method="POST"
+                                                              style="display: none;">
+                                                            @csrf
+                                                        </form>
+                                                    </div>
+                                                </li>
+                                            @endif
                                         @endguest
                                     </ul>
 
@@ -186,34 +201,40 @@
                                     <a class="nav-link" href="{{ route('account.contact_us') }}">اتصل بنا</a>
                                 </li>
 
-                                <li class="nav-item tap-link">
-                                    <a class="nav-link rtl" href="{{ route('account.ticket') }}">
-                                        تذاكري
-                                        @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role_id == 5)
-                                            @if($tickets > 0)
-                                                <span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>
-                                            @endif
-                                        @endif
-                                    </a>
-                                </li>
+                                @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role_id == 5)
 
-                                <li class="nav-item tap-link">
-                                    <a class="nav-link rtl" href="{{ route('account.certificates') }}">
-                                        شهاداتي
-                                        @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role_id == 5)
-                                            @if($certificates > 0)
-                                                <span class="rounded-circle count-certificates">{{ $certificates }}</span>
+                                    <li class="nav-item tap-link">
+                                        <a class="nav-link rtl" href="{{ route('account.ticket') }}">
+                                            تذاكري
+                                            @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role_id == 5)
+                                                @if($tickets > 0)
+                                                    <span class="rounded-circle count-booking-tickets">{{ $tickets }}</span>
+                                                @endif
                                             @endif
-                                        @endif
-                                    </a>
-                                </li>
+                                        </a>
+                                    </li>
+
+                                    <li class="nav-item tap-link">
+                                        <a class="nav-link rtl" href="{{ route('account.certificates') }}">
+                                            شهاداتي
+                                            @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role_id == 5)
+                                                @if($certificates > 0)
+                                                    <span class="rounded-circle count-certificates">{{ $certificates }}</span>
+                                                @endif
+                                            @endif
+                                        </a>
+                                    </li>
+
+                                @endif
+
                             </ul>
 
 
                             <ul class="navbar-nav" style="direction: ltr;">
                                 <!-- Authentication Links -->
                                 @guest
-                                    <li class="nav-item dropdown" style="display: block; text-align: left; direction: rtl;">
+                                    <li class="nav-item dropdown"
+                                        style="display: block; text-align: left; direction: rtl;">
                                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                             دخول
@@ -227,33 +248,34 @@
                                         </div>
                                     </li>
                                 @else
-                                    <li class="nav-item dropdown">
-                                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                            {{ Auth::user()->username }} <span class="caret"></span>
-                                        </a>
-
-                                        <div class="dropdown-menu dropdown-menu-right text-center" aria-labelledby="navbarDropdown">
-                                            <a href="{{ route('account.edit') }}" class="dropdown-item">
-                                                بياناتي
+                                    @if(\Illuminate\Support\Facades\Auth::check() && \Illuminate\Support\Facades\Auth::user()->role_id == 5)
+                                        <li class="nav-item dropdown">
+                                            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#"
+                                               role="button"
+                                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                                {{ Auth::user()->username }} <span class="caret"></span>
                                             </a>
-                                            {{--<a href="{{ route('account.ticket') }}" class="dropdown-item">--}}
-                                                {{--تذاكري--}}
-                                                {{--<span class="rounded-circle count-booking-tickets">1</span>--}}
-                                            {{--</a>--}}
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="{{ route('logout') }}"
-                                               onclick="event.preventDefault();
+
+                                            <div class="dropdown-menu dropdown-menu-right text-center"
+                                                 aria-labelledby="navbarDropdown">
+                                                <a href="{{ route('account.edit') }}" class="dropdown-item">
+                                                    بياناتي
+                                                </a>
+
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                                   onclick="event.preventDefault();
                                                  document.getElementById('logout-form-2').submit();">
-                                                تسجيل الخروج
-                                            </a>
+                                                    تسجيل الخروج
+                                                </a>
 
-                                            <form id="logout-form-2" action="{{ route('logout') }}" method="POST"
-                                                  style="display: none;">
-                                                @csrf
-                                            </form>
-                                        </div>
-                                    </li>
+                                                <form id="logout-form-2" action="{{ route('logout') }}" method="POST"
+                                                      style="display: none;">
+                                                    @csrf
+                                                </form>
+                                            </div>
+                                        </li>
+                                    @endif
                                 @endguest
                             </ul>
                         </nav>
@@ -364,7 +386,7 @@
 <script>
     $(document).ready(function () {
         $('.chosen-select').chosen();
-        $('.chosen-select-deselect').chosen({ allow_single_deselect: true });
+        $('.chosen-select-deselect').chosen({allow_single_deselect: true});
     });
 </script>
 </body>

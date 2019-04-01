@@ -44,7 +44,7 @@
                                         <td>
                                             <?php
                                             $date1 = date_create($admin->course->start_date);
-                                            $date2 = date_create($admin->course->finish_date);
+                                            $date2 = date_create($admin->course->end_date);
                                             $diff = date_diff($date1, $date2);
                                             $days = $diff->format("%a");
                                             if ($days == 1) {
@@ -73,8 +73,8 @@
                                             <td><a href="{{ route('admin.course.edit', $admin->course->identifier) }}">تعديل</a></td>
                                             <td><a href="{{ route('admin.courses.preview', [$admin->course->identifier]) }}" target="_blank">عرض</a></td>
                                         @else
-                                            <td><a href="#">تحضير</a></td>
-                                            <td><a href="{{ route('account.course_details', [$admin->course->identifier]) }}" target="_blank">عرض</a></td>
+                                            <td><a href="{{ route('admin.course.schedule', $admin->course->identifier) }}">تحضير</a></td>
+                                            <td><a href="{{ route('admin.courses.preview', $admin->course->identifier) }}" target="_blank">عرض</a></td>
                                         @endif
                                     </tr>
                                 @endforeach

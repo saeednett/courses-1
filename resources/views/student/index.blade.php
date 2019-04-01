@@ -19,18 +19,29 @@
 
 @endsection
 
-
-
 @section('content')
 
     <div class="container">
+
         <div class="row justify-content-center mt-lg-3 mt-2">
             <div class="col-lg-10 col-md-12 col-sm-12 col-12">
 
+                @if($errors->any())
+                    <div class="row justify-content-center">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-10 pr-0 pl-0">
+                            <div class="alert alert-danger text-right rtl">
+                                <ul class="mb-0 text-danger text-right">
+                                    <li>{{ $errors->first() }}</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
                 @if(session()->has('success'))
                     <div class="row justify-content-center">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-10 pr-0">
-                            <div class="alert alert-success text-right">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-10 pr-0 pl-0">
+                            <div class="alert alert-success text-right rtl">
                                 <ul class="mb-0 text-right">
                                     <li>{{ session('success') }}</li>
                                 </ul>

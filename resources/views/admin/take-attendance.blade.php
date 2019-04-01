@@ -1,41 +1,12 @@
 @extends('admin.layouts.master')
 
+@section('style-file')
+    <link rel="stylesheet" href="{{ asset('css/admin/take-attendance.css') }}"/>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+@endsection
+
 @section('content')
     <!-- Main content -->
-    <style>
-        .warning-color {
-            color: #fff466;
-        }
-
-        .block {
-            color: black;
-            background: #FFF;
-            border: 1px solid #ccc;
-            font-weight: 400;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 3px;
-            box-shadow: 2px 1px 5px rgba(0, 0, 0, 0.25);
-        }
-
-        .block ol li {
-            font-size: 15px;
-        }
-
-        .pt-17 {
-            padding-top: 17px !important;
-        }
-
-        .custom-rules {
-            list-style-type: none;
-            margin-right: 0;
-            width: 100%;
-            padding-right: 0px;
-        }
-
-    </style>
-    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-
     @if($errors->any())
         <div class="row">
             <div class="col-lg-12">
@@ -87,24 +58,12 @@
                     <li>
                         <span class="fa fa-clock-o text-custom"></span>
                         <span>المدة:</span>
-                        <?php
-                        $date1 = date_create($course->start_date);
-                        $date2 = date_create($course->finish_date);
-                        $diff = date_diff($date1, $date2);
-                        $days = $diff->format("%a");
-                        ?>
                         <span><mark>{{ $days }}</mark></span>
                     </li>
 
                     <li>
                         <span class="fa fa-users text-custom"></span>
                         <span>الطلاب:</span>
-                        <?php $students = 0; ?>
-                        @foreach($course->reservation as $reservation)
-                            @if($reservation->confirmation == 1)
-                                <?php $students++; ?>
-                            @endif
-                        @endforeach
                         <span><mark>{{ $students }}</mark></span>
                     </li>
                 </ul>
@@ -149,7 +108,7 @@
                                     @foreach($course->reservation as $reservation)
                                         @if($reservation->confirmation == 1)
                                             <tr class="gradeX">
-                                                <td class="pt-17">{{ $reservation->student->user->name }}</td>
+                                                <td class="pt-17">{{ $reservation->student->first_name." ".$reservation->student->second_name." ".$reservation->student->third_name }}</td>
                                                 <td class="pt-17 ltr">{{ $reservation->student->user->phone }}</td>
                                                 <td class="pt-17">{{ $reservation->student->user->email }}</td>
                                                 <td class="pt-17">{{ $reservation->student->gender->name }}</td>
@@ -215,23 +174,5 @@
 
 @section('script-file')
     <script src="{{ asset('js/admin/take-attendance-toggle.js') }}"></script>
-    <script>
-        $(document).ready(function () {
-
-            $('.attendance-toggle').on('change', function () {
-                let value = $(this).prop('checked');
-                if (value) {
-                    $(this).parent().next().val(1);
-                } else {
-                    $(this).parent().next().val(0);
-                }
-            });
-
-            $('#agree').on('click', function () {
-                $('#editing-note').fadeOut('slow', function () {
-                    $(this).remove();
-                });
-            });
-        });
-    </script>
+    <script src="{{ asset('js/admin/take-attendance.js') }}"></script>
 @endsection

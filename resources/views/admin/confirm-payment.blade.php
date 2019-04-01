@@ -1,24 +1,17 @@
 @extends('admin.layouts.master')
 
-@section('content')
-    <!-- Main content -->
-    <style>
-        .warning-color {
-            color: #fff466;
-        }
+@section('style-file')
+    <link rel="stylesheet" href="{{ asset('css/admin/confirm-payment.css') }}">
+@endsection
 
-        .pt-17 {
-            padding-top: 17px !important;
-        }
-    </style>
+@section('content')
+
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
 
 
     @if(session()->has('success'))
-        <div class="" id="editing-note"
-             style="width: 100%; height: 100%; z-index: 1500; background: #bbb4b491; position: fixed; top: 0; left: 0; right: 0; margin: 0; padding: 0;">
-            <div class="col-lg-4 text-center"
-                 style="height: 150px; position: absolute; background: #a5a5a5; border-radius: 10px; margin: auto; top: 0; left: 0; right: 0; bottom: 0; padding: 20px;">
+        <div class="" id="editing-note-holder">
+            <div class="col-lg-4 text-center" id="note">
                 <h2>ملاحظة</h2>
                 <p>** تم حفظ معلومات تأكيد الدفع لن تستطيع تغيرها في حال تم بدء الدورة **</p>
                 <button class="btn btn-success" id="agree">موافق</button>
@@ -69,7 +62,7 @@
                                     @if(count($course->reservation) > 0)
                                         <th class="text-center" colspan="6"><h4> {{ $course->title }} </h4></th>
                                         <td class="text-center">
-                                            <button class="btn btn-success btn-block" id="save">حفظ</button>
+                                            <button class="btn btn-success btn-block" id="save" {{ count($course->reservation) < 1 ? 'disabled' : '' }}>حفظ</button>
                                         </td>
                                     @else
                                         <th class="text-center" colspan="7"><h4> {{ $course->title }} </h4></th>
@@ -93,11 +86,11 @@
                                             <?php $counter++; ?>
                                             <tr class="gradeX">
                                                 <td class="pt-17">
-                                                    {{ $reservation->student->user->name }}
+                                                    {{ $reservation->student->first_name." ".$reservation->student->second_name." ".$reservation->student->third_name }}
                                                     <input type="hidden" name="student[]"
                                                            value="{{ $reservation->student->id }}">
                                                 </td>
-                                                <td class="pt-17 ltr">{{ date( 'Y-M-D h:i' ,strtotime($course->created_at)) }}</td>
+                                                <td class="pt-17 ltr">{{ date( 'Y-m-d h:i' ,strtotime($course->created_at)) }}</td>
                                                 <td class="pt-17">{{ $reservation->payment->account_owner }}</td>
                                                 <td class="pt-17">{{ $reservation->payment->account_number }}</td>
                                                 @if($reservation->coupon_id > 0)
@@ -123,14 +116,14 @@
                                     @endforeach
                                     @if($counter == 0)
                                         <tr class="gradeX">
-                                            <td colspan="7"><h3 class="text-success" style="padding-top: 8px;">تم تأكيد
+                                            <td colspan="7"><h3 class="text-success pt-8">تم تأكيد
                                                     حجز جميع الطلاب المسجلين</h3></td>
                                         </tr>
                                     @endif
                                 @else
                                     <tr class="gradeX">
-                                        <td class="text-danger" colspan="6">
-                                            <h3 style="margin-top: 15px">لايوجد طلاب مسجلين في الدورة</h3>
+                                        <td class="text-danger" colspan="7">
+                                            <h3 class="mt-15">لايوجد طلاب مسجلين في الدورة</h3>
                                         </td>
                                     </tr>
                                 @endif
@@ -159,23 +152,5 @@
 
 @section('script-file')
     <script src="{{ asset('js/admin/confirm-payment-toggle.js') }}"></script>
-    <script>
-        $(document).ready(function () {
-
-            $('.payment-toggle').on('change', function () {
-                let value = $(this).prop('checked');
-                if (value) {
-                    $(this).parent().next().val(1);
-                } else {
-                    $(this).parent().next().val(0);
-                }
-            });
-
-            $('#agree').on('click', function () {
-                $('#editing-note').fadeOut('slow', function () {
-                    $(this).remove();
-                });
-            });
-        });
-    </script>
+    <script src="{{ asset('js/admin/confirm-payment.js') }}"></script>
 @endsection

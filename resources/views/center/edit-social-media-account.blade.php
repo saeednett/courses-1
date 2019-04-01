@@ -46,57 +46,61 @@
                 <div class="panel-body">
                     <div class="table-responsive">
                         <div class="container-fluid">
-                            <form method="post" action="{{ route('center.social.media.account.update') }}">
+                            <form method="post" action="{{ route('center.social.media.account.update', $account->id) }}">
                                 {{ csrf_field() }}
                                 <input type="hidden" name="_method" value="PUT">
-                                <?php $counter = 1; ?>
 
-                                @foreach($center_social_media as $social)
-                                    <div class="row">
-
-                                        <div class="col-lg-4 col-lg-offset-2 col-md-4 col-md-offset-2 col-sm-6 col-xs-6">
-                                            <label class="col-form-label required-field"
-                                                   for="{{ $social->socialMediaInformation->name }}">موقع التواصل
-                                                الإجتماعي</label>
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-{{ strtolower($social->socialMediaInformation->name)  }}"></i></span>
-                                                <input type="text"
-                                                       class="form-control custom-input"
-                                                       id="{{ $social->socialMediaInformation->name }}"
-                                                       value="{{ $social->socialMediaInformation->name }}"
-                                                       autocomplete="off" disabled readonly required>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
-                                            <div class="form-group">
-                                                <label class="col-form-label required-field"
-                                                       for="{{ $social->socialMediaInformation->name."_username" }}">اسم
-                                                    المستخدم</label>
-                                                <input type="text" class="form-control custom-input"
-                                                       id="{{ $social->socialMediaInformation->name."_username" }}"
-                                                       minlength="5" maxlength="20"
-                                                       name="{{ strtolower($social->socialMediaInformation->name)."_username" }}"
-                                                       value="{{ $social->username }}" autocomplete="off">
-                                            </div>
-                                        </div>
-
-                                        <?php $counter++; ?>
-                                    </div>
-
-                                @endforeach
-                                <div id="accounts">
-
-                                </div>
 
                                 <div class="row form-group">
-                                    <div class="col-lg-4 col-lg-offset-4">
+
+                                    <div class="col-lg-3">
+                                        <label class="col-form-label required-field"
+                                               for="social_media">موقع التواصل</label>
+                                        <select id="social_media"
+                                                class="form-control {{ $errors->has('social_media') ? 'is-invalid' : '' }} custom-input"
+                                                name="social_media" required>
+                                            @foreach($social_accounts as $social)
+                                                <option value="{{ $social->id }}">{{ $social->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-3">
+                                        <label class="col-form-label required-field" for="username">اسم المستخدم</label>
+                                        <input type="text" id="username"
+                                               class="form-control custom-input" value="{{ $account->username }}" maxlength="20" minlength="5"
+                                               name="username" placeholder="اسم المستخدم" autocomplete="off" required>
+                                    </div>
+
+                                    <div class="col-lg-3">
+                                        <label class="col-form-label required-field"
+                                               for="status">الحالة</label>
+                                        <select id="status"
+                                                class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }} custom-input"
+                                                name="status" required>
+                                            @if($account->status == 1)
+                                                <option value="1" selected>فعال</option>
+                                                <option value="0">غير فعال</option>
+                                            @else
+                                                <option value="1">فعال</option>
+                                                <option value="0" selected>غير فعال</option>
+                                            @endif
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-3">
                                         <div class="form-group">
+                                            <label class="col-form-label opacity-0" for="bank">المزيد</label>
                                             <button type="submit" class="btn btn-block custom-btn">حفظ</button>
                                         </div>
                                     </div>
+
+                                    {{--<div class="col-xl-1 col-lg-1 col-md-12 col-sm-12 col-xs-4 col-lg-offset-0 col-xs-offset-4 text-center">--}}
+                                    {{--<label class="col-form-label opacity-0" for="bank">المزيد</label>--}}
+                                    {{--<span class="btn-success text-center fa fa-plus add-account"></span>--}}
+                                    {{--</div>--}}
                                 </div>
+
                             </form>
                         </div>
                     </div>

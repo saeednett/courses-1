@@ -9,89 +9,15 @@
 
 @section('style-file')
     <link rel="stylesheet" href="{{ asset('css/center/plugins/select2/select2.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/center/edit-admin.css') }}">
 @endsection
 
 @section('content')
-    <style>
-        .required-field:after {
-            color: #ff6771;
-            content: " *";
-            text-align: right;
-        }
-
-        .rtl {
-            direction: rtl;
-        }
-
-        .ltr {
-            direction: ltr;
-        }
-
-        select {
-            direction: rtl;
-            text-align: center !important;
-            text-align-last: center !important;
-        }
-
-        .custom-input {
-            height: 50px;
-            border-radius: 30px;
-            border: 1px solid rgba(34, 36, 38, .15);
-        }
-
-        .custom-input:hover {
-            border: 2px solid #1bc3a1;
-        }
-
-        .custom-input:focus {
-            box-shadow: none !important;
-            border: 2px solid #1bc3a1;
-        }
-
-        .custom-btn {
-            height: 60px;
-            border-radius: 30px;
-            background-image: linear-gradient(to right, #1bc3a1 0%, #6fcf8f);
-            display: block;
-            border: none;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .custom-btn:hover {
-            box-shadow: 0 4px 10px 0 rgba(11, 121, 99, 0.31);
-        }
-
-        .select2-container--default .select2-selection--single {
-            height: 50px !important;
-            border-radius: 30px !important;
-        }
-
-        .select2-selection__arrow{
-            height: 100% !important;
-        }
-        .select2-selection__rendered{
-            margin-top: 6px;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-        }
-        .invalid-feedback{
-            color: #ab1717;
-            width: 100%;
-            display: block;
-            direction: rtl;
-            text-align: center;
-        }
-        .is-invalid{
-            border-color: #ab1717;
-        }
-    </style>
     <div class="row">
         @if($errors->any())
             <div class="col-lg-12 animatedParent animateOnce z-index-50">
                 <div class="alert alert-danger animated fadeInUp">
-                    <ul class="text-right rtl" style="margin-bottom: 0;">
+                    <ul class="text-right mb-0 rtl">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -103,7 +29,7 @@
         @if(session('success'))
             <div class="col-lg-12 animatedParent animateOnce z-index-50">
                 <div class="alert alert-success animated fadeInUp">
-                    <ul class="text-right rtl" style="margin-bottom: 0;">
+                    <ul class="text-right mb-0 rtl">
                         <li>{{ session('success') }}</li>
                     </ul>
                 </div>
@@ -133,7 +59,7 @@
                                     <label class="required-field rtl" for="name">اسم المسؤول</label>
                                     <input type="text"
                                            class="form-control {{ $errors->has('name') ? ' is-invalid' : '' }} custom-input text-center ltr"
-                                           name="name" id="name" value="{{ $admin->user->name }}" placeholder="اسم المسؤول"
+                                           name="name" id="name" value="{{ $admin->name }}" placeholder="اسم المسؤول"
                                            minlength="6" maxlength="50" autocomplete="off" required>
                                     @if ($errors->has('name'))
                                         <span class="invalid-feedback" role="alert">
@@ -193,17 +119,40 @@
 
                         <div class="row">
 
-                            <div class="col-lg-12">
+                            <div class="col-lg-6">
                                 <div class="form-group">
                                     <label for="personal-profile">الصورة الشخصية</label>
-                                    <input type="text" class="form-control custom-input text-center" placeholder='اختر صورة الملف الشخصي' />
-                                    <input type="file" name="personal-profile" style="opacity: 0;" accept="image/png, image/jpg">
+                                    <input type="text" class="form-control custom-input text-center" placeholder='اختر صورة الملف الشخصي' id="profile-image" readonly/>
+                                    <input type="file" class="op-0" name="profile-image" accept="image/png, image/jpg">
                                 </div>
                             </div>
+
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label for="status">الحالة</label>
+                                    <select class="form-control select2-placeholer {{ $errors->has('status') ? ' is-invalid' : '' }}"
+                                            id="status"
+                                            name="status">
+                                        @if($admin->user->status == 1)
+                                            <option value="1" selected>فعال</option>
+                                            <option value="0">غير فعال</option>
+                                        @else
+                                            <option value="1">فعال</option>
+                                            <option value="0" selected>غير فعال</option>
+                                        @endif
+                                    </select>
+                                    @if ($errors->has('status'))
+                                        <span class="invalid-feedback text-center" role="alert">
+                                        <strong>{{ $errors->first('status') }}</strong>
+                                    </span>
+                                    @endif
+                                </div>
+                            </div>
+
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-2">
+                            <div class="col-lg-6 col-lg-offset-3 col-md-12 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-block custom-btn">حفظ</button>
                                 </div>
@@ -218,34 +167,6 @@
 @endsection
 
 @section('script-file')
-    <script>
-        $(document).ready(function () {
-
-            $(document).on("keypress", '.num-only', function (evt) {
-
-                let charCode = (evt.which) ? evt.which : event.keyCode;
-
-                if ( $(this).val().length == 0 ){
-                    if ( charCode == 43 ){
-                        return true;
-                    }else {
-                        return false;
-                    }
-                }else{
-                    if ( charCode > 31 && (charCode < 48 || charCode > 57)) {
-                        return false;
-                    }
-                    return true;
-                }
-
-            });
-
-            $(".select2").select2();
-            $(".select2-placeholer").select2({
-
-            });
-        });
-    </script>
-
+    <script src="{{ asset('js/center/edit-admin.js') }}"></script>
     <script src="{{ asset('js/center/plugins/select2/select2.full.min.js') }}"></script>
 @endsection

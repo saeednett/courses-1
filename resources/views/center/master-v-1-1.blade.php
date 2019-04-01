@@ -132,14 +132,14 @@
                         </li>
                     </ul>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('center.bank.account.edit') }}"><span class="title">بياناتي البنكية</span></a>
+                        <li><a href="{{ route('center.bank.account.show') }}"><span class="title">بياناتي البنكية</span></a>
                         </li>
                     </ul>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('center.social.media.account.edit') }}"><span class="title">بيانات التواصل</span></a></li>
+                        <li><a href="{{ route('center.social.media.account.show') }}"><span class="title">بيانات التواصل</span></a></li>
                     </ul>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('center.halalah.account.edit') }}"><span class="title">بيانات موقع هللة</span></a></li>
+                        <li><a href="{{ route('center.halalah.account.show') }}"><span class="title">بيانات منصة هللة</span></a></li>
                     </ul>
                     <ul class="nav collapse">
                         <li><a href="{{ route('center.edit') }}"><span class="title">بياناتي الشخصية</span></a></li>

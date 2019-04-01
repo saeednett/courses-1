@@ -16,8 +16,9 @@ class CreateHalalahsTable extends Migration
         Schema::create('halalahs', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('center_id');
-            $table->string('image');
-            $table->string('name');
+            $table->string('image')->default("default.jpg");
+            $table->string('name')->nullable();
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

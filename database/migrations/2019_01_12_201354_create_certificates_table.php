@@ -19,6 +19,8 @@ class CreateCertificatesTable extends Migration
             $table->integer('student_id');
             $table->integer('course_id');
             $table->integer('admin_id');
+            $table->integer('reservation_id');
+            $table->integer('viewed');
             $table->timestamps();
         });
     }

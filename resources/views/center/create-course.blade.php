@@ -8,7 +8,6 @@
                     class="fa fa-pencil-square"></i>إضافة دورة</a></li>
 @endsection
 
-
 @section('style-file')
     <link rel="stylesheet" href="{{ asset('css/center/plugins/select2/select2.css') }}">
     <link href="{{ asset('css/center/plugins/datepicker/bootstrap-datepicker.css') }}" rel="stylesheet">
@@ -87,7 +86,7 @@
                             </ul>
                         </div>
                         <div class="tab-content">
-                            <div class="tab-pane" id="tab2-1">
+                            <div class="tab-pane active" id="tab2-1">
 
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -278,7 +277,7 @@
                                             <input type="text" id="course-poster-1"
                                                    class="form-control custom-input text-center"
                                                    placeholder='اختر غلاف الدورة' readonly required/>
-                                            <input type="file" name="course-poster-1 op-0"
+                                            <input type="file" class="op-0" name="course-poster-1"
                                                    accept="image/png, image/jpg" required>
                                         </div>
                                     </div>
@@ -290,7 +289,7 @@
                                             <input type="text" id="course-poster-2"
                                                    class="form-control custom-input text-center"
                                                    placeholder='اختر غلاف الدورة - 02' readonly required/>
-                                            <input type="file" name="course-poster-2 op-0"
+                                            <input type="file" class="op-0" name="course-poster-2"
                                                    accept="image/png, image/jpg" required>
                                         </div>
                                     </div>
@@ -362,7 +361,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane active" id="tab2-4">
+                            <div class="tab-pane" id="tab2-4">
 
                                 <div class="row">
                                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -556,7 +555,6 @@
         </div>
     </div>
 @endsection
-
 
 @section('script-file')
     <script src="{{ asset('js/center/jquery.validate.min.js') }}"></script>

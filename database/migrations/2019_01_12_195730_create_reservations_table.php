@@ -20,7 +20,7 @@ class CreateReservationsTable extends Migration
             $table->integer('coupon_id')->default(0);
             $table->string('identifier',10)->unique();
             $table->integer('confirmation')->default(0);
-            $table->string('barcode', 255);
+            $table->string('barcode', 255)->nullable();
             $table->timestamps();
         });
     }

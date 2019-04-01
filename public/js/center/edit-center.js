@@ -1,11 +1,22 @@
 $(document).ready(function () {
 
     $(document).on("keypress", '.num-only', function (evt) {
+
         let charCode = (evt.which) ? evt.which : event.keyCode;
-        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-            return false;
+
+        if ( $(this).val().length == 0 ){
+            if ( charCode == 43 ){
+                return true;
+            }else {
+                return false;
+            }
+        }else{
+            if ( charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
         }
-        return true;
+
     });
 
     $('select[name=country]').on('change', function () {

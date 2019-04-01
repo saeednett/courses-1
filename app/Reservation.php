@@ -32,4 +32,14 @@ class Reservation extends Model
     {
         return $this->belongsTo('App\Coupon');
     }
+
+    public function attendance()
+    {
+        return $this->hasMany('App\Attendance');
+    }
+
+    public function certificate()
+    {
+        return $this->hasOne('App\Certificate');
+    }
 }

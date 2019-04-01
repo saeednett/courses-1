@@ -557,7 +557,7 @@ CREATE TABLE `students` (
   `gender_id` int(11) NOT NULL,
   `city_id` int(11) NOT NULL,
   `status` int(11) NOT NULL DEFAULT '1',
-  `image` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'account-profile.png',
+  `image` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'default.png',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -567,7 +567,7 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`id`, `user_id`, `first_name`, `second_name`, `third_name`, `last_name`, `year`, `month`, `day`, `gender_id`, `city_id`, `status`, `image`, `created_at`, `updated_at`) VALUES
-(1, 3, 'سعود', 'سعيد', NULL, NULL, '0', '0', '0', 1, 1, 1, 'account-profile.png', '2019-03-10 18:33:44', '2019-03-10 18:33:44');
+(1, 3, 'سعود', 'سعيد', NULL, NULL, '0', '0', '0', 1, 1, 1, 'default.png', '2019-03-10 18:33:44', '2019-03-10 18:33:44');
 
 -- --------------------------------------------------------
 

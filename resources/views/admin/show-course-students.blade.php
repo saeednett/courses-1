@@ -38,7 +38,7 @@
                             @if(count($reservations) > 0)
                                 @foreach($reservations as $reservation)
                                     <tr class="gradeX">
-                                        <td>{{ $reservation->student->user->name }}</td>
+                                        <td>{{ $reservation->student->first_name." ".$reservation->student->second_name." ".$reservation->student->third_name }}</td>
                                         <td style="direction: ltr;">{{ $reservation->student->user->phone }}</td>
                                         <td style="direction: ltr;">{{ $reservation->student->user->email }}</td>
                                         <td>{{ $reservation->student->year.'-'.$reservation->student->month.'-'.$reservation->student->day }}</td>

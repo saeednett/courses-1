@@ -50,7 +50,7 @@
 
                 <div class="panel-body">
 
-                    <form method="post" action="{{ route('center.social.media.account.update') }}">
+                    <form method="post" action="{{ route('center.update') }}" enctype="multipart/form-data">
                         <input type="hidden" name="_method" value="PUT">
                         {{ csrf_field() }}
                         <div class="row">

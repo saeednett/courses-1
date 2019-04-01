@@ -22,4 +22,9 @@ class Attendance extends Model
     {
         return $this->belongsTo('App\Course');
     }
+
+    public function reservation()
+    {
+        return $this->belongsTo('App\Reservation');
+    }
 }

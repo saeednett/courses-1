@@ -10,7 +10,7 @@ class CenterSocialMedia extends Model
 
     public function socialMediaInformation()
     {
-        return $this->belongsTo('App\SocialMedia', 'id');
+        return $this->belongsTo('App\SocialMedia', 'social_media_id');
     }
 
     public function center()

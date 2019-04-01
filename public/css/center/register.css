@@ -1,0 +1,112 @@
+body {
+    width: 100%;
+    background: #f8f8f8;
+    font-family: 'Tajawal', sans-serif;
+}
+
+header{
+    direction: rtl;
+    background: #1bc3a1;
+}
+
+nav{
+    background: #6fcf8f;
+}
+
+.wrap {
+    min-height: 100%;
+    min-width: 100%;
+}
+
+.block {
+    border-radius: 10px;
+    background: #FFF;
+    border: 1px solid #ccc;
+    font-weight: 400;
+    margin-top: 15px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.required-field:after {
+    color: #ff6771;
+    content: " *";
+    text-align: right;
+}
+
+.rtl {
+    direction: rtl;
+}
+
+.custom-btn {
+    height: 60px;
+    border-radius: 30px;
+    background-image: linear-gradient(to right, #1bc3a1 0%, #6fcf8f);
+    display: block;
+    border: none;
+    font-size: 18px;
+    color: #fff;
+}
+
+.custom-btn:hover {
+    box-shadow: 0 4px 10px 0 rgba(11, 121, 99, 0.31);
+}
+
+.custom-input {
+    height: 50px;
+    border-radius: 30px;
+    border: 1px solid rgba(34, 36, 38, .15);
+}
+
+.custom-input:hover {
+    border: 2px solid #1bc3a1;
+}
+
+.custom-input:focus {
+    box-shadow: none !important;
+    border: 2px solid #1bc3a1;
+}
+
+select {
+    direction: rtl !important;
+    text-align: center !important;
+    text-align-last: center !important;
+}
+
+.footer {
+    height: 380px;
+    margin-top: 0;
+    width: 100%;
+    padding-top: 20px;
+    background-image: linear-gradient(to right, #1bc3a1 0%, #6fcf8f);
+    font-size: 12px;
+    font-weight: 400;
+    color: #ecf4e0;
+    z-index: 2500;
+}
+
+.custom-textarea {
+    resize: none;
+    border-radius: 30px;
+    border: 1px solid rgba(34, 36, 38, .15);
+}
+
+.c005872{
+    color: #005872 !important;
+}
+
+.top-div{
+    background-image: linear-gradient(to right, #1bc3b9 0%, #ffe347), linear-gradient(#ffffff, #ffffff); transform: rotate(-142deg); width: 994.7px; height: 698.1px; position: fixed; right: -547px; z-index: 100; top: -301px; opacity: 0.5;
+}
+
+.bottom-div{
+    transform: rotate(57deg);background-image: linear-gradient(to right, #1bc3a1 0%, #6fcf8f); box-shadow: 0 4px 10px 0 rgba(11, 121, 99, 0.31); width: 555.1px; height: 1323.6px; position: fixed; border-top-right-radius: 140px; left: -682px; z-index: 0; top: 40%; opacity: 0.7;
+}
+
+.op-0{
+    opacity: 0;
+}
+
+.border-left-1{
+    border-left: 1px white solid;
+}

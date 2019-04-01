@@ -22,6 +22,7 @@ use App\SocialMedia;
 use App\Title;
 use App\Trainer;
 use App\User;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -34,15 +35,39 @@ use Illuminate\Support\Facades\Hash;
 class CenterController extends Controller
 {
 
-//    public function __construct()
-//    {
-//        $this->middleware('auth-center')->except(['cities']);
-//    }
+    public function __construct()
+    {
+//        $this->middleware('auth-center')->except([['register']]);
+    }
+
+    public function banks(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $banks = Bank::all();
+            $data['data'] = array();
+            foreach ($banks as $bank) {
+                $array = array('id' => $bank->id, 'name' => $bank->name);
+                array_push($data['data'], $array);
+            }
+
+            return response()->json($data);
+
+        } else {
+            return response(400)->json($data['data'] = array('Error'));
+        }
+    }
+
 
     // This Function Returns An Error Page
-    private function error_page($message)
+    private function error_page($title, $message)
     {
-        return view('center.error-page', compact('message'));
+        $courses = $this->get_center_courses();
+        $trainers = $this->get_center_trainers();
+        $admins = $this->get_center_admins();
+        $total_students = $this->get_center_students();
+
+        return view("center.error-description", compact('courses', 'trainers', 'admins', 'total_students'))->withErrors(['title' => $title, 'error' => $message]);
     }
 
     // This Function Returns The Amount Of Trainers Of One Course
@@ -223,7 +248,8 @@ class CenterController extends Controller
 
             $banks = Bank::all();
             $countries = Country::all();
-            return view('center.register', compact('countries', 'banks'));
+            $cities = City::where('country_id', 1)->get();
+            return view('center.register', compact('countries', 'banks', 'cities'));
 
         } else {
 
@@ -238,23 +264,46 @@ class CenterController extends Controller
     {
         if (Auth::guest()) {
 
-            $request->validate([
-                'name' => 'required|string|max:50|min:10|unique:centers,name',
-                'verification_code' => 'required|string|max:10|min:4|unique:centers,verification_code',
-                'verification_authority' => 'required|string|max:50|min:10',
-                'country' => 'required|integer|max:99|min:1|exists:countries,id',
-                'city' => 'required|integer|max:99|min:1|exists:cities,id',
-                'email' => 'required|email|unique:users,email',
-                'phone' => 'required|digits_between:9,20|unique:users,phone|',
-                'username' => 'required|string|unique:users,username',
-                'password' => 'required|string|max:32|min:8|confirmed',
-                'about' => 'required|string|max:150',
-                'bank' => 'required|integer|max:99|min:1|exists:banks,id',
-                'account_owner' => 'required|string|max:50|min:10',
-                'account_number' => 'required|digits:20|unique:center_accounts,account_number',
-                'website' => 'required|string|max:50|min:10|unique:centers,website',
-                'profile-logo' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
-            ]);
+            if ($request->center_type == 1) {
+
+                $request->validate([
+                    'name' => 'required|string|max:50|min:10|unique:centers,name',
+                    'center_type' => 'required|integer|max:1|min:0',
+                    'verification_code' => 'required|string|max:10|min:4|unique:centers,verification_code',
+                    'verification_authority' => 'required|string|max:50|min:10',
+                    'country' => 'required|integer|max:99|min:1|exists:countries,id',
+                    'city' => 'required|integer|max:99|min:1|exists:cities,id',
+                    'email' => 'required|email|unique:users,email',
+                    'phone' => 'required|digits_between:9,20|unique:users,phone|',
+                    'username' => 'required|string|unique:users,username',
+                    'password' => 'required|string|max:32|min:8|confirmed',
+                    'about' => 'required|string|max:150',
+                    'bank' => 'required|integer|min:1|exists:banks,id',
+                    'account_owner' => 'required|string|max:50|min:10',
+                    'account_number' => 'required|digits:20|unique:center_accounts,account_number',
+                    'website' => 'nullable|string|max:50|min:10',
+                    'profile-logo' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+                ]);
+
+            } else if ($request->center_type == 0) {
+
+                $request->validate([
+                    'name' => 'required|string|max:50|min:10|unique:centers,name',
+                    'center_type' => 'required|integer|max:1|min:0',
+                    'country' => 'required|integer|max:99|min:1|exists:countries,id',
+                    'city' => 'required|integer|max:99|min:1|exists:cities,id',
+                    'email' => 'required|email|unique:users,email',
+                    'phone' => 'required|digits_between:9,20|unique:users,phone|',
+                    'username' => 'required|string|unique:users,username',
+                    'password' => 'required|string|max:32|min:8|confirmed',
+                    'about' => 'required|string|max:150',
+                    'website' => 'nullable|string|max:50|min:10',
+                    'profile-logo' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+                ]);
+
+            } else {
+                return redirect()->route('center.register')->withErrors(['الرجاء اختيار تصنيف المركز']);
+            }
 
             DB::beginTransaction();
 
@@ -281,16 +330,20 @@ class CenterController extends Controller
                     'website' => $request->website,
                     'city_id' => $request->city,
                     'about' => $request->about,
-                    'status' => 1,
+                    'type' => $request->center_type,
                     'logo' => $logo,
                 ]);
 
-                CenterAccount::create([
-                    'account_owner' => $request->account_owner,
-                    'account_number' => $request->account_number,
-                    'bank_id' => $request->bank,
-                    'center_id' => $center->id,
-                ]);
+                if ($request->center_type == 1) {
+
+                    CenterAccount::create([
+                        'account_owner' => $request->account_owner,
+                        'account_number' => $request->account_number,
+                        'bank_id' => $request->bank,
+                        'center_id' => $center->id,
+                    ]);
+
+                }
 
                 DB::commit();
 
@@ -299,7 +352,7 @@ class CenterController extends Controller
 
             } catch (\Exception $e) {
                 DB::rollback();
-                return redirect()->route('center.register')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع']);
+                return redirect()->route('center.register')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع'])->withInput()->exceptInput('profile-logo');
                 // something went wrong
             }
 
@@ -354,64 +407,91 @@ class CenterController extends Controller
     {
 
         if (Auth::check() && Auth::user()->role_id == 2) {
-
-            $request->validate([
-                'name' => 'required|string|max:50|min:10|' . Rule::unique('centers')->ignore(Auth()->user()->id, 'user_id'),
-                'verification_code' => 'required|string|max:10|min:4|' . Rule::unique('centers')->ignore(Auth()->user()->id, 'user_id'),
-                'verification_authority' => 'required|string|max:50|min:10',
-                'country' => 'required|integer|max:99|min:1|exists:countries,id',
-                'city' => 'required|integer|max:99|min:1|exists:cities,id',
-                'email' => 'required|email|' . Rule::unique('users')->ignore(Auth()->user()->id),
-                'phone' => 'required|' . Rule::unique('users')->ignore(Auth()->user()->id),
-                'username' => 'required|string|' . Rule::unique('users')->ignore(Auth()->user()->id),
-                'website' => 'required|string|max:50|min:10|' . Rule::unique('centers')->ignore(Auth()->user()->id, 'user_id'),
-                'profile-cover' => 'sometimes|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
-                'profile-logo' => 'sometimes|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
-            ]);
-
             $counter = 0;
 
             $center = User::find(Auth::user()->center->user_id);
 
             if ($center->name != $request->name) {
-                $center->name = $request->name;
+                $request->validate([
+                    'name' => 'required|string|max:50|min:10',
+                ]);
+
+                $center->center->name = $request->name;
                 $counter++;
             }
 
             if ($center->center->verification_code != $request->verification_code) {
+                $request->validate([
+                    'verification_code' => 'required|string|max:10|min:4|',
+                ]);
+
                 $center->center->verification_code = $request->verification_code;
                 $counter++;
             }
 
             if ($center->center->verification_authority != $request->verification_authority) {
+                $request->validate([
+                    'verification_authority' => 'required|string|max:50|min:10',
+                ]);
+
                 $center->center->verification_authority = $request->verification_authority;
                 $counter++;
             }
 
             if ($center->center->city_id != $request->city) {
+                $request->validate([
+                    'city' => 'required|integer|max:99|min:1|exists:cities,id',
+                ]);
+
                 $center->center->city_id = $request->city;
                 $counter++;
             }
 
             if ($center->email != $request->email) {
+                $request->validate([
+                    'email' => 'required|email|max:50',
+                ]);
+
                 $center->email = $request->email;
                 $counter++;
             }
 
+            if ($center->phone != $request->phone) {
+                $request->validate([
+                    'phone' => 'required|string|max:15|starts_with:+966',
+                ]);
+
+                $center->phone = $request->phone;
+                $counter++;
+            }
+
             if ($center->username != $request->username) {
+                $request->validate([
+                    'username' => 'required|string|unique:users,email',
+                ]);
+
                 $center->username = $request->username;
                 $counter++;
             }
 
             if ($center->center->website != $request->website) {
+                $request->validate([
+                    'website' => 'required|string|max:50|min:10|',
+                ]);
+
                 $center->center->website = $request->website;
                 $counter++;
             }
 
 
             if ($request->hasFile('profile-cover')) {
+
+                $request->validate([
+                    'profile-cover' => 'sometimes|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+                ]);
+
                 $counter++;
-                if (File::exists('public/center-images/' . $center->center->cover)) {
+                if (File::exists('storage/center-images/' . $center->center->cover)) {
                     if (Storage::delete('public/center-images/' . $center->center->cover)) {
                         $file = $request->file('profile-cover')->store('public/center-images');
                         $file_name = basename($file);
@@ -426,6 +506,11 @@ class CenterController extends Controller
             }
 
             if ($request->hasFile('profile-logo')) {
+
+                $request->validate([
+                    'profile-logo' => 'sometimes|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+                ]);
+
                 $counter++;
                 if (File::exists('public/center-images/' . $center->center->logo)) {
                     if (Storage::delete('public/center-images/' . $center->center->logo)) {
@@ -442,6 +527,11 @@ class CenterController extends Controller
             }
 
             if ($center->center->about != $request->about) {
+
+                $request->validate([
+                    'about' => 'required|string|',
+                ]);
+
                 $center->center->about = $request->about;
                 $counter++;
             }
@@ -453,7 +543,6 @@ class CenterController extends Controller
             } else {
                 return redirect()->route('center.edit')->withErrors(['قم بتحديث بعض الحقول لكي يتم حفظها', 'لم يتم تحديث اي حقل']);
             }
-
 
             return redirect()->route('center.edit')->with('success', 'تم تعديل البيانات بنجاح');
 
@@ -588,7 +677,7 @@ class CenterController extends Controller
 
             if (count($trainer) < 1) {
 
-                return redirect()->route('center.admin.edit', $id)->withErrors(['لايوجد مدربيين في النظام', 'الرجاء قم بالتأكد من وجود مدربيين مسجلين في النظام']);
+                return $this->error_page('لايوجد مدربيين في النظام', 'من فضلك قم بالتأكد من معرف المدرب المراد تعديل بياناته');
 
             } else {
 
@@ -637,27 +726,47 @@ class CenterController extends Controller
 
             } else {
 
+                $counter = 0;
+
                 if ($trainer->user->name != $request->name) {
                     $request->validate([
                         'name' => 'required|string|max:50|min:10|unique:users,name',
                     ]);
+
+                    $trainer->user->name = $request->name;
+                    $counter++;
                 }
 
                 if ($trainer->user->username != $request->username) {
                     $request->validate([
                         'username' => 'required|string|max:20|:min:5|unique:users,username',
                     ]);
+
+                    $trainer->user->username = $request->username;
+                    $counter++;
                 }
 
                 if ($trainer->user->phone != $request->phone) {
                     $request->validate([
-                        'phone' => 'required|string|starts_with:+|max:13|min:9||unique:users,phone'
+                        'phone' => 'required|string|starts_with:+966|max:13|min:13||unique:users,phone',
                     ]);
+
+                    $trainer->user->phone = $request->phone;
+                    $counter++;
                 }
 
                 if ($trainer->user->email != $request->email) {
                     $request->validate([
-                        'email' => 'required|string|email|unique:users,email'
+                        'email' => 'required|string|email|unique:users,email',
+                    ]);
+
+                    $trainer->user->email = $request->email;
+                    $counter++;
+                }
+
+                if ($trainer->user->status != $request->status) {
+                    $request->validate([
+                        'status' => 'required|integer|max:1|min:0',
                     ]);
                 }
 
@@ -667,37 +776,47 @@ class CenterController extends Controller
                 ]);
 
 
-                $counter = 0;
-
-                if ($trainer->user->name != $request->name) {
-                    $trainer->user->name = $request->name;
-                    $counter++;
-                }
-
-                if ($trainer->user->username != $request->username) {
-                    $trainer->user->username = $request->username;
-                    $counter++;
-                }
-
-                if ($trainer->user->phone != $request->phone) {
-                    $trainer->user->phone = $request->phone;
-                    $counter++;
-                }
-
-                if ($trainer->user->email != $request->email) {
-                    $trainer->user->email = $request->email;
-                    $counter++;
-                }
-
                 if ($trainer->title_id != $request->title) {
+
+                    $request->validate([
+                        'title' => 'required|integer|max:99|min:1|exists:titles,id',
+                    ]);
+
                     $trainer->title_id = $request->title;
                     $counter++;
                 }
 
                 if ($trainer->nationality_id != $request->nationality) {
+
+                    $request->validate([
+                        'nationality' => 'required|integer|max:99|min:1|exists:nationalities,id',
+                    ]);
+
                     $trainer->nationality_id = $request->nationality;
                     $counter++;
                 }
+
+                if ($request->hasFile('profile-image')) {
+
+                    $request->validate([
+                        'profile-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+                    ]);
+
+                    if (File::exists('storage/trainer-images/' . $trainer->image)) {
+                        if (Storage::delete('public/trainer-images/' . $trainer->image)) {
+                            $file = $request->file('profile-image')->store('public/trainer-images');
+                            $file_name = basename($file);
+                            $trainer->image = $file_name;
+                        }
+                    } else {
+                        $file = $request->file('profile-image')->store('public/trainer-images');
+                        $file_name = basename($file);
+                        $trainer->image = $file_name;
+                    }
+                    $counter++;
+
+                }
+
 
                 if ($counter == 0) {
                     return redirect()->route('center.trainer.edit', $trainer->id)->withErrors(['لم يتم التعديل على اي حقل', 'الرجاء تعديل بعض الحقول لكي يتم حفظها']);
@@ -768,7 +887,7 @@ class CenterController extends Controller
             $total_students = $this->get_center_students();
 
 
-            if (count($trainers) < 1) {
+            if ($trainers < 1) {
                 (['title' => 'لاتوجد دورات في النظام', 'error' => 'من فضلك قم بإضافة بعض الدورات لكي تتمكن من تعيين مدربين لها',]);
                 return view("center.error-description", compact('courses', 'trainers', 'admins', 'total_students'))->withErrors(['title' => 'لايوجد مدربين في النظام', 'error' => 'من فضلك قم بإضافة بعض المدربين لكي تتمكن من إضافة الدورات']);
             }
@@ -837,8 +956,8 @@ class CenterController extends Controller
                 // The Location The Course On Google Map
                 'location' => 'required|string|max:150|min:20',
                 // The Cover And Image Of The Course
-                'course-poster-1' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
-                'course-poster-2' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
+                'course-poster-1' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:400',
+                'course-poster-2' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:400',
                 // The Description Of The Course
                 'description' => 'required|string|max:200|min:50',
 
@@ -926,14 +1045,13 @@ class CenterController extends Controller
                     'start_date' => $request->start_date,
                     'end_date' => $request->end_date,
                     'start_time' => $request->start_time,
+                    'hours' => $request->hours,
                     'end_reservation' => $request->end_reservation,
                     'attendance' => $request->attendance,
                     'gender' => $request->gender,
                     'men' => $men,
                     'women' => $women,
                     'coupon' => $coupon,
-                    'hours' => $request->hours,
-                    'activation' => $request->activation,
                     'category_id' => $request->category,
                     'city_id' => $request->city,
                     'template_id' => $request->template,
@@ -941,15 +1059,17 @@ class CenterController extends Controller
                     'visible' => $request->visible,
                     'description' => $request->description,
                     'validation' => 0,
+                    'activation' => $request->activation,
 
                 ]);
 
                 // Making Sure That The Data Has A Cover And Image For The Course
                 if ($request->hasFile('course-poster-1') && $request->hasFile('course-poster-2')) {
+
                     $file = $request->file('course-poster-1')->store('public/course-images');
                     $file_name = basename($file);
 
-                    $file_2 = $request->file('course-poster-1')->store('public/course-images');
+                    $file_2 = $request->file('course-poster-2')->store('public/course-images');
                     $file_name_2 = basename($file_2);
 
                     Image::create([
@@ -985,7 +1105,7 @@ class CenterController extends Controller
             } catch (\Exception $e) {
                 // Don't Save The Changes If The Is Errors
                 DB::rollBack();
-                return redirect()->route('center.course.create')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع']);
+                return redirect()->route('center.course.create')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع'])->withInput();
 
             }
 
@@ -1150,7 +1270,7 @@ class CenterController extends Controller
             $total_students = $this->get_center_students();
 
             if (count($admin) < 1) {
-                return view("center.error-description", compact('courses', 'trainers', 'admins', 'total_students'))->withErrors(['title' => 'لايوجد مسؤول مسجل في النظام', 'error' => 'من فضلك قم بالتأكد من معرف المسؤول النارد تعديل بياناته']);
+                return $this->error_page('لايوجد مسؤول مسجل في النظام', 'من فضلك قم بالتأكد من معرف المسؤول المراد تعديل بياناته');
             } else {
                 return view('center.edit-admin', compact('admin', 'courses', 'trainers', 'admins', 'total_students'));
             }
@@ -1180,16 +1300,16 @@ class CenterController extends Controller
 
             if (count($admin) < 1) {
 
-                return redirect()->route('center.admin.edit', $id)->withErrors(['لايوجد مسؤولين في النظام', 'الرجاء قم بالتأكد من وجود مسؤولين مسجلين في النظام']);
+                return $this->error_page('لايوجد مسؤول مسجل في النظام', 'الرجاء قم بالتأكد من وجود مسؤولين مسجلين في النظام');
 
             } else {
 
                 $counter = 0;
                 if ($admin->user->name != $request->name) {
                     $request->validate([
-                        'name' => 'required|string|max:50|min:6|unique:users,name',
+                        'name' => 'required|string|max:50|min:6|unique:admins,name',
                     ]);
-                    $admin->user->name = $request->name;
+                    $admin->name = $request->name;
                     $counter++;
                 }
 
@@ -1217,10 +1337,40 @@ class CenterController extends Controller
                     $counter++;
                 }
 
+                if ($admin->user->status != $request->status) {
+                    $request->validate([
+                        'status' => 'required|integer|max:1|min:0',
+                    ]);
+                    $admin->user->status = $request->status;
+                    $counter++;
+                }
+
+                if ($request->hasFile('profile-image')) {
+
+                    $request->validate([
+                        'profile-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+                    ]);
+
+                    if (File::exists('storage/trainer-images/' . $admin->image)) {
+                        if (Storage::delete('public/trainer-images/' . $admin->image)) {
+                            $file = $request->file('profile-image')->store('public/trainer-images');
+                            $file_name = basename($file);
+                            $admin->image = $file_name;
+                        }
+                    } else {
+                        $file = $request->file('profile-image')->store('public/trainer-images');
+                        $file_name = basename($file);
+                        $admin->image = $file_name;
+                    }
+                    $counter++;
+
+                }
+
                 if ($counter == 0) {
                     return redirect()->route('center.admin.edit', $id)->withErrors(['لم يتم التعديل على اي حقل', 'الرجاء تعديل بعض الحقول لكي يتم حفظها']);
                 }
 
+                $admin->save();
                 $admin->user->save();
                 return redirect()->route('center.admin.edit', $id)->with('success', 'تم تعديل البيانات بنجاح');
 
@@ -1430,20 +1580,114 @@ class CenterController extends Controller
 
     }
 
+    // This Function Returns All Bank Account Of The Account
+    public function show_bank_account()
+    {
+        if (Auth::check() && Auth::user()->role_id == 2) {
+
+            $accounts = CenterAccount::where('center_id', Auth::user()->center->id)->get();
+            $courses = $this->get_center_courses();
+            $trainers = $this->get_center_trainers();
+            $admins = $this->get_center_trainers();
+            $total_students = $this->get_center_students();
+            return view('center.show-banks-accounts', compact('accounts', 'courses', 'trainers', 'admins', 'total_students'));
+
+        } else {
+
+            if (Auth::user()->role_id == 1) {
+                dd("Fuck Off");
+            } elseif (Auth::user()->role_id == 3) {
+                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            } else {
+                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            }
+
+        }
+    }
+
+    // To Show The Form Of Creating Bank Account
+    public function create_bank_account()
+    {
+        $banks = Bank::all();
+        $courses = $this->get_center_courses();
+        $trainers = $this->get_center_trainers();
+        $admins = $this->get_center_admins();
+        $total_students = $this->get_center_students();
+        return view('center.create-bank-account', compact('banks', 'courses', 'trainers', 'admins', 'total_students'));
+    }
+
+    // The Data Of Creating Bank Account Goes Here And The Process Happens Here
+    public function store_bank_account(Request $request)
+    {
+        if (Auth::check() && Auth::user()->role_id == 2) {
+
+            $request->validate([
+                'bank' => 'required|integer|exists:banks,id',
+                'account_owner' => 'required|string|max:50|min:10',
+                'account_number' => 'required|digits_between:15,25',
+            ]);
+
+            try {
+
+                DB::beginTransaction();
+                CenterAccount::create([
+                    'center_id' => Auth::user()->center->id,
+                    'bank_id' => $request->bank,
+                    'account_owner' => $request->account_owner,
+                    'account_number' => $request->account_number,
+                ]);
+
+                DB::commit();
+
+                return redirect()->route('center.bank.account.show')->with('success', 'تم إضافة الحساب البنكي بنجاح');
+
+
+            } catch (\Exception $e) {
+
+                DB::rollBack();
+
+                return redirect()->route('center.bank.account.create')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع'])->withInput();
+
+            }
+
+
+        } else {
+
+            if (Auth::user()->role_id == 1) {
+                dd("Fuck Off");
+            } elseif (Auth::user()->role_id == 3) {
+                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            } else {
+                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            }
+
+        }
+    }
+
     // To Show The Form Of Editing And Adding Bank Account
-    public function edit_bank_account()
+    public function edit_bank_account($id)
     {
 
         if (Auth::check() && Auth::user()->role_id == 2) {
 
-            $courses = $this->get_center_courses();
-            $trainers = $this->get_center_trainers();
-            $admins = $this->get_center_admins();
-            $total_students = $this->get_center_students();
+            $account = CenterAccount::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
 
-            $banks = Bank::all();
-            $accounts = CenterAccount::where('center_id', Auth::user()->center->id)->get();
-            return view('center.edit-bank-account', compact('accounts', 'banks', 'courses', 'trainers', 'admins', 'total_students'));
+            if (count($account) < 1) {
+
+                return $this->error_page('خطأ', 'الرجاء التأكد من معرف الحساب المراد تعديله');
+
+            } else {
+
+                $courses = $this->get_center_courses();
+                $trainers = $this->get_center_trainers();
+                $admins = $this->get_center_admins();
+                $total_students = $this->get_center_students();
+
+                $banks = Bank::all();
+
+                return view('center.edit-bank-account', compact('account', 'banks', 'courses', 'trainers', 'admins', 'total_students'));
+
+            }
 
         } else {
 
@@ -1460,138 +1704,55 @@ class CenterController extends Controller
     }
 
     // The Data Of Updating The Banks Accounts
-    public function update_bank_account(Request $request)
+    public function update_bank_account(Request $request, $id)
     {
 
         if (Auth::check() && Auth::user()->role_id == 2) {
 
-            $banks_data = Bank::select('id')->get();
 
-            $banks = array();
-            foreach ($banks_data as $bank) {
-                array_push($banks, $bank->id);
-            }
+            $account = CenterAccount::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
 
-            $request->validate([
-                'account_owner' => 'required|array|max:20',
-                'account_owner.*' => 'required|string|max:50|min:10',
-                'account_number' => 'required|array|size:' . count($request->account_owner),
-                'account_number.*' => 'required|digits_between:10,20|distinct',
-                'bank' => 'required|array|max:20|',
-                'bank.*' => 'required|digits_between:1,30|distinct|' . Rule::in($banks),
-            ]);
+            if (count($account) < 1) {
 
-            $center_account = CenterAccount::where('center_id', Auth::user()->center->id)->get();
-            if (count($center_account) == count($request->account_owner)) {
+                return $this->error_page('خطأ', 'الرجاء التأكد من معرف الحساب المراد تعديله');
+
+            } else {
+
                 $counter = 0;
-                for ($i = 0; $i < count($center_account); $i++) {
 
-                    if ($center_account[$i]->account_owner != $request->account_owner[$i]) {
-                        $center_account[$i]->account_owner = $request->account_owner[$i];
-                        $counter++;
-                    }
+                if ($account->bank_id != $request->bank) {
+                    $request->validate([
+                        'bank' => 'required|integer|exists:banks,id',
+                    ]);
+                    $account->bank_id = $request->bank;
+                    $counter++;
+                }
 
-                    if ($center_account[$i]->account_number != $request->account_number[$i]) {
-                        $center_account[$i]->account_number = $request->account_number[$i];
-                        $counter++;
-                    }
+                if ($account->account_owner != $request->account_owner) {
+                    $request->validate([
+                        'account_owner' => 'required|string|max:50|min:10',
+                    ]);
 
-                    if ($center_account[$i]->bank_id != $request->bank[$i]) {
-                        $center_account[$i]->bank_id = $request->bank[$i];
-                        $counter++;
-                    }
+                    $account->account_owner = $request->account_owner;
+                    $counter++;
 
-                    if ($counter != 0) {
-                        $center_account[$i]->save();
-                    }
+                }
+
+                if ($account->account_number != $request->account_number) {
+                    $request->validate([
+                        'account_number' => 'required|digits_between:15,25',
+                    ]);
+
+                    $account->account_number = $request->account_number;
+                    $counter++;
+
                 }
 
                 if ($counter == 0) {
-                    return redirect()->route('center.bank.account.edit')->withErrors(['قم بإضافة حقول جديدة او تعديل القديمة لكي يتم حفظها']);
+                    return redirect()->route('center.bank.account.edit', $id)->withErrors(['قم بتحديث بعض حقول  لكي يتم حفظها']);
                 } else {
-                    return redirect()->route('center.bank.account.edit')->with('success', 'تم تعديل البيانات بنجاح');
-                }
-            } elseif (count($center_account) < count($request->account_owner)) {
-                $counter = 0;
-                for ($i = 0; $i < count($request->account_owner); $i++) {
-
-                    if (isset($center_account[$i])) {
-
-                        for ($x = 0; $x < count($center_account); $x++) {
-
-                            if ($center_account[$x]->bank_id == $request->bank[$i]) {
-
-                                if ($center_account[$x]->account_owner != $request->account_owner[$i]) {
-                                    $center_account[$x]->account_owner = $request->account_owner[$i];
-                                    $counter++;
-                                }
-
-                                if ($center_account[$x]->account_number != $request->account_number[$i]) {
-                                    $center_account[$x]->account_number = $request->account_number[$i];
-                                    $counter++;
-                                }
-
-                                if ($center_account[$x]->bank_id != $request->bank[$i]) {
-                                    $center_account[$x]->bank_id = $request->bank[$i];
-                                    $counter++;
-                                }
-
-                                if ($counter != 0) {
-                                    $center_account[$x]->save();
-                                }
-                            }
-
-                        }
-
-                    } else {
-                        CenterAccount::create([
-                            'account_owner' => $request->account_owner[$i],
-                            'account_number' => $request->account_number[$i],
-                            'bank_id' => $request->bank[$i],
-                            'center_id' => Auth::user()->center->id,
-                        ]);
-                    }
-                }
-                return redirect()->route('center.bank.account.edit')->with('success', 'تم إضافة البيانات بنجاح');
-            } else {
-
-
-                $counter = 0;
-                for ($i = 0; $i < count($center_account); $i++) {
-
-                    if (isset($request->account_owner[$i])) {
-
-                        for ($x = 0; $x < count($request->account_owner); $x++) {
-
-                            if ($center_account[$i]->bank_id == $request->bank[$x]) {
-
-                                if ($center_account[$i]->account_owner != $request->account_owner[$x]) {
-                                    $center_account[$i]->account_owner = $request->account_owner[$x];
-                                    $counter++;
-                                }
-
-                                if ($center_account[$i]->account_number != $request->account_number[$x]) {
-                                    $center_account[$i]->account_number = $request->account_number[$x];
-                                    $counter++;
-                                }
-
-                                if ($center_account[$i]->bank_id != $request->bank[$x]) {
-                                    $center_account[$i]->bank_id = $request->bank[$x];
-                                    $counter++;
-                                }
-
-                                if ($counter != 0) {
-                                    $center_account[$i]->save();
-                                }
-                            }
-
-                        }
-
-                    } else {
-                        $center_account[$i]->delete();
-                        return redirect()->route('center.bank.account.edit')->with('success', 'تم تعديل البيانات بنجاح');
-                    }
-
+                    $account->save();
+                    return redirect()->route('center.bank.account.edit', $id)->with('success', 'تم تعديل البيانات بنجاح');
                 }
 
 
@@ -1611,21 +1772,115 @@ class CenterController extends Controller
 
     }
 
-    public function edit_social_media_account()
+    // This Function Delete A Bank Account Of The Center
+    public function delete_bank_account($id)
     {
 
         if (Auth::check() && Auth::user()->role_id == 2) {
 
-            $social_media = SocialMedia::all();
-            $center_social_media = CenterSocialMedia::where('center_id', Auth::user()->center->id)->get();
+            $account = CenterAccount::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
+
+            if (count($account) < 1) {
+
+                return $this->error_page('خطأ', 'الرجاء التأكد من معرف الحساب المراد تعديله');
+
+            } else {
+
+                $account->delete();
+                return redirect()->route('center.bank.account.show')->with('success', 'تم حذف الحساب البنكي بنجاح');
+
+            }
+
+        } else {
+            if (Auth::user()->role_id == 1) {
+                dd("Fuck Off");
+            } elseif (Auth::user()->role_id == 3) {
+                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            } else {
+                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            }
+        }
+
+    }
+
+    // This Function Returns All Social Media Account That Belongs Th The Center
+    public function show_social_media_account()
+    {
+
+        if (Auth::check() && Auth::user()->role_id == 2) {
+
+            $accounts = CenterSocialMedia::where('center_id', Auth::user()->center->id)->get();
+
+            $courses = $this->get_center_courses();
+            $trainers = $this->get_center_trainers();
+            $admins = $this->get_center_admins();
+            $total_students = $this->get_center_students();
+
+            return view('center.show-social-media-accounts', compact('accounts', 'courses', 'trainers', 'admins', 'total_students'));
+
+        } else {
+
+            if (Auth::user()->role_id == 1) {
+                dd("Fuck Off");
+            } elseif (Auth::user()->role_id == 3) {
+                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            } else {
+                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            }
+
+        }
+
+    }
+
+    // This Function Returns The Form Of Creating Social Media Account
+    public function create_social_media_account()
+    {
+
+        if (Auth::check() && Auth::user()->role_id == 2) {
+
+
+
+            $social_accounts = CenterSocialMedia::select('social_media_id')->where('center_id', Auth::user()->center->id)->get();
+
+            if (count($social_accounts) < 1) {
+
+                $accounts = SocialMedia::all();
+
+            } elseif (count($social_accounts) < 4 && count($social_accounts) > 0) {
+
+                $old_data = array();
+                $data = array();
+
+                foreach ($social_accounts as $old_account){
+                    array_push($old_data, $old_account->social_media_id);
+                }
+
+                for ($i = 0; $i < count($social_accounts); $i++) {
+
+                    for ($x = 1; $x <= 4; $x++){
+                        $result = array_search($x, $old_data, true);
+                        if ( !is_integer($result) ){
+                            if ( !in_array($x, $data) ) {
+                                array_push($data, $x);
+                            }
+                        }
+                    }
+
+                }
+
+
+                $accounts = SocialMedia::find($data);
+            }else{
+                return $this->error_page('خطأ', 'تم بلوغ أقصى عدد لحسابات التواصل الإجماعي');
+            }
+
 
             $courses = $this->get_center_courses();
             $trainers = $this->get_center_trainers();
             $admins = $this->get_center_trainers();
             $total_students = $this->get_center_students();
 
-
-            return view('center.edit-social-media-account', compact('social_media', 'center_social_media', 'courses', 'trainers', 'admins', 'total_students'));
+            return view('center.create-social-media-account', compact('accounts', 'courses', 'trainers', 'admins', 'total_students'));
 
         } else {
 
@@ -1641,64 +1896,76 @@ class CenterController extends Controller
 
     }
 
-    public function update_social_media_account(Request $request)
+    // This Function Handle The Data Of Creating Social Media Account
+    public function store_social_media_account(Request $request)
     {
 
         if (Auth::check() && Auth::user()->role_id == 2) {
 
-            $request->validate([
-                'twitter_username' => 'nullable|string|max:20|min:5|',
-                'facebook_username' => 'nullable|string|max:20|min:5|',
-                'snapchat_username' => 'nullable|string|max:20|min:5|',
-                'instagram_username' => 'nullable|string|max:20|min:5|',
-            ]);
+            $social_accounts = CenterSocialMedia::select('social_media_id')->where('center_id', Auth::user()->center->id)->get();
 
-            $counter = 0;
-            $social_media_account = CenterSocialMedia::where('center_id', Auth::user()->center->id)->get();
+            if (count($social_accounts) == 4 ) {
 
-            for ($i = 0; $i < 3; $i++) {
-                switch (strtolower($social_media_account[$i]->socialMediaInformation->name)) {
-                    case "twitter":
-                        if ($social_media_account[$i]->username != $request->twitter_username) {
-                            $social_media_account[$i]->username = $request->twitter_username;
-                            $social_media_account[$i]->save();
-                            $counter++;
-                        }
-                        break;
+                return $this->error_page('خطأ', 'تم بلوغ أقصى عدد لحسابات التواصل الإجماعي');
 
-                    case "facebook":
-                        if ($social_media_account[$i]->username != $request->facebook_username) {
-                            $social_media_account[$i]->username = $request->facebook_username;
-                            $social_media_account[$i]->save();
-                            $counter++;
-                        }
-                        break;
+            }else{
 
-                    case "snapchat":
-                        if ($social_media_account[$i]->username != $request->snapchat_username) {
-                            $social_media_account[$i]->username = $request->snapchat_username;
-                            $social_media_account[$i]->save();
-                            $counter++;
-                        }
-                        break;
+                $request->validate([
+                    'social_media' => 'required|integer|exists:social_media,id',
+                    'username' => 'required|string|max:20|min:5',
+                    'status' => 'required|max:1|min:0',
+                ]);
 
-                    case "instagram":
-                        if ($social_media_account[$i]->username != $request->instagram_username) {
-                            $social_media_account[$i]->username = $request->instagram_username;
-                            $social_media_account[$i]->save();
-                            $counter++;
-                        }
-                        break;
-                }
+
+                CenterSocialMedia::create([
+                    'username' => $request->username,
+                    'center_id' => Auth::user()->center->id,
+                    'social_media_id' => $request->social_media,
+                    'status' => $request->status,
+                ]);
+
+                return redirect()->route('center.social.media.account.show')->with('success', 'تم إضافة الحساب بنجاح');
+
             }
 
+        } else {
 
-            if ($counter == 0) {
+            if (Auth::user()->role_id == 1) {
+                dd("Fuck Off");
+            } elseif (Auth::user()->role_id == 3) {
+                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            } else {
+                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            }
 
-                return redirect()->route('center.social.media.account.edit')->withErrors(['قم بتعديل بعض الحقول لكي يتم حفظعا']);
+        }
+
+
+    }
+
+    // This Function Returns The Form Of Editing Social Media Account Of The Center
+    public function edit_social_media_account($id)
+    {
+
+        if (Auth::check() && Auth::user()->role_id == 2) {
+
+            $social_accounts = SocialMedia::all();
+            $account = CenterSocialMedia::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
+
+            if (count($account) < 1) {
+
+                return $this->error_page('خطأ', 'الرجاء التاأكد من معرف الحساب المراد تعديله');
 
             } else {
-                return redirect()->route('center.social.media.account.edit')->with('success', 'تم تعديل البيانات بنجاح');
+
+                $courses = $this->get_center_courses();
+                $trainers = $this->get_center_trainers();
+                $admins = $this->get_center_trainers();
+                $total_students = $this->get_center_students();
+
+
+                return view('center.edit-social-media-account', compact('social_accounts', 'account', 'courses', 'trainers', 'admins', 'total_students'));
+
             }
 
         } else {
@@ -1715,13 +1982,245 @@ class CenterController extends Controller
 
     }
 
+    // This Function Handle The Data Of Editing Social Media Accounts That Belongs ToThe Center
+    public function update_social_media_account(Request $request, $id)
+    {
+
+        if (Auth::check() && Auth::user()->role_id == 2) {
+
+
+            $account = CenterSocialMedia::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
+
+
+            if (count($account) < 1) {
+
+                return $this->error_page('خطأ', 'الرجاء التاأكد من معرف الحساب المراد تعديله');
+
+            } else {
+
+                $counter = 0;
+                if ($account->username != $request->username) {
+                    $request->validate([
+                        'username' => 'required|string|max:20|min:5',
+                    ]);
+
+                    $account->username = $request->username;
+                    $counter++;
+                }
+
+                if ($account->social_media_id != $request->social_media) {
+                    $request->validate([
+                        'social_media' => 'required|integer|exists:social_media,id',
+                    ]);
+
+                    $account->social_media_id = $request->social_media;
+
+                    $counter++;
+                }
+
+                if ($account->status != $request->status) {
+
+                    $request->validate([
+                        'status' => 'required|max:1|min:0',
+                    ]);
+
+                    $account->status = $request->status;
+
+                    $counter++;
+
+                }
+
+                if ($counter == 0) {
+
+                    return redirect()->route('center.social.media.account.edit', $id)->withErrors(['قم بتحديث بعض الحثول لكي يتم حفظها']);
+
+                } else {
+                    $account->save();
+
+                    return redirect()->route('center.social.media.account.show')->with('success', 'تم تعديل البيانات بنجاح');
+                }
+
+            }
+
+        } else {
+
+            if (Auth::user()->role_id == 1) {
+                dd("Fuck Off");
+            } elseif (Auth::user()->role_id == 3) {
+                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            } else {
+                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            }
+
+        }
+
+    }
+
+    // This Function Handle The Request Of Deleting Social Media Account
+    public function delete_social_media_account($id)
+    {
+
+        if (Auth::check() && Auth::user()->role_id == 2) {
+
+            $account = CenterSocialMedia::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
+
+            if (count($account) < 1) {
+
+                return $this->error_page('خطأ', 'الرجاء التأكد من معرف الحساب المراد حذفه');
+
+            } else {
+
+                $account->delete();
+
+                return redirect()->route('center.social.media.account.show')->with('success', 'تم حذف الحساب بنجاح');
+
+            }
+
+        } else {
+
+            if (Auth::user()->role_id == 1) {
+                dd("Fuck Off");
+            } elseif (Auth::user()->role_id == 3) {
+                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            } else {
+                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            }
+
+        }
+
+    }
+
+
+    // This Function Returns Halalah Account
+    public function show_halalah_account(){
+
+        if ( Auth::check() && Auth::user()->role_id == 2 ){
+
+            $halalah = Halalah::where('center_id', Auth::user()->center->id)->first();
+            $courses = $this->get_center_courses();
+            $trainers = $this->get_center_trainers();
+            $admins = $this->get_center_trainers();
+            $total_students = $this->get_center_students();
+            return view('center.show-halalah-account', compact('halalah', 'courses', 'trainers', 'admins', 'total_students'));
+
+        }else{
+
+            if (Auth::user()->role_id == 1) {
+                dd("Fuck Off");
+            } elseif (Auth::user()->role_id == 3) {
+                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            } else {
+                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            }
+
+        }
+
+    }
+
+    // This Function Returns The Form Of Creating Halalah Account
+    public function create_halalah_account(){
+
+        if ( Auth::check() && Auth::user()->role_id == 2 ){
+
+            $halalah = Halalah::where('center_id', Auth::user()->center->id)->first();
+
+            if ( count($halalah) < 1 ){
+
+                $courses = $this->get_center_courses();
+                $trainers = $this->get_center_trainers();
+                $admins = $this->get_center_trainers();
+                $total_students = $this->get_center_students();
+                return view('center.create-halalah-account', compact( 'courses', 'trainers', 'admins', 'total_students'));
+
+            }else{
+
+                return $this->error_page('خطأ', 'تم بلوغ أقصى عدد لحسابات منصة هللة');
+            }
+
+        }else{
+
+            if (Auth::user()->role_id == 1) {
+                dd("Fuck Off");
+            } elseif (Auth::user()->role_id == 3) {
+                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            } else {
+                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            }
+
+        }
+
+    }
+
+    // This Function Handle The Data Of Creating Halalah Account
+    public function store_halalah_account(Request $request){
+
+        if ( Auth::check() && Auth::user()->role_id == 2 ){
+
+            $request->validate([
+                'account_owner' => 'required|string|max:50|min:10',
+                'barcode-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+                'status' => 'required|integer|max:1|min:0',
+            ]);
+
+            try{
+
+                DB::beginTransaction();
+
+                if ($request->hasFile('barcode-image')) {
+
+                    $file = $request->file('barcode-image')->store('public/halalah-images');
+                    $file_name = basename($file);
+
+                }
+
+                Halalah::create([
+                    'center_id' => Auth::user()->center->id,
+                    'name' => $request->account_owner,
+                    'image' => $file_name,
+                    'status' => $request->status,
+                ]);
+
+                DB::commit();
+
+                return redirect()->route('center.halalah.account.show')->with('success', 'تم إضافة الحساب بنجاح');
+
+            }catch (\Exception $e){
+
+                DB::rollBack();
+                return redirect()->route('center.halalah.account.create')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع'])->withInput()->exceptInput('barcode-image');
+
+            }
+
+
+        }else{
+
+            if (Auth::user()->role_id == 1) {
+                dd("Fuck Off");
+            } elseif (Auth::user()->role_id == 3) {
+                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            } else {
+                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            }
+
+        }
+
+
+    }
+
+    // This Function Returns The Form Of Editing Halalah Account
     public function edit_halalah_account()
     {
 
         if (Auth::check() && Auth::user()->role_id == 2) {
 
             $halalah = Halalah::where('center_id', Auth::user()->center->id)->first();
-            return view('center.edit-halalah-account', compact('halalah'));
+
+            $courses = $this->get_center_courses();
+            $trainers = $this->get_center_trainers();
+            $admins = $this->get_center_trainers();
+            $total_students = $this->get_center_students();
+
+            return view('center.edit-halalah-account', compact('halalah', 'courses', 'trainers', 'admins', 'total_students'));
 
         } else {
 
@@ -1737,6 +2236,7 @@ class CenterController extends Controller
 
     }
 
+    // This Function Handle The Data Of Editing Halalah Account
     public function update_halalah_account(Request $request)
     {
 
@@ -1744,45 +2244,23 @@ class CenterController extends Controller
 
             $halalah = Halalah::where('center_id', Auth::user()->center->id)->first();
 
+
             if ( count($halalah) < 1 ){
 
-                $request->validate([
-                    'name' => 'string|max:50|min:7',
-                    'barcode-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
-                ]);
-
-                if ($request->hasFile('barcode-image')) {
-                    if (File::exists('public/center-images/' . $halalah->image)) {
-                        if (Storage::delete('public/center-images/' . $halalah->image)) {
-                            $file = $request->file('barcode-image')->store('public/halalah-images');
-                            $file_name = basename($file);
-                            $halalah->image = $file_name;
-                        }
-                    } else {
-                        $file = $request->file('barcode-image')->store('public/halalah-images');
-                        $file_name = basename($file);
-                        $halalah->image = $file_name;
-                    }
-                }
-
-                Halalah::create([
-                    'center_id' => Auth::user()->center->id,
-                    'image' => $file,
-                    'name' => $request->name,
-                ]);
+                return $this->error_page('خطأ', 'الرجاء التأكد من وجود حساب مسجل في النظام');
 
             }else{
 
                 $counter = 0;
-                $request->validate([
-                    'name' => 'string|max:50|min:7',
-                    'barcode-image' => 'nullable|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
-                ]);
-
 
                 if ($request->hasFile('barcode-image')) {
-                    if (File::exists('public/center-images/' . $halalah->image)) {
-                        if (Storage::delete('public/center-images/' . $halalah->image)) {
+
+                    $request->validate([
+                        'barcode-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+                    ]);
+
+                    if (File::exists('storage/halalah-images/' . $halalah->image)) {
+                        if (Storage::delete('public/halalah-images/' . $halalah->image)) {
                             $file = $request->file('barcode-image')->store('public/halalah-images');
                             $file_name = basename($file);
                             $halalah->image = $file_name;
@@ -1795,20 +2273,32 @@ class CenterController extends Controller
                     $counter++;
                 }
 
+                if ($halalah->name != $request->account_owner) {
+                    $request->validate([
+                        'account_owner' => 'nullable|string|max:50|min:6',
+                    ]);
 
-                if ( $halalah->name != $request->name ){
-                    $halalah->name == $request->name;
+                    $halalah->name = $request->account_owner;
                     $counter++;
                 }
 
-                if ( $counter == 0 ){
+                if ($halalah->status != $request->status) {
+                    $request->validate([
+                        'status' => 'required|integer|max:1|min:0',
+                    ]);
+
+                    $halalah->status = $request->status;
+                    $counter++;
+                }
+
+                if ($counter == 0) {
                     return redirect()->route('center.halalah.account.edit')->withErrors(['قم بتحديث بعض البيانات لكي يتم حفظها']);
-                } else{
+                } else {
+                    $halalah->save();
                     return redirect()->route('center.halalah.account.edit')->with('success', 'تم تحديث البيانات بنجاح');
                 }
 
             }
-
 
         } else {
 
@@ -1823,5 +2313,38 @@ class CenterController extends Controller
         }
 
     }
+
+    // This Function Delete Halalah Account
+    public function delete_halalah_account(){
+
+        if ( Auth::check() && Auth::user()->role_id == 2 ){
+
+            $halalah = Halalah::where('center_id', Auth::user()->center->id)->first();
+
+            if ( count($halalah) < 1 ){
+
+                return $this->error_page('خطأ', 'الرجاء التأكد من وجود حساب مسجل في النظام');
+
+            }else{
+
+                $halalah->delete();
+                return redirect()->route('center.halalah.account.show')->with('success', 'تم حذف الحساب بنجاح');
+
+            }
+
+        }else{
+
+            if (Auth::user()->role_id == 1) {
+                dd("Fuck Off");
+            } elseif (Auth::user()->role_id == 3) {
+                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            } else {
+                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+            }
+
+        }
+
+    }
+
 
 }

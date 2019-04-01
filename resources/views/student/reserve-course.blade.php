@@ -237,75 +237,77 @@
                             </div>
 
 
-                            <div class="payment-section mt-4 mb-2">
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <h4 class="text-right pr-2">طريقة الدفع</h4>
-                                    </div>
+                            @if(count($course->center->account) > 0)
+                                <div class="payment-section mt-4 mb-2">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <h4 class="text-right pr-2">طريقة الدفع</h4>
+                                        </div>
 
-                                    <div class="col-12">
-                                        <div class="block mt-0 rounded">
-                                            <div class="bank-selection">
-                                                <input type="hidden" name="center" value="{{ $course->center->id }}">
-                                                <select class="custom-select {{ $errors->has('bank') ? ' is-invalid' : '' }} custom-input"
-                                                        name="bank" required>
-                                                    <option>- البنك -</option>
-                                                    @foreach($accounts as $account)
-                                                        @if($account->bank->id  == $course->center->account[0]->bank->id)
-                                                            <option value="{{ $account->bank->id }}"
-                                                                    selected>{{ $account->bank->name }}</option>
-                                                        @else
-                                                            <option value="{{ $account->bank->id }}">{{ $account->bank->name }}</option>
-                                                        @endif
-                                                    @endforeach
-                                                </select>
-                                            </div>
+                                        <div class="col-12">
+                                            <div class="block mt-0 rounded">
+                                                <div class="bank-selection">
+                                                    <input type="hidden" name="center"
+                                                           value="{{ $course->center->id }}">
+                                                    <select class="custom-select {{ $errors->has('bank') ? ' is-invalid' : '' }} custom-input"
+                                                            name="bank" required>
+                                                        <option>- البنك -</option>
+                                                        @foreach($accounts as $account)
+                                                            @if($account->bank->id  == $course->center->account[0]->bank->id)
+                                                                <option value="{{ $account->bank->id }}"
+                                                                        selected>{{ $account->bank->name }}</option>
+                                                            @else
+                                                                <option value="{{ $account->bank->id }}">{{ $account->bank->name }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                    </select>
+                                                </div>
 
-                                            <div class="bank-information mt-4">
+                                                <div class="bank-information mt-4">
+                                                    <div class="account-information">
 
-                                                <div class="account-information">
-
-                                                    <div class="row justify-content-center">
-                                                        <div class="col-lg-8">
-                                                            <img src="{{ $course->center->account[0]->bank->image }}"
-                                                                 class="d-block ml-auto w-100" alt="Bank Logo">
+                                                        <div class="row justify-content-center">
+                                                            <div class="col-lg-8">
+                                                                <img src="{{ $course->center->account[0]->bank->image }}"
+                                                                     class="d-block ml-auto w-100" alt="Bank Logo">
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="row justify-content-center mt-4">
-                                                        <div class="col-lg-8 text-right">
-                                                            <p class="mb-0 rtl"> البنك
-                                                                : {{ $course->center->account[0]->bank->name }} </p>
+                                                        <div class="row justify-content-center mt-4">
+                                                            <div class="col-lg-8 text-right">
+                                                                <p class="mb-0 rtl"> البنك
+                                                                    : {{ $course->center->account[0]->bank->name }} </p>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="row justify-content-center mt-0">
-                                                        <div class="col-lg-8 text-right">
-                                                            <p class="m-0 rtl"> اسم الحساب
-                                                                : {{ $course->center->account[0]->account_owner }} </p>
+                                                        <div class="row justify-content-center mt-0">
+                                                            <div class="col-lg-8 text-right">
+                                                                <p class="m-0 rtl"> اسم الحساب
+                                                                    : {{ $course->center->account[0]->account_owner }} </p>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="row justify-content-center mt-0">
-                                                        <div class="col-lg-8 text-right">
-                                                            <p class="m-0 rtl"> رقم الحساب
-                                                                : {{ $course->center->account[0]->account_number }} </p>
+                                                        <div class="row justify-content-center mt-0">
+                                                            <div class="col-lg-8 text-right">
+                                                                <p class="m-0 rtl"> رقم الحساب
+                                                                    : {{ $course->center->account[0]->account_number }} </p>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="row justify-content-center mt-0">
-                                                        <div class="col-lg-8 text-right">
-                                                            <p class="m-0 rtl"> رقم الايبان
-                                                                : {{ $course->center->account[0]->account_number }} </p>
+                                                        <div class="row justify-content-center mt-0">
+                                                            <div class="col-lg-8 text-right">
+                                                                <p class="m-0 rtl"> رقم الايبان
+                                                                    : {{ $course->center->account[0]->account_number }} </p>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </form>

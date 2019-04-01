@@ -1,113 +1,25 @@
 @extends('admin.layouts.master')
 
-@section('main-title', " تعديل كلمة المرور")
+
+@section('title', " تعديل المعلومات الشخصية")
+@section('main-title', "تعديل المعلومات الشخصية")
 
 @section('page-links')
-    <li><a href="{{ route('center.index', Auth::user()->username) }}"><i class="fa fa-users"></i>المسؤولين</a></li>
-    <li class="active"><a href="{{ route('center.trainer.create') }}"><i class="fa fa-user-plus"></i>إضافة مسؤول</a></li>
+    <li><a href="{{ route('center.index', Auth::user()->username) }}"><i class="fa fa-user"></i>الملف الشخصي</a></li>
+    <li class="active"><a href="{{ route('admin.edit') }}"><i class="fa fa-edit"></i>بياناتي الشخصية</a></li>
 @endsection
 
 @section('style-file')
     <link rel="stylesheet" href="{{ asset('css/center/plugins/select2/select2.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/edit-admin.css') }}"/>
 @endsection
 
 @section('content')
-    <style>
-        .required-field:after {
-            color: #ff6771;
-            content: " *";
-            text-align: right;
-        }
-
-        .rtl {
-            direction: rtl;
-        }
-
-        .ltr {
-            direction: ltr;
-        }
-
-        select {
-            direction: rtl;
-            text-align: center !important;
-            text-align-last: center !important;
-        }
-
-        .custom-input {
-            height: 50px;
-            border-radius: 30px;
-            border: 1px solid rgba(34, 36, 38, .15);
-        }
-
-        .custom-input:hover {
-            border: 2px solid #1bc3a1;
-        }
-
-        .custom-input:focus {
-            box-shadow: none !important;
-            border: 2px solid #1bc3a1;
-        }
-
-        .custom-btn {
-            height: 60px;
-            border-radius: 30px;
-            background-image: linear-gradient(to right, #1bc3a1 0%, #6fcf8f);
-            display: block;
-            border: none;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .custom-btn:hover {
-            box-shadow: 0 4px 10px 0 rgba(11, 121, 99, 0.31);
-        }
-
-        .select2-container--default .select2-selection--single {
-            height: 50px !important;
-            border-radius: 30px !important;
-        }
-
-        .select2-selection__arrow{
-            height: 100% !important;
-        }
-        .select2-selection__rendered{
-            margin-top: 6px;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-        }
-        .invalid-feedback{
-            color: #ab1717;
-            width: 100%;
-            display: block;
-            direction: rtl;
-            text-align: center;
-        }
-        .is-invalid{
-            border-color: #ab1717;
-        }
-    </style>
-
-    <script>
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-
-                reader.onload = function (e) {
-                    $('#personal-image')
-                        .attr('src', e.target.result)
-                };
-
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-    </script>
-
     <div class="row">
         @if($errors->any())
             <div class="col-lg-12 animatedParent animateOnce z-index-50">
                 <div class="alert alert-danger animated fadeInUp">
-                    <ul class="text-right rtl" style="margin-bottom: 0;">
+                    <ul class="text-right mb-0 rtl">
                         <li>{{ $errors->first() }}</li>
                     </ul>
                 </div>
@@ -117,7 +29,7 @@
         @if(session('success'))
             <div class="col-lg-12 animatedParent animateOnce z-index-50">
                 <div class="alert alert-success animated fadeInUp">
-                    <ul class="text-right rtl" style="margin-bottom: 0;">
+                    <ul class="text-right mb-0 rtl">
                         <li>{{ session('success') }}</li>
                     </ul>
                 </div>
@@ -144,18 +56,18 @@
 
 
                         <div class="row">
-                            <div class="col-lg-6 col-lg-offset-3 text-center" style="padding: 10px;">
-                                <img class="img-thumbnail" id="personal-image" src="/storage/admin-images/{{ \Illuminate\Support\Facades\Auth::user()->admin->image }}" style="width: 80%; height: 80%;"/>
+                            <div class="col-lg-6 col-lg-offset-3 text-center p-10">
+                                <img class="img-thumbnail w-80 h-300-px" id="personal-image" src="/storage/admin-images/{{ \Illuminate\Support\Facades\Auth::user()->admin->image }}"/>
                             </div>
                         </div>
 
-                        <div class="row" style="margin-top: 30px;">
-                            <div class="col-lg-6 col-lg-offset-3">
+                        <div class="row mt-30">
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <label class="required-field rtl" for="name">اسم المسؤول</label>
                                     <input type="text"
                                            class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }} custom-input text-center ltr"
-                                           name="name" id="name" value="{{ $admin->name }}" placeholder="اسم المسؤول"
+                                           name="name" id="name" value="{{ $admin->admin->name }}" placeholder="اسم المسؤول"
                                            minlength="6" maxlength="50" autocomplete="off" required>
                                     @if ($errors->has('name'))
                                         <span class="invalid-feedback" role="alert">
@@ -165,10 +77,7 @@
                                 </div>
                             </div>
 
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-6 col-lg-offset-3">
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <label class="required-field rtl" for="phone">رقم الهاتف</label>
                                     <input type="text"
@@ -186,7 +95,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-lg-6 col-lg-offset-3">
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <label class="required-field" for="email">البريد الإلكتروني</label>
                                     <input type="email"
@@ -200,10 +109,7 @@
                                 </div>
                             </div>
 
-                        </div>
-
-                        <div class="row">
-                            <div class="col-lg-6 col-lg-offset-3">
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
                                     <label class="required-field" for="username">اسم المستخدم</label>
                                     <input type="text"
@@ -223,7 +129,7 @@
                                 <div class="form-group">
                                     <label for="profile-image">الصورة الشخصية</label>
                                     <input type="text" id="profile-image" class="form-control {{ $errors->has('profile-image') ? 'is-invalid' : '' }} custom-input text-center" placeholder='اختر صورة الملف الشخصي' readonly/>
-                                    <input type="file" name="profile-image" style="opacity: 0;" accept="image/png, image/jpg" onchange="readURL(this);">
+                                    <input type="file" class="op-0" name="profile-image" accept="image/png, image/jpg" onchange="readURL(this);">
                                 </div>
                             </div>
                         </div>
@@ -244,41 +150,6 @@
 @endsection
 
 @section('script-file')
-    <script>
-        $(document).ready(function () {
-
-            $(document).on("keypress", '.num-only', function (evt) {
-
-                let charCode = (evt.which) ? evt.which : event.keyCode;
-
-                if ( $(this).val().length == 0 ){
-                    if ( charCode == 43 ){
-                        return true;
-                    }else {
-                        return false;
-                    }
-                }else{
-                    if ( charCode > 31 && (charCode < 48 || charCode > 57)) {
-                        return false;
-                    }
-                    return true;
-                }
-
-            });
-
-            $("#profile-image").on('click', function () {
-                $("input[name=profile-image]").trigger('click');
-            });
-
-            $("input[name=profile-image]").on('change', function (e) {
-                let file = $("input[name=profile-image]")[0].files[0];
-                $("#profile-image").val(file.name);
-            });
-
-
-
-        });
-    </script>
-
+    <script src="{{ asset('js/admin/edit-admin.js') }}"></script>
     <script src="{{ asset('js/center/plugins/select2/select2.full.min.js') }}"></script>
 @endsection

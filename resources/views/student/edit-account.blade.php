@@ -74,7 +74,7 @@
 
                             <div class="row">
                                 <div class="col-lg-12 text-lg-left order-first order-lg-first text-center">
-                                    @if($user->student->image == 'account-profile.png')
+                                    @if($user->student->image == 'default.png')
                                         <img src="{{ asset('img/student/'.$user->student->image) }}"
                                              class="img-thumbnail"
                                              style="height: 30%; width: 100%;">

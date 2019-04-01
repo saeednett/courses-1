@@ -257,57 +257,64 @@ class StudentController extends Controller
     public function store(Request $request)
     {
 
-        // An Empty Array That Will Hold The Id Of The Cities
-        $cities = array();
+        if (!Auth::check()) {
 
-        // Getting The Id Of The Cities
-        $cities_data = City::where('country_id', $request->country)->get();
+            // An Empty Array That Will Hold The Id Of The Cities
+            $cities = array();
 
-        // Fetching The Id Into The Array
-        foreach ($cities_data as $city) {
-            array_push($cities, $city->id);
+            // Getting The Id Of The Cities
+            $cities_data = City::where('country_id', $request->country)->get();
+
+            // Fetching The Id Into The Array
+            foreach ($cities_data as $city) {
+                array_push($cities, $city->id);
+            }
+
+            // Validating The Request Data
+            $request->validate([
+                'first_name' => 'required|string|max:20|min:3',
+                'second_name' => 'required|string|max:20|min:3',
+                'email' => 'required|email|max:100|unique:users,email',
+                'username' => 'required|string|max:20|min:5|unique:users,username',
+                'phone' => 'required|max:9|min:9|unique:users,phone',
+                'gender' => 'required|max:99|min:1|exists:genders,id',
+                'country' => 'required|integer|max:99|min:1|exists:countries,id',
+                'city' => 'required|integer|max:99|min:1|' . Rule::in($cities),
+                'password' => 'required|string|max:32|min:6|confirmed'
+            ]);
+
+            // Creating The User
+            $student = User::create([
+                'email' => $request->email,
+                'username' => $request->username,
+                'phone' => "+966" . $request->phone,
+                'role_id' => 5,
+                'status' => 1,
+                'password' => Hash::make($request->password),
+            ]);
+
+            //Creating The Student
+            Student::create([
+                'user_id' => $student->id,
+                'first_name' => $request->first_name,
+                'second_name' => $request->second_name,
+                'gender_id' => $request->gender,
+                'city_id' => $request->city,
+                'year' => 0,
+                'month' => 0,
+                'day' => 0,
+            ]);
+
+            // Logging In The New User And Redirect Him To The Index
+            auth()->login($student);
+
+            // Redirect To The Index After Creating And Logging In
+            return redirect()->route('account.index');
+
+        }else{
+
         }
 
-        // Validating The Request Data
-        $request->validate([
-            'first_name' => 'required|string|max:20|min:3',
-            'second_name' => 'required|string|max:20|min:3',
-            'email' => 'required|email|max:100|unique:users,email',
-            'username' => 'required|string|max:20|min:5|unique:users,username',
-            'phone' => 'required|max:9|min:9|unique:users,phone',
-            'gender' => 'required|max:99|min:1|exists:genders,id',
-            'country' => 'required|integer|max:99|min:1|exists:countries,id',
-            'city' => 'required|integer|max:99|min:1|' . Rule::in($cities),
-            'password' => 'required|string|max:32|min:6|confirmed'
-        ]);
-
-        // Creating The User
-        $student = User::create([
-            'email' => $request->email,
-            'username' => $request->username,
-            'phone' => "+966" . $request->phone,
-            'role_id' => 5,
-            'password' => Hash::make($request->password),
-        ]);
-
-        //Creating The Student
-        Student::create([
-            'user_id' => $student->id,
-            'first_name' => $request->first_name,
-            'second_name' => $request->second_name,
-            'gender_id' => $request->gender,
-            'city_id' => $request->city,
-            'year' => 0,
-            'month' => 0,
-            'day' => 0,
-            'status' => 1
-        ]);
-
-        // Logging In The New User And Redirect Him To The Index
-        auth()->login($student);
-
-        // Redirect To The Index After Creating And Logging In
-        return redirect()->route('account.index');
     }
 
     // Unused Function
@@ -317,7 +324,6 @@ class StudentController extends Controller
         // When User|Student Wants To See The Profile Of The Center
         $user = User::where('username', $username)->first();
         if (count($user) < 1) {
-            ;
             return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من اسم الجهة");
         }
 
@@ -379,22 +385,28 @@ class StudentController extends Controller
     // To Show Final Step Before Reserving The Course
     public function reservation_course_form($identifier)
     {
-        // Checking The Course Unique Identifier
-        $course = Course::where('identifier', $identifier)->where('activation', 1)->first();
+        if ( Auth::check() && Auth::user()->role_id == 5 ){
 
-        // If The Identifier Is Wrong
-        if (count($course) < 1) {
-            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الدورة");
+            // Checking The Course Unique Identifier
+            $course = Course::where('identifier', $identifier)->where('activation', 1)->first();
+
+            // If The Identifier Is Wrong
+            if (count($course) < 1) {
+                return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الدورة");
+            }
+
+            // Getting All Center Bank Accounts
+            $accounts = CenterAccount::where('center_id', $course->center->id)->get();
+
+            $tickets = $this->get_auth_tickets();
+            $certificates = $this->get_auth_new_certificates();;
+
+            // Return The View Of Booking The Course
+            return view('student.reserve-course', compact('course', 'accounts', 'tickets', 'certificates'));
+
+        }else{
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
         }
-
-        // Getting All Center Bank Accounts
-        $accounts = CenterAccount::where('center_id', $course->center->id)->get();
-
-        $tickets = $this->get_auth_tickets();
-        $certificates = $this->get_auth_new_certificates();;
-
-        // Return The View Of Booking The Course
-        return view('student.reserve-course', compact('course', 'accounts', 'tickets', 'certificates'));
 
     }
 
@@ -402,206 +414,229 @@ class StudentController extends Controller
     public function course_reservation_confirm(Request $request, $identifier)
     {
 
-        // Getting The Course Information
-        $course = Course::where('identifier', $identifier)->where('activation', 1)->first();
+        if ( Auth::check() && Auth::user()->role_id == 5 ){
 
-        // Making Sure The Course Is Exist
-        if (count($course) < 1) {
-            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الدورة");
-        }
+            // Getting The Course Information
+            $course = Course::where('identifier', $identifier)->where('activation', 1)->first();
 
-        // Checking If Course Already Reserved
-        $reserve = Reservation::where('course_id', $course->id)->where('student_id', Auth::user()->student->id)->first();
-        if (count($reserve) > 0) {
-            return redirect()->route('account.ticket')->withErrors(['تم حجز الدورة مسبقا قم بحذف الحجز القديم لكي تتمكن من حجزها مجددا']);
-        }
+            // Making Sure The Course Is Exist
+            if (count($course) < 1) {
+                return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الدورة");
+            }
+
+            // Checking If Course Already Reserved
+            $reserve = Reservation::where('course_id', $course->id)->where('student_id', Auth::user()->student->id)->first();
+            if (count($reserve) > 0) {
+                return redirect()->route('account.ticket')->withErrors(['تم حجز الدورة مسبقا قم بحذف الحجز القديم لكي تتمكن من حجزها مجددا']);
+            }
 
 
-        // Validating The Request Data
-        $request->validate([
-            'coupon_code' => 'nullable|string|min:3|max:30',
-        ]);
-
-        // Getting The Coupons Of The Course
-        $coupon = Coupon::where('code', $request->coupon_code)->where('course_id', $course->id)->first();
-
-        // Check If The User Coupon Is Exist
-        if (count($coupon) < 1) {
-            Reservation::create([
-                'student_id' => Auth::user()->student->id,
-                'coupon_id' => 0,
-                'course_id' => $course->id,
-                'identifier' => Str::random(10),
+            // Validating The Request Data
+            $request->validate([
+                'coupon_code' => 'nullable|string|min:3|max:30',
             ]);
-        } else {
-            Reservation::create([
-                'student_id' => Auth::user()->student->id,
-                'coupon_id' => $coupon->id,
-                'course_id' => $course->id,
-                'identifier' => Str::random(10),
-            ]);
+
+            // Getting The Coupons Of The Course
+            $coupon = Coupon::where('code', $request->coupon_code)->where('course_id', $course->id)->first();
+
+            // Check If The User Coupon Is Exist
+            if (count($coupon) < 1) {
+                Reservation::create([
+                    'student_id' => Auth::user()->student->id,
+                    'coupon_id' => 0,
+                    'course_id' => $course->id,
+                    'identifier' => Str::random(10),
+                ]);
+            } else {
+                Reservation::create([
+                    'student_id' => Auth::user()->student->id,
+                    'coupon_id' => $coupon->id,
+                    'course_id' => $course->id,
+                    'identifier' => Str::random(10),
+                ]);
+            }
+
+            // Redirect To The Page That Show All Tickets Of The User | Student
+            return redirect()->route('account.ticket')->with('success', 'تم حجز دورة ' . $course->title . ' بنجاح قم بتسديد المبلغ لكي يتم إصدار البطاقة');
+
+        }else{
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
         }
 
-        // Redirect To The Page That Show All Tickets Of The User | Student
-        return redirect()->route('account.ticket')->with('success', 'تم حجز دورة ' . $course->title . ' بنجاح قم بتسديد المبلغ لكي يتم إصدار البطاقة');
 
     }
 
     // To Edit The Information Of The Student
     public function edit()
     {
-        // Getting The Information Of The Student
-        $user = User::find(Auth::user()->student->user_id);
 
-        // Getting All Cites
-        $cities = City::where('country_id', $user->student->city->country->id)->get();
+        if ( Auth::check() && Auth::user()->role_id == 5 ){
 
-        // Getting All Countries
-        $countries = Country::all();
+            // Getting The Information Of The Student
+            $user = User::find(Auth::user()->student->user_id);
+
+            // Getting All Cites
+            $cities = City::where('country_id', $user->student->city->country->id)->get();
+
+            // Getting All Countries
+            $countries = Country::all();
 
 
-        // Save The Total Count
-        $tickets = $this->get_auth_tickets();
-        $certificates = $this->get_auth_new_certificates();
+            // Save The Total Count
+            $tickets = $this->get_auth_tickets();
+            $certificates = $this->get_auth_new_certificates();
 
-        // Return To The View Of Editing The Information
-        return view('student.edit-account', compact('user', 'countries', 'cities', 'tickets', 'certificates'));
+            // Return To The View Of Editing The Information
+            return view('student.edit-account', compact('user', 'countries', 'cities', 'tickets', 'certificates'));
+
+        }else{
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
+        }
+
     }
 
     // the Data Of Editing Information Goes Here And The Process Happens Here
     public function update(Request $request)
     {
-        // Getting All Cities Which Belongs To The Country That The User | Student Chose
-        $cities = City::where('country_id', $request->country)->get();
 
-        // Checking If The Country Id Is Valid
-        if (count($cities) < 1) {
-            return redirect()->route('account.edit')->withErrors(['الرجاء التأ من الدولة']);
-        }
+        if ( Auth::check() && Auth::user()->role_id == 5 ){
 
-        // An Empty Array Of City Will Be Filled Soon
-        $cities_data = array();
+            // Getting All Cities Which Belongs To The Country That The User | Student Chose
+            $cities = City::where('country_id', $request->country)->get();
 
-        // Fetching The Cities Data Into The Array
-        foreach ($cities as $city) {
-            array_push($cities_data, $city->id);
-        }
+            // Checking If The Country Id Is Valid
+            if (count($cities) < 1) {
+                return redirect()->route('account.edit')->withErrors(['الرجاء التأكد من الدولة']);
+            }
 
-        // Validating The Request Data
-        $request->validate([
-            'first_name' => 'required|string|max:10|min:3',
-            'second_name' => 'required|string|max:10|min:3',
-            'third_name' => 'required|string|max:10|min:3',
-            'last_name' => 'required|string|max:10|min:3',
-            'phone' => 'required|starts_with:+966|string|max:13|min:13|' . Rule::unique('users')->ignore(Auth()->user()->id),
-            'email' => 'required|string|max:100|' . Rule::unique('users')->ignore(Auth()->user()->id),
-            'username' => 'required|string|max:20:min:5|' . Rule::unique('users')->ignore(Auth()->user()->id),
-            'city' => 'required|digits:1,99|exists:cities,id|' . Rule::in($cities_data),
-            'country' => 'required|exists:countries,id',
-            'year' => 'required|integer|max:2019|min:1930',
-            'month' => 'required|integer|max:12|min:1',
-            'day' => 'required|integer|max:31|min:1',
-            'profile-image' => 'sometimes|image|mimetypes:image/png,image/jpg,image/jpeg||max:400'
-        ]);
+            // An Empty Array Of City Will Be Filled Soon
+            $cities_data = array();
 
-        // Getting The SubInformation Of The User | Student
-        $student = Student::where('user_id', Auth::user()->student->user_id)->first();
+            // Fetching The Cities Data Into The Array
+            foreach ($cities as $city) {
+                array_push($cities_data, $city->id);
+            }
 
-        // This Counter Will Increase If Any New Data Is Different To The Old One
-        $counter = 0;
+            // Validating The Request Data
+            $request->validate([
+                'first_name' => 'required|string|max:10|min:3',
+                'second_name' => 'required|string|max:10|min:3',
+                'third_name' => 'required|string|max:10|min:3',
+                'last_name' => 'required|string|max:10|min:3',
+                'phone' => 'required|starts_with:+966|string|max:13|min:13|' . Rule::unique('users')->ignore(Auth()->user()->id),
+                'email' => 'required|string|max:100|' . Rule::unique('users')->ignore(Auth()->user()->id),
+                'username' => 'required|string|max:20:min:5|' . Rule::unique('users')->ignore(Auth()->user()->id),
+                'city' => 'required|digits:1,99|exists:cities,id|' . Rule::in($cities_data),
+                'country' => 'required|exists:countries,id',
+                'year' => 'required|integer|max:2019|min:1930',
+                'month' => 'required|integer|max:12|min:1',
+                'day' => 'required|integer|max:31|min:1',
+                'profile-image' => 'sometimes|image|mimetypes:image/png,image/jpg,image/jpeg||max:400'
+            ]);
 
-        // Comparing The First Name Old Data To The New
-        if ($student->first_name != $request->first_name) {
-            $student->first_name = $request->first_name;
-            $counter++;
-        }
+            // Getting The SubInformation Of The User | Student
+            $student = Student::where('user_id', Auth::user()->student->user_id)->first();
 
-        // Comparing The Second Name Old Data To The New
-        if ($student->second_name != $request->second_name) {
-            $student->second_name = $request->second_name;
-            $counter++;
-        }
+            // This Counter Will Increase If Any New Data Is Different To The Old One
+            $counter = 0;
 
-        // Comparing The Third Name Old Data To The New
-        if ($student->third_name != $request->third_name) {
-            $student->third_name = $request->third_name;
-            $counter++;
-        }
+            // Comparing The First Name Old Data To The New
+            if ($student->first_name != $request->first_name) {
+                $student->first_name = $request->first_name;
+                $counter++;
+            }
 
-        // Comparing The Last Name Old Data To The New
-        if ($student->last_name != $request->last_name) {
-            $student->last_name = $request->last_name;
-            $counter++;
-        }
+            // Comparing The Second Name Old Data To The New
+            if ($student->second_name != $request->second_name) {
+                $student->second_name = $request->second_name;
+                $counter++;
+            }
 
-        // Comparing Phone Old Data To The New
-        if ($student->user->phone != $request->phone) {
-            $student->user->phone = $request->phone;
-            $counter++;
-        }
+            // Comparing The Third Name Old Data To The New
+            if ($student->third_name != $request->third_name) {
+                $student->third_name = $request->third_name;
+                $counter++;
+            }
 
-        // Comparing Email Old Data To The New
-        if ($student->user->email != $request->email) {
-            $student->user->email = $request->email;
-            $counter++;
-        }
+            // Comparing The Last Name Old Data To The New
+            if ($student->last_name != $request->last_name) {
+                $student->last_name = $request->last_name;
+                $counter++;
+            }
 
-        // Comparing Username Old Data To The New
-        if ($student->user->username != $request->username) {
-            $student->user->username = $request->username;
-            $counter++;
-        }
+            // Comparing Phone Old Data To The New
+            if ($student->user->phone != $request->phone) {
+                $student->user->phone = $request->phone;
+                $counter++;
+            }
 
-        // Comparing City Old Data To The New
-        if ($student->city_id != $request->city) {
-            $student->city_id = $request->city;
-            $counter++;
-        }
+            // Comparing Email Old Data To The New
+            if ($student->user->email != $request->email) {
+                $student->user->email = $request->email;
+                $counter++;
+            }
 
-        // Comparing Year Old Data To The New
-        if ($student->year != $request->year) {
-            $student->year = $request->year;
-            $counter++;
-        }
+            // Comparing Username Old Data To The New
+            if ($student->user->username != $request->username) {
+                $student->user->username = $request->username;
+                $counter++;
+            }
 
-        // Comparing Month Old Data To The New
-        if ($student->month != $request->month) {
-            $student->month = $request->month;
-            $counter++;
-        }
+            // Comparing City Old Data To The New
+            if ($student->city_id != $request->city) {
+                $student->city_id = $request->city;
+                $counter++;
+            }
 
-        // Comparing Day Old Data To The New
-        if ($student->day != $request->day) {
-            $student->day = $request->day;
-            $counter++;
-        }
+            // Comparing Year Old Data To The New
+            if ($student->year != $request->year) {
+                $student->year = $request->year;
+                $counter++;
+            }
 
-        // Checking If The Request Has An Image
-        if ($request->hasFile('profile-image')) {
-            $counter++;
-            if (File::exists('public/account-images/' . $student->url)) {
-                if (Storage::delete('public/account-images/' . $student->url)) {
+            // Comparing Month Old Data To The New
+            if ($student->month != $request->month) {
+                $student->month = $request->month;
+                $counter++;
+            }
+
+            // Comparing Day Old Data To The New
+            if ($student->day != $request->day) {
+                $student->day = $request->day;
+                $counter++;
+            }
+
+            // Checking If The Request Has An Image
+            if ($request->hasFile('profile-image')) {
+                $counter++;
+                if (File::exists('public/account-images/' . $student->url)) {
+                    if (Storage::delete('public/account-images/' . $student->url)) {
+                        $file = $request->file('profile-image')->store('public/account-images');
+                        $file_name = basename($file);
+                        $student->url = $file_name;
+                    }
+                } else {
                     $file = $request->file('profile-image')->store('public/account-images');
                     $file_name = basename($file);
                     $student->url = $file_name;
                 }
-            } else {
-                $file = $request->file('profile-image')->store('public/account-images');
-                $file_name = basename($file);
-                $student->url = $file_name;
             }
+
+            // Checking If The Counter Is Greater Than 0 Then Do The Update
+            if ($counter > 0) {
+
+                $student->save();
+                $student->user->save();
+                return redirect()->route('account.edit')->with('success', 'تم تحديث البيانات بنجاح');
+
+            } else {
+                return redirect()->route('account.edit')->withErrors(['قم بتحديث بعض الحقول لكي يتم حفظ البيانات']);
+            }
+
+        }else{
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
         }
 
-        // Checking If The Counter Is Greater Than 0 Then Do The Update
-        if ($counter > 0) {
-
-            $student->save();
-            $student->user->save();
-            return redirect()->route('account.edit')->with('success', 'تم تحديث البيانات بنجاح');
-
-        } else {
-            return redirect()->route('account.edit')->withErrors(['لاتوجد بيانات جديدة لكي يتم حفظها']);
-        }
 
     }
 
@@ -642,12 +677,19 @@ class StudentController extends Controller
     // To Show All Tickets Of The User | Student
     public function tickets()
     {
-        // Getting All Reservation For The User | Student
-        $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
-        $tickets = $this->get_auth_tickets();
-        $certificates = $this->get_auth_new_certificates();
-        // Returning The View Of The Tickets
-        return view('student.tickets', compact('reservations', 'tickets', 'certificates'));
+        if (Auth::check() && Auth::user()->role_id == 5) {
+
+            // Getting All Reservation For The User | Student
+            $reservations = Reservation::where('student_id', Auth::user()->student->id)->get();
+            $tickets = $this->get_auth_tickets();
+            $certificates = $this->get_auth_new_certificates();
+            // Returning The View Of The Tickets
+            return view('student.tickets', compact('reservations', 'tickets', 'certificates'));
+
+        }else{
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
+        }
+
     }
 
     // To Show All Tickets Of The User | Student By Filter
@@ -851,187 +893,230 @@ class StudentController extends Controller
     public function payment_confirmation($identifier)
     {
 
-        // The Reservation That Wanted To Be Confirmed
-        $reservation = Reservation::where('identifier', $identifier)->where('student_id', Auth::user()->student->id)->first();
+        if ( Auth::check() && Auth::user()->role_id == 5 ){
 
-        // Checking If The Reservation iIs Exist
-        if (count($reservation) < 1) {
-            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز");
+            // The Reservation That Wanted To Be Confirmed
+            $reservation = Reservation::where('identifier', $identifier)->where('student_id', Auth::user()->student->id)->first();
+
+            // Checking If The Reservation iIs Exist
+            if (count($reservation) < 1) {
+                return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز");
+            }
+
+            if ($reservation->course->start_date < date("Y-m-d")) {
+                return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز او من تاريخ الحجز");
+            }
+
+            $tickets = $this->get_auth_tickets();
+            $certificates = $this->get_auth_new_certificates();
+
+            return view('student.payment-confirmation', compact('reservation', 'tickets', 'certificates'));
+
+        }else{
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
         }
 
-        if ($reservation->course->start_date < date("Y-m-d")) {
-            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز او من تاريخ الحجز");
-        }
-
-        $tickets = $this->get_auth_tickets();
-        $certificates = $this->get_auth_new_certificates();
-
-        return view('student.payment-confirmation', compact('reservation', 'tickets', 'certificates'));
     }
 
     // The Data Of Confirmation Goes Here And The Process Happens Here
     public function confirm(Request $request, $identifier)
     {
 
-        // Getting The Reservation Of The User | Student
-        $reservation = Reservation::where('identifier', $identifier)->where('student_id', Auth::user()->student->id)->first();
+        if ( Auth::check() && Auth::user()->role_id == 5 ){
 
-        // Checking If The Reservation iIs Exist
-        if (count($reservation) < 1) {
-            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز");
+            // Getting The Reservation Of The User | Student
+            $reservation = Reservation::where('identifier', $identifier)->where('student_id', Auth::user()->student->id)->first();
+
+            // Checking If The Reservation iIs Exist
+            if (count($reservation) < 1) {
+                return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز");
+            }
+
+            if ($reservation->course->start_date < date("Y-m-d")) {
+                return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز او من تاريخ الحجز");
+            }
+
+            // Validation The Request Data
+            $request->validate([
+                'account_owner' => 'required|string|max:50|min:10',
+                'account_number' => 'required|max:30|min:10',
+                'receipt-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
+            ]);
+
+            // Checking If The Request Has An Image
+            $file = $request->file('receipt-image')->store('public/receipt-images');
+            $file_name = basename($file);
+
+            // Saving The Data Into The Database
+            PaymentConfirmation::create([
+                'account_owner' => $request->account_owner,
+                'account_number' => $request->account_number,
+                'image' => $file_name,
+                'reservation_id' => $reservation->id,
+                'status' => 1,
+            ]);
+
+            // Redirect After Saving The Data Of Confirmation
+            return redirect()->route('account.ticket')->with('success', 'تم إضافة معلومات الدفع سيتم اصدار التذكرة بعد التأكدة من صحة معلومات الدفع');
+
+        }else{
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
         }
 
-        if ($reservation->course->start_date < date("Y-m-d")) {
-            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز او من تاريخ الحجز");
-        }
-
-        // Validation The Request Data
-        $request->validate([
-            'account_owner' => 'required|string|max:50|min:10',
-            'account_number' => 'required|max:30|min:10',
-            'receipt-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:500',
-        ]);
-
-        // Checking If The Request Has An Image
-        $file = $request->file('receipt-image')->store('public/receipt-images');
-        $file_name = basename($file);
-
-        // Saving The Data Into The Database
-        PaymentConfirmation::create([
-            'account_owner' => $request->account_owner,
-            'account_number' => $request->account_number,
-            'image' => $file_name,
-            'reservation_id' => $reservation->id,
-            'status' => 1,
-        ]);
-
-        // Redirect After Saving The Data Of Confirmation
-        return redirect()->route('account.ticket')->with('success', 'تم إضافة معلومات الدفع سيتم اصدار التذكرة بعد التأكدة من صحة معلومات الدفع');
     }
 
     // To Show The Form Of Editing The Payment Confirmation
     public function edit_payment_confirmation_form($identifier)
     {
 
-        // The Confirmation That Will Be Edit
-        $reservation = Reservation::where('identifier', $identifier)->where('student_id', Auth::user()->student->id)->first();
+        if ( Auth::check() && Auth::user()->role_id == 5 ){
 
-        // Checking If The Reservation Is Exist
-        if (count($reservation) < 1) {
-            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز");
+            // The Confirmation That Will Be Edit
+            $reservation = Reservation::where('identifier', $identifier)->where('student_id', Auth::user()->student->id)->first();
+
+            // Checking If The Reservation Is Exist
+            if (count($reservation) < 1) {
+                return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز");
+            }
+
+            // Checking If The Date Of The Course Is Old
+            if ($reservation->course->start_date < date("Y-m-d")) {
+                return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز او من تاريخ الحجز");
+            }
+
+            $tickets = $this->get_auth_tickets();
+            $certificates = $this->get_auth_new_certificates();
+
+            return view('student.edit-payment-confirmation', compact('reservation', 'tickets', 'certificates'));
+
+        }else{
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
         }
 
-        // Checking If The Date Of The Course Is Old
-        if ($reservation->course->start_date < date("Y-m-d")) {
-            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز او من تاريخ الحجز");
-        }
-
-        $tickets = $this->get_auth_tickets();
-        $certificates = $this->get_auth_new_certificates();
-
-        return view('student.edit-payment-confirmation', compact('reservation', 'tickets', 'certificates'));
     }
 
     // The Data Of Editing The Payment Confirmation Goes Here And The Process Happens Here
     public function update_payment_confirmation(Request $request, $identifier)
     {
-        // Getting The Reservation That Will Be Edit
-        $reservation = Reservation::where('identifier', $identifier)->where('student_id', Auth::user()->student->id)->first();
 
-        if (count($reservation) < 1) {
-            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز");
+        if ( Auth::check() && Auth::user()->role_id == 5 ){
+
+            // Getting The Reservation That Will Be Edit
+            $reservation = Reservation::where('identifier', $identifier)->where('student_id', Auth::user()->student->id)->first();
+
+            if (count($reservation) < 1) {
+                return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز");
+            }
+
+            if ($reservation->course->start_date < date("Y-m-d")) {
+                return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز او من تاريخ الحجز");
+            }
+
+            // Validating The Request Data
+            $request->validate([
+                'account_owner' => 'string|max:50|min:10',
+                'account_number' => 'max:30|min:10',
+                'receipt-image' => 'image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+            ]);
+
+            // Getting The Old payment Confirmation Data
+            $payment = PaymentConfirmation::where('reservation_id', $reservation->id)->first();
+
+            // Checking If The Request Has An Image
+            if ($request->hasFile('receipt-image')) {
+                $file = $request->file('receipt-image')->store('public/receipt-images');
+                $file_name = basename($file);
+            }
+
+            // This Counter Will Be Increase If The New Data Is Different To The Old
+            $counter = 0;
+
+            // This Variable Will Change If The Is A New File With The Request
+            $file_name = null;
+
+            // Comparing The Old Account Owner With New
+            if ($request->account_owner != $payment->account_owner) {
+                $payment->account_owner = $request->account_owner;
+                $counter++;
+            }
+
+            // Comparing The Old Account Number With New
+            if ($request->account_number != $payment->account_number) {
+                $payment->account_number = $request->account_number;
+                $counter++;
+            }
+
+            // Comparing The Payment Image With New
+            if ($file_name != null) {
+                $payment->image = $file_name;
+                $counter++;
+            }
+
+            // Checking The Counter Is Greater Than 0 Then Save The Changes
+            if ($counter > 0) {
+                $payment->update();
+                return redirect()->route('account.ticket')->with('success', 'تم تعديل معلومات الدفع سيتم اصدار التذكرة بعد التأكدة من صحة معلومات الدفع');
+            }
+
+            // Comparing The Old Account Owner With New
+            return redirect()->route('student.payment.confirmation.edit', $reservation->identifier)->withErrors(['لم يتم تعديل المعلومات']);
+
+        }else{
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
         }
-
-        if ($reservation->course->start_date < date("Y-m-d")) {
-            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس او حاول تتاكد من معرف الحجز او من تاريخ الحجز");
-        }
-
-        // Validating The Request Data
-        $request->validate([
-            'account_owner' => 'string|max:50|min:10',
-            'account_number' => 'max:30|min:10',
-            'receipt-image' => 'image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
-        ]);
-
-        // Getting The Old payment Confirmation Data
-        $payment = PaymentConfirmation::where('reservation_id', $reservation->id)->first();
-
-        // Checking If The Request Has An Image
-        if ($request->hasFile('receipt-image')) {
-            $file = $request->file('receipt-image')->store('public/receipt-images');
-            $file_name = basename($file);
-        }
-
-        // This Counter Will Be Increase If The New Data Is Different To The Old
-        $counter = 0;
-
-        // This Variable Will Change If The Is A New File With The Request
-        $file_name = null;
-
-        // Comparing The Old Account Owner With New
-        if ($request->account_owner != $payment->account_owner) {
-            $payment->account_owner = $request->account_owner;
-            $counter++;
-        }
-
-        // Comparing The Old Account Number With New
-        if ($request->account_number != $payment->account_number) {
-            $payment->account_number = $request->account_number;
-            $counter++;
-        }
-
-        // Comparing The Payment Image With New
-        if ($file_name != null) {
-            $payment->image = $file_name;
-            $counter++;
-        }
-
-        // Checking The Counter Is Greater Than 0 Then Save The Changes
-        if ($counter > 0) {
-            $payment->update();
-            return redirect()->route('account.ticket')->with('success', 'تم تعديل معلومات الدفع سيتم اصدار التذكرة بعد التأكدة من صحة معلومات الدفع');
-        }
-
-        // Comparing The Old Account Owner With New
-        return redirect()->route('student.payment.confirmation.edit', $reservation->identifier)->withErrors(['لم يتم تعديل المعلومات']);
 
     }
 
     // To Show The Form Of Resetting The Password
     public function create_reset_password()
     {
-        $tickets = $this->get_auth_tickets();
-        $certificates = $this->get_auth_new_certificates();
-        return view('student.account-reset-password', compact('tickets', 'certificates'));
+        if ( Auth::check() && Auth::user()->role_id == 5 ){
+
+            $tickets = $this->get_auth_tickets();
+            $certificates = $this->get_auth_new_certificates();
+            return view('student.account-reset-password', compact('tickets', 'certificates'));
+
+        }else{
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
+        }
+
     }
 
     // The Data Of Resetting Password Goes Here And The Process Happens Here
     public function reset_password(Request $request)
     {
-        // The User | Student Data
-        $user = User::find(Auth::user()->id);
-        // Checking If The Old Password Is Correct
-        if (Hash::check($request->old_password, $user->password)) {
-            // Validating The Request Data
-            $request->validate([
-                'password' => 'required|string|max:32|min:6|confirmed',
-            ]);
-            // Check If The New Password Equal The New Password
-            if (Hash::check($request->password, $user->password)) {
-                // Return With Error Message
-                return redirect()->route('account.password')->withErrors('لا يمكن استخدام نفس كلمة المرور القديمة');
+
+        if ( Auth::check() && Auth::user()->role_id == 5 ){
+
+            // The User | Student Data
+            $user = User::find(Auth::user()->id);
+            // Checking If The Old Password Is Correct
+            if (Hash::check($request->old_password, $user->password)) {
+                // Validating The Request Data
+                $request->validate([
+                    'password' => 'required|string|max:32|min:6|confirmed',
+                ]);
+                // Check If The New Password Equal The New Password
+                if (Hash::check($request->password, $user->password)) {
+                    // Return With Error Message
+                    return redirect()->route('account.password')->withErrors('لا يمكن استخدام نفس كلمة المرور القديمة');
+                } else {
+                    // Hash The New Password
+                    $user->password = Hash::make($request->password);
+                    // Save The New Password
+                    $user->save();
+                    // Redirect After Resetting The Password
+                    return redirect()->route('account.password')->with('success', 'تم تغير كلمة المرور بنجاح');
+                }
             } else {
-                // Hash The New Password
-                $user->password = Hash::make($request->password);
-                // Save The New Password
-                $user->save();
-                // Redirect After Resetting The Password
-                return redirect()->route('account.password')->with('success', 'تم تغير كلمة المرور بنجاح');
+                // Redirect With Error Message If The Old Password Is Wrong
+                return redirect()->route('account.password')->withErrors('كلمة المرور القديمة غير صحصيحة');
             }
-        } else {
-            // Redirect With Error Message If The Old Password Is Wrong
-            return redirect()->route('account.password')->withErrors('كلمة المرور القديمة غير صحصيحة');
+
+        }else{
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
         }
+
     }
 
     // This Function Show The Contact Us Page
@@ -1096,8 +1181,8 @@ class StudentController extends Controller
             $certificates = $this->get_auth_new_certificates();
             return view('student.certificates', compact('all_certificates', 'tickets', 'certificates'));
 
-        } else {
-            return $this->error_page("صلاحياتك لاتسمح لك بالدخول لهذه الصفحة");
+        }else{
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
         }
 
     }
@@ -1128,8 +1213,8 @@ class StudentController extends Controller
 
             return "You Have The Certificate";
 
-        } else {
-            return $this->error_page("صلاحياتك لاتسمح لك بالدخول لهذه الصفحة");
+        }else{
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
         }
     }
 
@@ -1137,6 +1222,7 @@ class StudentController extends Controller
     public function show_course_ticket($identifier){
 
         if ( Auth::check() && Auth::user()->role_id == 5 ){
+
             $check_reservation = Reservation::where('identifier', $identifier)->first();
 
             if ( count($check_reservation) < 1 ){
@@ -1156,9 +1242,8 @@ class StudentController extends Controller
 
             return view('student.show-ticket', compact('tickets', 'certificates', 'reservation'));
 
-
         }else{
-            return $this->error_page("صلاحياتك لاتسمح لك بالدخول لهذه الصفحة");
+            return $this->error_page("شكلك ضايع وماتعرف فين تبغا ارجع الصفحة الرئسية ولاتحوس اش رايك تتاكد من صلاحياتك");
         }
 
     }

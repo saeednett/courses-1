@@ -17,10 +17,11 @@ class CreateCentersTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unique();
             $table->string('name');
-            $table->string('verification_code', 15);
-            $table->string('verification_authority');
-            $table->string('website');
+            $table->string('verification_code', 15)->nullable();
+            $table->string('verification_authority')->nullable();
+            $table->string('website')->nullable();
             $table->integer('city_id');
+            $table->integer('type');
             $table->text('about');
             $table->string('logo');
             $table->timestamps();
