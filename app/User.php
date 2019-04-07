@@ -30,6 +30,11 @@ class User extends Authenticatable implements JWTSubject
         'password', 'remember_token',
     ];
 
+    public function administrator()
+    {
+        return $this->hasOne('App\Administrator');
+    }
+
     public function student()
     {
         return $this->hasOne('App\Student');

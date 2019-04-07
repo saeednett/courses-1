@@ -24,4 +24,8 @@ class Trainer extends Model
         return $this->belongsTo('App\Title');
     }
 
+    public function center(){
+        return $this->belongsTo('App\Center');
+    }
+
 }

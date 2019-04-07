@@ -60,7 +60,7 @@ class LoginController extends Controller
 
 
         if ( $role == 1 ){
-            dd("Administrator");
+            redirect()->route('administrator.index', Auth::user()->username);
         }elseif ($role == 2){
             redirect()->route('center.index', Auth::user()->username);
         }elseif ($role == 3){

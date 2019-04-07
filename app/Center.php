@@ -28,6 +28,11 @@ class Center extends Model
         return $this->hasMany('App\Trainer');
     }
 
+    public function admin()
+    {
+        return $this->hasMany('App\Admin');
+    }
+
     public function account()
     {
         return $this->hasMany('App\CenterAccount');
