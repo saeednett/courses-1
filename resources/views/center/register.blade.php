@@ -81,7 +81,7 @@
                             <div class="col-lg-9">
                                 <input type="text" name="name"
                                        class="form-control {{ $errors->has('name') ? ' is-invalid' : '' }} custom-input text-center"
-                                       value="{{ old('name') }}" placeholder="اسم المركز" autocomplete="off" required>
+                                       value="{{ old('name') }}" placeholder="اسم الجهة" maxlength="20" minlength="5" autocomplete="off" required>
                                 @if ($errors->has('name'))
                                     <span class="invalid-feedback text-center" role="alert">
                                         <strong>{{ $errors->first('name') }}</strong>
@@ -89,7 +89,7 @@
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
-                                <label class="col-form-label required-field rtl">اسم المركز</label>
+                                <label class="col-form-label required-field rtl">اسم الجهة</label>
                             </div>
                         </div>
 
@@ -103,7 +103,7 @@
                                             <option value="0">غير ربحي</option>
                                         @else
                                             <option value="1">ربحي</option>
-                                            <option value="0" selected>{{old('center_type')}}</option>
+                                            <option value="0" selected>غير ربحي</option>
                                         @endif
                                     @else
                                         <option>- التصنيف -</option>
@@ -118,16 +118,16 @@
                                 @endif
                             </div>
                             <div class="col-lg-3 text-center pt-2">
-                                <label class="col-form-label required-field rtl">تصنيف المركز</label>
+                                <label class="col-form-label required-field rtl">تصنيف الجهة</label>
                             </div>
                         </div>
 
                         <div class="form-group row justify-content-center" id="verification_code">
                             <div class="col-lg-9">
                                 <input type="text" name="verification_code"
-                                       class="form-control {{ $errors->has('verification_code') ? ' is-invalid' : '' }} custom-input num-only text-center"
+                                       class="form-control {{ $errors->has('verification_code') ? ' is-invalid' : '' }} custom-input num text-center"
                                        value="{{ old('verification_code') }}" placeholder="رقم الترخيص"
-                                       autocomplete="off" maxlength="10" required>
+                                       autocomplete="off" maxlength="10" minlength="4" required>
                                 @if ($errors->has('verification_code'))
                                     <span class="invalid-feedback text-center" role="alert">
                                         <strong>{{ $errors->first('verification_code') }}</strong>
@@ -161,7 +161,7 @@
                                 <input type="text" name="phone"
                                        class="form-control {{ $errors->has('phone') ? ' is-invalid' : '' }} custom-input num-only text-center"
                                        value="{{ old('phone') }}" placeholder="رقم الهاتف" autocomplete="off"
-                                       maxlength="13" minlength="9" required>
+                                       maxlength="10" minlength="10" required>
                                 @if ($errors->has('phone'))
                                     <span class="invalid-feedback text-center" role="alert">
                                         <strong>{{ $errors->first('phone') }}</strong>
@@ -297,6 +297,9 @@
                                         <strong>{{ $errors->first('website') }}</strong>
                                     </span>
                                 @endif
+                                <span class="text-muted text-center d-block" role="alert">
+                                    <strong class="text-center">www.example.com :مثال</strong>
+                                </span>
                             </div>
                             <div class="col-lg-3 text-center pt-2">
                                 <label class="col-form-label rtl">الموقع الإلكتروني</label>
@@ -398,7 +401,7 @@
 
                         <div class="form-group row justify-content-center">
                             <div class="col-lg-6 text-center">
-                                <input type="file" name="profile-logo" class="op-0">
+                                <input type="file" name="profile-image" class="op-0"  accept="image/png">
                             </div>
                         </div>
 
@@ -489,9 +492,11 @@
                 </div>
             </div>
 
-            <div class="row justify-content-center mt-4">
+            <div class="row justify-content-center mt-2">
                 <div class="col-lg-2 col-md-2 col-sm-5 col-5">
-                    <a href="a"><img src="{{ asset('img/center/logo.png') }}" height="70"> </a>
+                    <a href="a">
+                        <img class="d-block m-auto p-2" src="{{ asset('img/main/logo.png') }}" height="80">
+                    </a>
                 </div>
             </div>
 

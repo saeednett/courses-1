@@ -1,4 +1,4 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('main-title', "تعديل معلومات مدرب")
 
@@ -77,16 +77,16 @@
                                 <div class="form-group">
                                     <label class="required-field rtl" for="phone">رقم الهاتف</label>
                                     <input type="text"
-                                           class="form-control {{ $errors->has('phone') ? ' is-invalid' : '' }} custom-input num-only text-center ltr"
+                                           class="form-control {{ $errors->has('phone') ? ' is-invalid' : '' }} custom-input phone text-center ltr"
                                            name="phone" id="phone" value="{{ $trainer->user->phone }}" minlength="9"
-                                           maxlength="13" autocomplete="off" required>
+                                           maxlength="10" autocomplete="off" required>
                                     @if ($errors->has('phone'))
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $errors->first('phone') }}</strong>
                                         </span>
                                     @else
-                                        <small class="text-muted text-center center-block">الرجاء الإبتداء برمز الدولة..
-                                            966+
+                                        <small class="text-muted text-center center-block">
+                                            مثال: ********05
                                         </small>
                                     @endif
                                 </div>
@@ -176,9 +176,9 @@
                                 <div class="form-group">
                                     <label for="profile-image">الصورة الشخصية</label>
                                     <input type="text" class="form-control custom-input text-center"
-                                           placeholder='اختر صورة الملف الشخصي' id="profile-image" readonly required/>
+                                           placeholder='اختر صورة الملف الشخصي' id="profile-image" readonly/>
                                     <input type="file" class="op-0" name="profile-image"
-                                           accept="image/png, image/jpg" required>
+                                           accept="image/png, image/jpg">
                                 </div>
                             </div>
 

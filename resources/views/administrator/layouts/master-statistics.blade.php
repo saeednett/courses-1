@@ -41,6 +41,8 @@
     <link href="{{ asset('css/center/mouldifi-rtl-core.css') }}" rel="stylesheet">
     <!-- /mouldifi rtl core stylesheet -->
 
+    <link href="{{ asset('css/main/main.css') }}" rel="stylesheet">
+
     @yield('style-file')
 
     <link href="https://fonts.googleapis.com/css?family=Tajawal" rel="stylesheet">
@@ -160,7 +162,7 @@
                 <li class="has-sub"><a href="#"><i class="icon-book"></i><span
                                 class="title">الشهادات</span></a>
                     <ul class="nav">
-                        <li><a href="{{ route('admin.courses.certificate.create') }}"><span
+                        <li><a href="{{ route('administrator.centers.certificates.show') }}"><span
                                         class="title">عرض الشهادات</span></a></li>
                     </ul>
                 </li>
@@ -169,7 +171,7 @@
                                 class="title">المسؤولين</span></a>
                     <ul class="nav">
                         <li><a href="{{ route('administrator.admins.show') }}"><span class="title">عرض المسؤولين</span></a></li>
-                        <li><a href="{{ route('administrator.students.activation.deactivation') }}"><span class="title">تفعيل المسؤولين</span></a>
+                        <li><a href="{{ route('administrator.admins.activation.deactivation') }}"><span class="title">تفعيل المسؤولين</span></a>
                         </li>
                     </ul>
                 </li>
@@ -177,11 +179,10 @@
                 <li class="has-sub"><a href="#"><i class="fa fa-book"></i><span
                                 class="title">التقارير العامة</span></a>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">الجهات</span></a></li>
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">المسؤولين</span></a>
-                        </li>
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">المدربين</span></a></li>
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">الطلاب</span></a></li>
+{{--                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">الطلاب</span></a></li>--}}
+{{--                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">الجهات</span></a></li>--}}
+{{--                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">المدربين</span></a></li>--}}
+{{--                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">المسؤولين</span></a></li>--}}
                     </ul>
                 </li>
 
@@ -193,23 +194,22 @@
                     </ul>
                 </li>
 
-                <li class="has-sub"><a href="form-basic.html"><i class="icon-user"></i><span
+                <li class="has-sub"><a href="#"><i class="icon-user"></i><span
                                 class="title">الملف الاشخصي</span></a>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('admin.reset.password') }}"><span class="title">كلمة المرور</span></a>
+                        <li><a href="{{ route('administrator.reset.password') }}"><span class="title">كلمة المرور</span></a>
                         </li>
                     </ul>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('admin.edit') }}"><span class="title">بياناتي الشخصية</span></a></li>
+                        <li><a href="{{ route('administrator.edit') }}"><span class="title">بياناتي الشخصية</span></a></li>
                     </ul>
                 </li>
 
-                <li class="has-sub"><a href="basic-tables.html"><i class="icon-lock"></i><span class="title">إستعادة كلمة المرور</span></a>
+                <li class="has-sub"><a href="#"><i class="icon-lock"></i><span class="title">إستعادة كلمة المرور</span></a>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">الجهات</span></a></li>
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">المسؤولين</span></a>
-                        </li>
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">الطلاب</span></a></li>
+                        <li><a href="{{ route('administrators.students.reset.email.show') }}"><span class="title">الطلاب</span></a></li>
+                        <li><a href="{{ route('administrator.centers.reset.email.show') }}"><span class="title">الجهات</span></a></li>
+                        <li><a href="{{ route('administrator.admins.reset.email.show') }}"><span class="title">المسؤولين</span></a></li>
                     </ul>
                 </li>
             </ul>
@@ -233,10 +233,10 @@
 
                             @if(\Illuminate\Support\Facades\Auth::user()->administrator->image == "default.jpg")
                                 <img width="44" class="img-circle avatar" alt=""
-                                     src="{{ asset('img/administrator/default.png') }}">
+                                     src="{{ asset('img/main/default.png') }}">
                             @else
                                 <img width="44" class="img-circle avatar" alt=""
-                                     src="/storage/admin-images/{{ \Illuminate\Support\Facades\Auth::user()->administrator->image }}">
+                                     src="/storage/administrator-images/{{ \Illuminate\Support\Facades\Auth::user()->administrator->image }}">
                             @endif
 
                             @auth()
@@ -399,8 +399,8 @@
         @yield('content')
         <!-- Footer -->
             <footer class="animatedParent animateOnce z-index-10">
-                <div class="footer-main animated fadeInUp slow">&copy; 2016 <strong>Mouldifi</strong> Admin Theme by <a
-                            target="_blank" href="#/">G-axon</a></div>
+                <div class="footer-main animated fadeInUp slow">&copy; 2019 <strong><a
+                                target="_blank" href="http://meccacode.com/">The Code Team </a></strong></div>
             </footer>
             <!-- /footer -->
 

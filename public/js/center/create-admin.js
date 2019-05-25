@@ -5,7 +5,7 @@ $(document).ready(function () {
         let charCode = (evt.which) ? evt.which : event.keyCode;
 
         if ( $(this).val().length == 0 ){
-            if ( charCode == 43 ){
+            if ( charCode == 53 ){
                 return true;
             }else {
                 return false;

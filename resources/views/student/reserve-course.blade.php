@@ -1,4 +1,4 @@
-@extends('student.master-v-1-1')
+@extends('student.layouts.master-v-1-1')
 
 @section('title', 'حجز دورة')
 
@@ -10,11 +10,6 @@
 @section('style-file')
     <link rel="stylesheet" href="{{ asset('css/student/book-course.css') }}">
 @endsection
-
-@section('script-file')
-    <script src="{{ asset('js/student/book-course.js') }}"></script>
-@endsection
-
 
 @section('content')
     <div class="container mb-2">
@@ -329,4 +324,8 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script-file')
+    <script src="{{ asset('js/student/book-course.js') }}"></script>
 @endsection

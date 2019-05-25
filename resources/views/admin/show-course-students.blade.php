@@ -59,24 +59,11 @@
                             @else
                                 <tr class="gradeX">
                                     <td class="text-danger" colspan="7">
-                                        <h3 style="margin-top: 15px">لايوجد طلاب مسجلين في الدورة</h3>
+                                        <h3 class="mt-15">لايوجد طلاب مسجلين في الدورة</h3>
                                     </td>
                                 </tr>
                             @endif
                             </tbody>
-                            @if(count($reservations) > 0)
-                                <tfoot>
-                                <tr>
-                                    <th class="text-center">اسم الطالب</th>
-                                    <th class="text-center">رقم الهاتف</th>
-                                    <th class="text-center">البريد الإلكتروني</th>
-                                    <th class="text-center">تاريخ الميلاد</th>
-                                    <th class="text-center">المدينة</th>
-                                    <th class="text-center">الجنس</th>
-                                    <th class="text-center">حالة التسجيل</th>
-                                </tr>
-                                </tfoot>
-                            @endif
                         </table>
                     </div>
                 </div>

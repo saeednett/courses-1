@@ -23,7 +23,7 @@ class RedirectIfAuthenticated
 
             switch ($role) {
                 case 1:
-                    return redirect()->route('administrator.index');
+                    return redirect()->route('administrator.index', Auth::user()->username);
                     break;
 
                 case 2:

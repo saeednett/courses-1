@@ -1,4 +1,4 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('title', 'المعلومات البنكية')
 
@@ -57,7 +57,7 @@
                                             صاحب
                                             الحساب</label>
                                         <input type="account_owner" id="account_owner"
-                                               class="form-control custom-input"
+                                               class="form-control custom-input text-center"
                                                name="account_owner" value="{{ $account->account_owner }}"
                                                placeholder="اسم صاحب الحساب" autocomplete="off" required>
                                     </div>
@@ -65,7 +65,7 @@
                                     <div class="col-lg-3">
                                         <label class="col-form-label required-field" for="account_number">رقم
                                             الحساب</label>
-                                        <input type="text" id="account_number" class="form-control custom-input"
+                                        <input type="text" id="account_number" class="form-control custom-input text-center"
                                                name="account_number" value="{{ $account->account_number }}"
                                                maxlength="25" minlength="15"
                                                placeholder="رقم الحساب" autocomplete="off" required>
@@ -93,11 +93,6 @@
                                             <button type="submit" class="btn btn-block custom-btn">حفظ</button>
                                         </div>
                                     </div>
-
-                                    {{--<div class="col-xl-1 col-lg-1 col-md-12 col-sm-12 col-xs-4 col-lg-offset-0 col-xs-offset-4 text-center">--}}
-                                        {{--<label class="col-form-label opacity-0" for="bank">المزيد</label>--}}
-                                        {{--<span class="btn-success text-center fa fa-plus add-account"></span>--}}
-                                    {{--</div>--}}
                                 </div>
                             </form>
                         </div>

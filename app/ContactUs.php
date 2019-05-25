@@ -6,6 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContactUs extends Model
 {
-    protected $table = "contact_uses";
-    //
+    protected $guarded = [];
+
+    protected $table = "contact_us";
+
+    public function student(){
+        return $this->belongsTo('App\Student');
+    }
 }

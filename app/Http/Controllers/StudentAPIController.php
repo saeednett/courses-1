@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\AdvertisingBanner;
+use App\Certificate;
+use App\Student;
 use App\User;
 use App\City;
 use App\Country;
@@ -10,6 +12,7 @@ use App\Coupon;
 use App\Course;
 use App\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -30,26 +33,24 @@ class StudentAPIController extends Controller
         $this->middleware('auth:api', ['except' => ['login', 'index']]);
     }
 
-    // This Index Function Retrieve All Courses Are Available In The Database
+    // This Function Retrieve All Courses Are Available In The Database
     public function index()
     {
         $this->data['banners'] = array();
-        $this->response['response'] = array(
-            'banners' => array(),
-            'data' => array(),
-        );
-        $courses = Course::all();
+
+        $courses = Course::where('validation', 1)->where('activation', 1)->where('visible', 1)->get();
 
         if (count($courses) < 1) {
-            array_push($this->response['status'], "success");
-            array_push($this->response['errors'], null);
+
+            array_push($this->response['status'], "Failed");
+            array_push($this->response['errors'], "لاتوجد دورات مسجلة في النظام");
             array_push($this->response['response'], null);
 
             return response()->json($this->response);
         } else {
 
 
-            $banners = AdvertisingBanner::all();
+            $banners = AdvertisingBanner::where('status', 1);
 
             foreach ($banners as $banner) {
                 $subData = array(
@@ -59,16 +60,21 @@ class StudentAPIController extends Controller
                     'description' => $banner->description,
                 );
 
-                array_push($this->response['response']['banners'], $subData);
+                array_push($this->data['banners'], $subData);
             }
 
+
+            $this->data['courses'] = array();
+
             foreach ($courses as $course) {
+
                 if ($course->type == "free") {
                     $price = 0;
                 } else {
                     $price = $course->price;
                 }
-                $this->data = [
+
+                $subData = array(
                     'title' => $course->title,
                     'identifier' => $course->identifier,
                     'address' => $course->address,
@@ -91,10 +97,9 @@ class StudentAPIController extends Controller
                     'total_trainers' => count($course->trainer),
                     'poster-1' => "/storage/course-images/" . $course->image->image,
                     'poster-2' => "/storage/course-images/" . $course->image->image_2,
-                ];
+                );
 
-                $this->data['trainers'] = array();
-
+                $subData['trainers'] = array();
 
                 foreach ($course->trainer as $trainer) {
                     $trainersData = array(
@@ -102,14 +107,16 @@ class StudentAPIController extends Controller
                         'trainer-title' => $trainer->trainer->title->name,
                         'trainer-image' => "/storage/trainer-images/" . $trainer->trainer->image,
                     );
-                    array_push($this->data['trainers'], array($trainersData));
+
+                    array_push($subData['trainers'], $trainersData);
                 }
 
-                array_push($this->response['response']['data'], $this->data);
+                array_push($this->data['courses'], $this->data);
             }
 
-            array_push($this->response['status'], "success");
+            array_push($this->response['status'], "Success");
             array_push($this->response['errors'], null);
+            array_push($this->response['response'], $this->data);
 
             return response()->json($this->response);
         }
@@ -128,107 +135,155 @@ class StudentAPIController extends Controller
         $tickets_count = Reservation::where('student_id', auth('api')->user()->student->id)->count();
 
         if ($tickets_count < 1) {
-            array_push($this->response['status'], "failed");
-            array_push($this->response['errors'], 'لاتوجد تذاكر تم محجوزة');
+            array_push($this->response['status'], "Failed");
+            array_push($this->response['errors'], 'لاتوجد تذاكر محجوزة');
             array_push($this->response['response'], null);
 
             return response()->json($this->response);
-        }
+        } else {
 
-        $confirmed_tickets = Reservation::where('student_id', auth('api')->user()->student->id)->where('confirmation', 1)->get();
+            // Getting The Confirmed Ticket For The Student
+            $confirmed_tickets = Reservation::where('student_id', auth('api')->user()->student->id)->where('confirmation', 1)->get();
 
-        if (count($confirmed_tickets) > 0) {
-            foreach ($confirmed_tickets as $ticket) {
-                $subData = array(
-                    'title' => $ticket->course->title,
-                    'identifier' => $ticket->identifier,
-                    'course_start_date' => $ticket->course->start_date,
-                    'course_end_date' => $ticket->course->end_date,
-                    'total_hours' => $ticket->course->hours,
-                    'poster-1' => $ticket->course->image->image,
-                    'poster-2' => $ticket->course->image->image_2,
-                );
+            if (count($confirmed_tickets) > 0) {
+                foreach ($confirmed_tickets as $ticket) {
 
-                array_push($this->data['confirmed'], $subData);
+                    if ($ticket->course->start_date >= date('Y-m-d')) {
+                        $subData = array(
+                            'title' => $ticket->course->title,
+                            'identifier' => $ticket->identifier,
+                            'course_start_date' => $ticket->course->start_date,
+                            'course_end_date' => $ticket->course->end_date,
+                            'total_hours' => $ticket->course->hours,
+                            'poster-1' => $ticket->course->image->image,
+                            'poster-2' => $ticket->course->image->image_2,
+                        );
+
+                        array_push($this->data['confirmed'], $subData);
+                    }
+
+                }
             }
-        }
 
-        $unconfirmed_tickets = Course::select('id')->where('start_date', '>=', date('Y-m-d'))->get();
 
-        for ($i = 0; $i < count($unconfirmed_tickets); $i++) {
-            $tickets = Reservation::where('course_id', $unconfirmed_tickets[$i]->id)->where('student_id', auth('api')->user()->student->id)->where('confirmation', 0)->get();
-            if (count($tickets) > 0) {
-                $subData = array(
-                    'title' => $ticket->course->title,
-                    'identifier' => $ticket->identifier,
-                    'course_start_date' => $ticket->course->start_date,
-                    'course_end_date' => $ticket->course->end_date,
-                    'total_hours' => $ticket->course->hours,
-                    'poster-1' => $ticket->course->image->image,
-                    'poster-2' => $ticket->course->image->image_2,
-                );
-                array_push($this->data['unconfirmed'], $subData);
+            // Getting The Unconfirmed Ticket For The Student
+            $unconfirmed_tickets = Reservation::where('student_id', auth('api')->user()->student->id)->where('confirmation', 0)->get();
+
+            foreach ($unconfirmed_tickets as $ticket) {
+
+                if ($ticket->course->start_date >= date('Y-m-d')) {
+                    $subData = array(
+                        'title' => $ticket->course->title,
+                        'identifier' => $ticket->identifier,
+                        'course_start_date' => $ticket->course->start_date,
+                        'course_end_date' => $ticket->course->end_date,
+                        'total_hours' => $ticket->course->hours,
+                        'poster-1' => $ticket->course->image->image,
+                        'poster-2' => $ticket->course->image->image_2,
+                    );
+                    array_push($this->data['unconfirmed'], $subData);
+                }
+
             }
-        }
 
-        $finished_tickets = Course::select('id')->where('start_date', '<', date('Y-m-d'))->get();
+            // Getting The Finished Ticket For The Student
+            $finished_tickets = Reservation::where('student_id', auth('api')->user()->student->id)->get();
 
-        for ($i = 0; $i < count($finished_tickets); $i++) {
-            $tickets = Reservation::where('course_id', $finished_tickets[$i]->id)->where('student_id', auth('api')->user()->student->id)->where('confirmation', 0)->where()->get();
-            if (count($tickets) > 0) {
-                $subData = array(
-                    'title' => $ticket->course->title,
-                    'identifier' => $ticket->identifier,
-                    'course_start_date' => $ticket->course->start_date,
-                    'course_end_date' => $ticket->course->end_date,
-                    'total_hours' => $ticket->course->hours,
-                    'poster-1' => $ticket->course->image->image,
-                    'poster-2' => $ticket->course->image->image_2,
-                );
-                array_push($this->data['finished'], $subData);
+            foreach ($finished_tickets as $ticket) {
+
+                if ($ticket->course->start_date < date('Y-m-d')) {
+                    $subData = array(
+                        'title' => $ticket->course->title,
+                        'identifier' => $ticket->identifier,
+                        'course_start_date' => $ticket->course->start_date,
+                        'course_end_date' => $ticket->course->end_date,
+                        'total_hours' => $ticket->course->hours,
+                        'poster-1' => $ticket->course->image->image,
+                        'poster-2' => $ticket->course->image->image_2,
+                    );
+                    array_push($this->data['finished'], $subData);
+                }
+
             }
+
+            array_push($this->response['status'], "Success");
+            array_push($this->response['errors'], null);
+            array_push($this->response['response'], $this->data);
+
+            return response()->json($this->response);
         }
-
-        array_push($this->response['status'], "success");
-        array_push($this->response['errors'], null);
-        array_push($this->response['response'], $this->data);
-
-        return response()->json($this->response);
     }
 
     // This Function Show All The Certificate That That The User | Student Got
     public function certificate()
     {
-        return response()->json($this->response);
+        $certificates = Certificate::where('student_id', auth('api')->user()->student->id)->get();
+
+        if ( count($certificates) < 1 ){
+            array_push($this->response['status'], 'Failed');
+            array_push($this->response['error'], 'لم يتم إصداراي شهادة لهذا المستخدم');
+            array_push($this->response['response'], null);
+
+            return response()->json($this->response);
+        }else {
+
+            $this->data['certificates'] = array();
+
+            foreach ($certificates as $certificate){
+                $subData = array(
+                    'center' => $certificate->course->center->name,
+                    'course_name' => $certificate->course->name,
+                    'issue_date' => $certificate->date,
+                    'student_name' => $certificate->student->first_name.$certificate->student->second_name.$certificate->student->third_name,
+                    'student_id' => $certificate->student->id,
+                );
+                array_push($this->data['certificates'], $subData);
+            }
+
+            array_push($this->response['status'], 'Success');
+            array_push($this->response['error'], null);
+            array_push($this->response['response'], array(
+                'certificates' => $this->data['certificates']
+            ));
+            return response()->json($this->response);
+        }
+
     }
 
     // This Function Show More Details About The Selected Course
     public function show_course($center_username, $course_identifier)
     {
 
-        $center = User::where('username', $center_username)->first();
+        $center = User::where('username', $center_username)->where('role_id', 2)->first();
 
         if (count($center) < 1) {
-            array_push($this->response['status'], "failed");
+            array_push($this->response['status'], "Failed");
             array_push($this->response['errors'], "الرجاء التأكد من معرف الجهة");
             array_push($this->response['response'], null);
+
             return response()->json($this->response);
         } else {
 
-            $course = Course::where('identifier', $course_identifier)->first();
+            $course = Course::where('identifier', $course_identifier)->where('center_id', $center->id)->first();
 
             if (count($course) < 1) {
-                array_push($this->response['status'], "failed");
+                array_push($this->response['status'], "Failed");
                 array_push($this->response['errors'], "الرجاء التأكد من معرف الدورة");
                 array_push($this->response['response'], null);
+
                 return response()->json($this->response);
             } else {
+
                 if ($course->type == "free") {
                     $price = 0;
                 } else {
                     $price = $course->price;
                 }
-                $data = array(
+
+                $this->data['course'] = array();
+                $this->data['trainers'] = array();
+
+                $subData = array(
                     'title' => $course->title,
                     'identifier' => $course->identifier,
                     'address' => $course->address,
@@ -252,9 +307,23 @@ class StudentAPIController extends Controller
                     'poster-1' => $course->image->image,
                     'poster-2' => $course->image->image_2,
                 );
-                array_push($this->response['status'], "success");
+
+                array_push($this->data['course'], $subData);
+
+                foreach ($course->trainers as $trainer){
+                    $trainersSubData = array(
+                        'id' => $trainer->id,
+                        'name' => $trainer->name,
+                        'title' => $trainer->title->name,
+                    );
+
+                    array_push($this->data['trainers'], $trainersSubData);
+                }
+
+                array_push($this->response['status'], "Success");
                 array_push($this->response['errors'], null);
-                array_push($this->response['response'], $data);
+                array_push($this->response['response'], $this->data);
+
                 return response()->json($this->response);
             }
         }
@@ -266,7 +335,7 @@ class StudentAPIController extends Controller
 
         $user = User::find(auth('api')->user()->student->user_id);
 
-        $data = array(
+        $this->data['user'] = array(
             'username' => $user->username,
             'email' => $user->email,
             'phone' => $user->phone,
@@ -283,11 +352,12 @@ class StudentAPIController extends Controller
             'country_id' => $user->student->city->country->id,
             'country' => $user->student->city->country->name,
         );
-
-        array_push($this->response['response'], $data);
+        
+        array_push($this->response['response'], $this->data);
 
         $this->data['countries'] = array();
         $countries = Country::all();
+        
         for ($i = 0; $i < count($countries); $i++) {
             $subData = array(
                 'id' => $countries[$i]->id,
@@ -296,7 +366,7 @@ class StudentAPIController extends Controller
             array_push($this->data['countries'], $subData);
         }
 
-        array_push($this->response['status'], "success");
+        array_push($this->response['status'], "Success");
         array_push($this->response['errors'], null);
 
         return response()->json($this->response);
@@ -323,7 +393,7 @@ class StudentAPIController extends Controller
 
         if ($user->phone != $request->phone) {
             $request->validate([
-                'phone' => 'email|unique:users,email' . Rule::unique('users')->ignore(auth('api')->user()->student->user_id),
+                'phone' => 'email|unique:users,email|starts_with:5' . Rule::unique('users')->ignore(auth('api')->user()->student->user_id),
             ]);
             $counter++;
         }
@@ -371,7 +441,7 @@ class StudentAPIController extends Controller
         }
 
         if ($request->hasFile('profile-image')) {
-            if (File::exists('storage/account-images/', $user->student->image)) {
+            if (file_exists('storage/account-images/', $user->student->image)) {
                 if (Storage::delete('public/account-images/' . $user->student->image)) {
                     $file = $request->file('profile-image')->store('public/account-images');
                     $file_name = basename($file);
@@ -390,7 +460,7 @@ class StudentAPIController extends Controller
 
         if ($user->student->city->country->id != $request->country_id) {
             $request->validate([
-                'second_name' => 'integer|exists:countries,id',
+                'country_id' => 'integer|exists:countries,id',
             ]);
             $counter++;
         }
@@ -403,7 +473,7 @@ class StudentAPIController extends Controller
 
         if ($user->student->city_id != $request->city_id) {
             $request->validate([
-                'second_name' => 'integer|' . Rule::in($cities),
+                'city_id' => 'integer|' . Rule::in($cities),
             ]);
             $counter++;
         }
@@ -412,17 +482,19 @@ class StudentAPIController extends Controller
             $user->save();
             $user->student->save();
 
+            array_push($this->response['status'], "Success");
             array_push($this->response['errors'], null);
             array_push($this->response['response'], "تم تعديل البيانات بنجاح");
 
+            return response()->json($this->response);
+
+        }else {
+            array_push($this->response['status'], "Failed");
+            array_push($this->response['errors'], "قم بتعديل بعض البيانات لكي يتم حفظها");
+            array_push($this->response['response'], null);
+
+            return response()->json($this->response);
         }
-
-        array_push($this->response['status'], "failed");
-        array_push($this->response['errors'], "قم بتعديل بعض البيانات لكي يتم حفظها");
-        array_push($this->response['response'], null);
-
-
-        return response()->json($this->response);
     }
 
     // This Function Register A New User | Student
@@ -442,10 +514,10 @@ class StudentAPIController extends Controller
             'second_name' => 'required|string|max:20|min:3',
             'email' => 'required|email|max:100|unique:users,email',
             'username' => 'required|string|max:20|min:5|unique:users,username',
-            'phone' => 'required|max:9|min:9|unique:users,phone',
-            'gender' => 'required|max:99|min:1|exists:genders,id',
-            'country' => 'required|integer|max:99|min:1|exists:countries,id',
-            'city' => 'required|integer|max:99|min:1|' . Rule::in($cities),
+            'phone' => 'required|max:9|min:9|unique:users,phone|starts_with:5',
+            'gender' => 'required|exists:genders,id',
+            'country' => 'required|integer|exists:countries,id',
+            'city' => 'required|integer|' . Rule::in($cities),
             'password' => 'required|string|max:32|min:6|confirmed'
         ]);
 
@@ -482,13 +554,13 @@ class StudentAPIController extends Controller
                 'token' => $token,
             );
 
-            array_push($this->response['status'], "success");
+            array_push($this->response['status'], "Success");
             array_push($this->response['errors'], null);
             array_push($this->response['response'], $this->data);
             return response()->json($this->response);
         } catch (\Exception $e) {
             DB::rollBack();
-            array_push($this->response['status'], "failed");
+            array_push($this->response['status'], "Failed");
             array_push($this->response['errors'], "هناك خطأ تقني أثناء التسجيل");
             array_push($this->response['response'], null);
             return response()->json($this->response);
@@ -500,7 +572,6 @@ class StudentAPIController extends Controller
     public function reserve_course(Request $request)
     {
 
-
         $request->validate([
             'identifier' => 'string|max:10|min:10|exists:courses,identifier',
             'coupon' => 'nullable|string|max:10|min:3'
@@ -509,15 +580,15 @@ class StudentAPIController extends Controller
 
         $course = Course::where('identifier', $request->identifier)->first();
         if (count($course) < 1) {
-            array_push($this->response['status'], 'failed');
-            array_push($this->response['errors'], 'Invalid Course Identifier');
+            array_push($this->response['status'], 'Failed');
+            array_push($this->response['errors'], 'الرجاا التأكد من معرف الدورة');
             array_push($this->response['response'], null);
 
             return response()->json($this->response);
         } else {
             $reservation = Reservation::where('course_id', $course->id)->where('student_id', auth('api')->user()->student->id)->first();
             if (count($reservation) > 0) {
-                array_push($this->response['status'], 'failed');
+                array_push($this->response['status'], 'Failed');
                 array_push($this->response['errors'], 'تم حجز الدورة مسبقا قم بإلغاء الحجز لكي تتمكن من حجزها مجددا');
                 array_push($this->response['response'], null);
 
@@ -545,11 +616,11 @@ class StudentAPIController extends Controller
 
                     ]);
 
-                    array_push($this->response['status'], 'success');
+                    array_push($this->response['status'], 'Success');
                     array_push($this->response['errors'], null);
 
                     if ($course->type == 'free') {
-                        array_push($this->response['response'], 'تم حجز الدور بنجاح قم بإنتظار التأكيد من المدير');
+                        array_push($this->response['response'], 'تم حجز الدور بنجاح بإنتظار التأكيد من المركز');
                     } else {
                         array_push($this->response['response'], 'تم حجز الدور بنجاح قم بدفع قيمة الدورة لكي يتم إصدار الشهادة');
                     }
@@ -572,27 +643,30 @@ class StudentAPIController extends Controller
     public function show_center($center_username)
     {
 
-        $user = User::where('username', $center_username)->first();
+        $user = User::where('username', $center_username)->where('role_id', 2)->first();
         if (count($user) < 1) {
-            array_push($this->response['status'], 'failed');
+            array_push($this->response['status'], 'Failed');
             array_push($this->response['errors'], 'الرجاء التأكد من معرف الجهة');
             array_push($this->response['response'], null);
 
             return response()->json($this->response);
         } else {
-            $this->data = array(
+            $this->data['center'] = array(
                 'name' => $user->center->name,
                 'phone' => $user->phone,
                 'email' => $user->email,
                 'website' => $user->center->website,
                 'city' => $user->center->city->name,
                 'about' => $user->center->about,
+                'verification_number' => $user->center->verification_number,
+                'verification_authority' => $user->center->verification_authority,
+                'type' => $user->center->type,
             );
 
             $this->data['socialMedia'] = array();
 
             for ($i = 0; $i < 4; $i++) {
-                $social_media = ['Twitter', 'Snapchat', 'Youtube', 'Facebook'];
+                $social_media = ['Twitter', 'Facebook', 'Snapchat', 'Instagram'];
 
                 $subData = array(
                     'name' => $social_media[$i],
@@ -628,7 +702,7 @@ class StudentAPIController extends Controller
                 array_push($this->data['courses'], $subData);
             }
 
-            array_push($this->response['status'], "success");
+            array_push($this->response['status'], "Success");
             array_push($this->response['errors'], null);
             array_push($this->response['response'], $this->data);
 
@@ -649,17 +723,17 @@ class StudentAPIController extends Controller
 
         ]);
 
-        $user = User::find(auth('api')->user()->student->user_id)->first();
+        $user = User::find(auth('api')->user()->student->user_id);
 
         if (!Hash::check($request->old_password, $user->password)) {
-            array_push($this->response['status'], 'failed');
+            array_push($this->response['status'], 'Failed');
             array_push($this->response['errors'], 'كلمة المرور القديمة غير صحيحة');
             array_push($this->response['response'], null);
 
             return response()->json($this->response);
         } else {
             if (Hash::check($request->new_password, $user->password)) {
-                array_push($this->response['status'], 'failed');
+                array_push($this->response['status'], 'Failed');
                 array_push($this->response['errors'], 'كلمة المرور الجديدة يجب أن تكون مختلفة عن القديمة');
                 array_push($this->response['response'], null);
 
@@ -668,7 +742,7 @@ class StudentAPIController extends Controller
                 $user->password = Hash::make($request->new_password);
                 $user->save();
 
-                array_push($this->response['status'], 'success');
+                array_push($this->response['status'], 'Success');
                 array_push($this->response['errors'], 'تم تغير كلمة المرور بنجاح');
                 array_push($this->response['response'], null);
 
@@ -688,41 +762,43 @@ class StudentAPIController extends Controller
 
         $reservation = Reservation::where('identifier', $request->identifier)->first();
 
-        if ( count($reservation) < 1 ){
-            array_push($this->response['status'], 'failed');
+        if (count($reservation) < 1) {
+            array_push($this->response['status'], 'Failed');
             array_push($this->response['errors'], 'الرجاء التأكد من معرف الحجز');
             array_push($this->response['response'], null);
-            return response()->json($this->response);
-        }
-
-        if ($reservation->confirmation == 1) {
-            array_push($this->response['status'], 'failed');
-            array_push($this->response['errors'], 'تم تأكيد حجزك الرجاء التواصل مع الاإدارة');
-            array_push($this->response['response'], null);
 
             return response()->json($this->response);
-        } else {
+        }else {
 
-            try {
-
-                $reservation->delete();
-
-                array_push($this->response['status'], 'success');
-                array_push($this->response['errors'], null);
-                array_push($this->response['response'], 'تم إلغاء حجزك بنجاح');
-
-                return response()->json($this->response);
-
-            } catch (\Exception $e) {
-                array_push($this->response['status'], 'Error');
-                array_push($this->response['errors'], 'خطأ تقني أثناء حذف الحجز');
+            if ($reservation->confirmation == 1) {
+                array_push($this->response['status'], 'Failed');
+                array_push($this->response['errors'], 'تم تأكيد حجزك الرجاء التواصل مع الاإدارة');
                 array_push($this->response['response'], null);
 
                 return response()->json($this->response);
+            } else {
+
+                try {
+
+                    $reservation->delete();
+
+                    array_push($this->response['status'], 'Success');
+                    array_push($this->response['errors'], null);
+                    array_push($this->response['response'], 'تم إلغاء حجزك بنجاح');
+
+                    return response()->json($this->response);
+
+                } catch (\Exception $e) {
+                    array_push($this->response['status'], 'Error');
+                    array_push($this->response['errors'], 'خطأ تقني أثناء حذف الحجز');
+                    array_push($this->response['response'], null);
+
+                    return response()->json($this->response);
+                }
+
             }
 
         }
-
     }
 
     // This Function For Login Going To Be Used With All Request Of Login
@@ -731,14 +807,15 @@ class StudentAPIController extends Controller
         $credentials = request(['username', 'password']);
 
         if (!$token = auth('api')->logout($credentials)) {
-            array_push($this->response['status'], 'failed');
+            array_push($this->response['status'], 'Failed');
             array_push($this->response['errors'], 'الرجاء التأكد من اسم المستخدم | كلمة المرور');
             array_push($this->response['response'], null);
+
             return response()->json($this->response, 401);
         }
 
 
-        array_push($this->response['status'], 'success');
+        array_push($this->response['status'], 'Success');
         array_push($this->response['errors'], null);
         $this->data = array(
             'token' => $token,
@@ -754,7 +831,7 @@ class StudentAPIController extends Controller
     public function me()
     {
         $user = User::find(auth('api')->user()->student->user_id);
-        $this->response['response'] = [
+        $this->data['user'] = [
             'first_name' => $user->student->first_name,
             'second_name' => $user->student->second_name,
             'third_name' => $user->student->third_name,
@@ -770,8 +847,9 @@ class StudentAPIController extends Controller
             'gender' => $user->student->gender->name,
             'profile-image' => "/storage/account-images/" . $user->student->image,
         ];
-        array_push($this->response['status'], 'success');
+        array_push($this->response['status'], 'Success');
         array_push($this->response['errors'], null);
+        array_push($this->response['response'], $this->data);
         return response()->json($this->response);
     }
 
@@ -780,7 +858,11 @@ class StudentAPIController extends Controller
     {
         auth('api')->logout();
 
-        return response()->json(['message' => 'successfully logged out']);
+        array_push($this->response['status'], 'Success');
+        array_push($this->response['errors'], null);
+        array_push($this->response['response'], 'تم تسجيل الخروج بنجاح');
+
+        return response()->json(['message' => '']);
     }
 
     // This Function For Refreshing The Old Token And Replace It With A New One

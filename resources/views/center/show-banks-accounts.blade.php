@@ -1,4 +1,4 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('title', "عرض الحسابات البنكية")
 @section('main-title', "عرض الحسابات البنكية")

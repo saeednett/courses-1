@@ -1,4 +1,4 @@
-@extends('student.master-v-1-1')
+@extends('student.layouts.master-v-1-1')
 
 @section('title', 'خطأ')
 
@@ -8,17 +8,8 @@
 @endsection
 
 @section('style-file')
-    <link rel="stylesheet" href="{{ asset('css/student/courses-index.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('index.css') }}"/>
 @endsection
-
-@section('script-file')
-    <script>
-        $('.carousel').carousel();
-    </script>
-    <script src="{{ asset('js/student/courses-index.js') }}"></script>
-@endsection
-
-
 
 @section('content')
 
@@ -48,4 +39,8 @@
         </div>
     </div>
 
+@endsection
+
+@section('script-file')
+    <script src="{{ asset('js/student/error-page.js') }}"></script>
 @endsection

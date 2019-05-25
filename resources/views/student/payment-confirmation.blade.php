@@ -1,4 +1,4 @@
-@extends('student.master-v-1-1')
+@extends('student.layouts.master-v-1-1')
 
 @section('title', $reservation->course->title)
 
@@ -9,10 +9,6 @@
 
 @section('style-file')
     <link rel="stylesheet" href="{{ asset('css/student/payment-confirmation.css') }}" />
-@endsection
-
-@section('script-file')
-    <script src="{{ asset('js/student/payment-confirmation.js') }}"></script>
 @endsection
 
 @section('content')
@@ -277,4 +273,8 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script-file')
+    <script src="{{ asset('js/student/payment-confirmation.js') }}"></script>
 @endsection

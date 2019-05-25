@@ -1,4 +1,4 @@
-@extends('student.master-v-1-1')
+@extends('student.layouts.master-v-1-1')
 
 @section('title', $course->title)
 
@@ -8,15 +8,8 @@
 @endsection
 
 @section('style-file')
-    <link rel="stylesheet" href="{{ asset('css/student/show-course-details.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/student/show-course-details.css') }}"/>
 @endsection
-
-@section('script-file')
-    <script>
-        $('.carousel').carousel();
-    </script>
-@endsection
-
 
 @section('content')
 
@@ -24,13 +17,7 @@
         <div class="row justify-content-center mt-lg-3 mt-2">
             <div class="col-lg-10">
                 @if(\Illuminate\Support\Facades\Auth::check())
-                    <?php $students = array(); ?>
-                    @foreach($course->reservation as $reservation)
-                        @if($reservation->student_id == \Illuminate\Support\Facades\Auth::user()->student->id)
-                            <? array_push($students, $reservation->student_id); ?>
-                        @endif
-                    @endforeach
-                    @if(!empty($students))
+                    @if($reservation_state == 1)
                         <div class="row justify-content-center">
                             <div class="col-12">
                                 <div class="alert alert-success">
@@ -40,14 +27,40 @@
                                 </div>
                             </div>
                         </div>
+                    @else
+                        @if($date_state == 1)
+                            <div class="row justify-content-center">
+                                <div class="col-12">
+                                    <div class="alert alert-danger text-danger">
+                                        <ul class="text-right mb-0 rtl">
+                                            <li>لقد إنقضى وقت الدورة لايمكنك التسجيل فيها</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    @endif
+                @else
+                    @if($date_state == 1)
+                        <div class="row justify-content-center">
+                            <div class="col-12">
+                                <div class="alert alert-danger text-danger">
+                                    <ul class="text-right mb-0 rtl">
+                                        <li>لقد إنقضى وقت الدورة لايمكنك التسجيل فيها</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     @endif
                 @endif
+
                 <div class="row justify-content-center">
                     <div class="col-lg-7 col-md-12 col-sm-12 col-12 text-right order-lg-last order-first mb-lg-4 mt-lg-0 mb-0 mt-4">
                         <h3>{{ $course->title }}</h3>
                         <div class="main-info">
                             <div class="course-logo rounded-top">
-                                <img src="/storage/course-images/{{ $course->image->image }}" alt="{{ $course->title }}">
+                                <img src="/storage/course-images/{{ $course->image->image }}"
+                                     alt="{{ $course->title }}">
                             </div>
                             <div class="block rounded-bottom mt-0">
                                 <div class="row">
@@ -58,29 +71,61 @@
                                         <h5 class="text-right d-lg-none d-block rtl"><a
                                                     href="{{ route('student.center.profile.show', $course->center->user->username) }}">{{ $course->center->user->name }}</a>
                                         </h5>
-                                        <div class="social-media mt-4">
-                                            <div class="row justify-content-end">
-                                                <div class="col-lg-8 text-center h-100">
-                                                    <div class="row justify-content-center">
-                                                        <div class="col-lg col-md col-sm col mt-1">
-                                                            <i class="fa fa-facebook fa-2x"></i>
-                                                        </div>
 
-                                                        <div class="col-lg col-md col-sm col mt-1">
-                                                            <i class="fa fa-twitter fa-2x"></i>
-                                                        </div>
+                                        @if ($social_accounts_state == 1)
+                                            <div class="social-media mt-4">
+                                                <div class="row justify-content-end">
+                                                    <div class="col-lg-8 text-center h-100">
+                                                        <div class="row justify-content-center">
 
-                                                        <div class="col-lg col-md col-sm col mt-1">
-                                                            <i class="fa fa-snapchat fa-2x"></i>
-                                                        </div>
+                                                            @foreach($social_media_accounts as $social)
+                                                                @switch(strtolower($social->socialMediaInformation->name))
 
-                                                        <div class="col-lg col-md col-sm col mt-1">
-                                                            <i class="fa fa-instagram fa-2x"></i>
+                                                                    @case("twitter")
+                                                                    <div class="col-lg col-md col-sm col mt-1">
+                                                                        <a href="{{ $social->socialMediaInformation->link }}{{ $social->username }}"
+                                                                           target="_blank">
+                                                                            <i class="fa fa-twitter fa-2x"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                    @break
+
+                                                                    @case("facebook")
+                                                                    <div class="col-lg col-md col-sm col mt-1">
+                                                                        <a href="{{ $social->socialMediaInformation->link }}{{ $social->username }}"
+                                                                           target="_blank">
+                                                                            <i class="fa fa-facebook fa-2x"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                    @break
+
+                                                                    @case("snapchat")
+                                                                    <div class="col-lg col-md col-sm col mt-1">
+                                                                        <a href="{{ $social->socialMediaInformation->link }}{{ $social->username }}"
+                                                                           target="_blank">
+                                                                            <i class="fa fa-snapchat fa-2x"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                    @break
+
+                                                                    @case("instagram")
+                                                                    <div class="col-lg col-md col-sm col mt-1">
+                                                                        <a href="{{ $social->socialMediaInformation->link }}{{ $social->username }}"
+                                                                           target="_blank">
+                                                                            <i class="fa fa-instagram fa-2x"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                    @break
+                                                                @endswitch
+                                                            @endforeach
+
+
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        @endif
+
                                     </div>
                                     <div class="col-lg-3 col-md-4 col-sm-4 col-4">
                                         <div class="logo-holder">
@@ -159,9 +204,9 @@
                                         @elseif($course->hours == 2)
                                             {{ $course->hours." " }}ساعتين
                                         @elseif($course->hours > 2 && $course->hours <= 10)
-                                             {{ $course->hours." " }}ساعات
+                                            {{ $course->hours." " }}ساعات
                                         @else
-                                             {{ $course->hours." " }}ساعة
+                                            {{ $course->hours." " }}ساعة
                                         @endif
                                     </div>
                                 </div>
@@ -173,10 +218,6 @@
                                     </div>
                                     <div class="col-lg-9 col-md-9 col-sm-8 col-8 rtl">
                                         <?php
-                                        $date1 = date_create($course->start_date);
-                                        $date2 = date_create($course->finish_date);
-                                        $diff = date_diff($date1, $date2);
-                                        $days = $diff->format("%a");
                                         if ($days == 1) {
                                             echo $days . " يوم ";
                                         } elseif ($days == 2) {
@@ -284,27 +325,39 @@
                 <div class="row justify-content-lg-end justify-content-center">
                     <div class="col-lg-7 col-12">
                         @if(\Illuminate\Support\Facades\Auth::check())
-                            <?php $students = array(); ?>
-                            @foreach($course->reservation as $reservation)
-                                @if($reservation->student_id == \Illuminate\Support\Facades\Auth::user()->student->id)
-                                    <?php array_push($students, $reservation->student_id); ?>
+                            @if($reservation_state == 0)
+                                @if($date_state == 0)
+                                    <form method="post"
+                                          action="{{ route('account.course.reservation.form', $course->identifier) }}">
+                                        {{ csrf_field() }}
+                                        <button type="submit" class="btn custom-btn">احجز الآن</button>
+                                    </form>
                                 @endif
-                            @endforeach
-                            @if(empty($students))
-                                <form method="post" action="{{ route('account.course.reservation.form', $course->identifier) }}">
+                            @else
+                                @if($date_state == 0)
+                                    <form method="post"
+                                          action="{{ route('account.course.reservation.form', $course->identifier) }}">
+                                        {{ csrf_field() }}
+                                        <button type="submit" class="btn custom-btn">احجز الآن</button>
+                                    </form>
+                                @endif
+                            @endif
+                        @else
+                            @if($date_state == 0)
+                                <form method="post"
+                                      action="{{ route('account.course.reservation.form', $course->identifier) }}">
                                     {{ csrf_field() }}
                                     <button type="submit" class="btn custom-btn">احجز الآن</button>
                                 </form>
                             @endif
-                        @else
-                            <form method="post" action="{{ route('account.course.reservation.form', $course->identifier) }}">
-                                {{ csrf_field() }}
-                                <button type="submit" class="btn custom-btn">احجز الآن</button>
-                            </form>
                         @endif
                     </div>
                 </div>
             </div>
         </div>
     </div>
+@endsection
+
+@section('script-file')
+    <script src="{{ asset('js/student/show-course-details.js') }}"></script>
 @endsection

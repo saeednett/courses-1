@@ -1,0 +1,15 @@
+.search_holder{
+    max-width: 500px;
+    height: 150px;
+    padding: 2px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    z-index: 1500;
+    border-radius: 4px;
+    position: absolute;
+    background: grey;
+    border: 1px solid black;
+}

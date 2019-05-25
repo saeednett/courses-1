@@ -2205,7 +2205,7 @@ table.table-mails {
   margin-right: -10px; }
 
 tr:last-child td:last-child .dropdown-menu {
-  bottom: 100%;
+  bottom: -35%;
   top: auto;
   margin-top: 0;
   margin-bottom: 8px; }

@@ -62,25 +62,12 @@
                                 @endforeach
                             @else
                                 <tr class="gradeX">
-                                    <td class="text-danger" colspan="5">
-                                        <h3 style="margin-top: 15px">لاتوجد دورات مسجلة في النظام</h3>
+                                    <td class="text-danger" colspan="7">
+                                        <h3 class="mt-15">لاتوجد دورات مسجلة في النظام</h3>
                                     </td>
                                 </tr>
                             @endif
                             </tbody>
-                            @if(count($courseAdmin) > 0)
-                                <tfoot>
-                                <tr>
-                                    <th class="text-center">اسم الدورة</th>
-                                    <th class="text-center">تاريخ الدورة</th>
-                                    <th class="text-center">عدد المقاعد</th>
-                                    <th class="text-center">عدد الطلاب</th>
-                                    <th class="text-center">المدربين</th>
-                                    <th class="text-center">الحضور</th>
-                                    <th class="text-center">خيارات</th>
-                                </tr>
-                                </tfoot>
-                            @endif
                         </table>
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('style-file')
     <link rel="stylesheet" href="{{ asset('css/center/reset-password.css') }}" />
@@ -30,7 +30,7 @@
                 <div class="panel-body">
                     <div class="table-responsive">
                         <div class="container-fluid">
-                            <form method="post" action="{{ route('center.password.reset.confirm') }}">
+                            <form method="post" action="{{ route('center.reset.password.confirm') }}">
                                 {{ csrf_field() }}
                                 <div class="row form-group">
                                     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">

@@ -7,7 +7,7 @@ $(document).ready(function () {
 
         $(document).keydown(function (event) {
             var keyCode = event.keyCode || event.which;
-            if (keyCode == 9) {
+            if (keyCode === 9) {
                 event.preventDefault();
             }
         });

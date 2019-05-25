@@ -38,7 +38,7 @@ class AdminController extends Controller
 
             $course = CourseAdmin::where('admin_id', Auth::user()->admin->id)->where('course_id', $courses_data[$i]->id)->where('role_id', 2)->first();
 
-            if (count($course) > 0) {
+            if (empty($course)) {
 
                 array_push($course_attender, $course->course_id);
 
@@ -62,7 +62,7 @@ class AdminController extends Controller
 
             $course = CourseAdmin::where('admin_id', Auth::user()->admin->id)->where('course_id', $courses_data[$i]->id)->where('role_id', 1)->first();
 
-            if (count($course) > 0) {
+            if (empty($course)) {
 
                 array_push($course_admin, $course->course_id);
 
@@ -115,13 +115,13 @@ class AdminController extends Controller
         if (Auth::check() && Auth::user()->role_id == 3) {
 
             $course = Course::where('identifier', $identifier)->first();
-            if (count($course) < 1) {
+            if (empty($course)) {
                 return $this->error_page("خطأ", "الرجاء التأكد من مهرف الدورة");
             } else {
 
                 $admin = CourseAdmin::where('course_id', $course->id)->where('admin_id', Auth::user()->admin->id)->where('role_id', 1)->first();
 
-                if (count($admin) < 1) {
+                if (empty($admin)) {
                     return $this->error_page();
                 } else {
 
@@ -149,13 +149,13 @@ class AdminController extends Controller
 
             $course = Course::where('identifier', $identifier)->first();
 
-            if (count($course) < 1) {
+            if (empty($course)) {
                 return $this->error_page("خطأ", "الرجاء التأكد من معرف الدورة");
             } else {
 
                 $admin = CourseAdmin::where('course_id', $course->id)->where('admin_id', Auth::user()->admin->id)->where('role_id', 1)->first();
 
-                if (count($admin) < 1) {
+                if (empty($admin)) {
                     return $this->error_page();
                 } else {
 
@@ -279,7 +279,7 @@ class AdminController extends Controller
 
             $course = Course::where('identifier', $identifier)->first();
 
-            if (count($course) < 1) {
+            if (empty($course)) {
                 return $this->error_page("خطأ", "الرجاا التأكد من معرف الدورة");
             } else {
 
@@ -348,7 +348,7 @@ class AdminController extends Controller
 
             if ($admin->admin->name != $request->name) {
                 $request->validate([
-                    'name' => 'required|string|max:50|min:7',
+                    'name' => 'required|string|max:50|min:6',
                 ]);
                 $admin->admin->name = $request->name;
                 $counter++;
@@ -356,7 +356,7 @@ class AdminController extends Controller
 
             if ($admin->phone != $request->phone) {
                 $request->validate([
-                    'phone' => 'required|string|max:20|min:10|starts_with:+',
+                    'phone' => 'required|digits_between:9,9|starts_with:5',
                 ]);
                 $admin->phone = $request->phone;
                 $counter++;
@@ -380,7 +380,7 @@ class AdminController extends Controller
 
             // Checking If The Request Has An Image
             if ($request->hasFile('profile-image')) {
-                if (File::exists('storage/admin-images/', $admin->admin->image)) {
+                if (file_exists('storage/admin-images/', $admin->admin->image)) {
                     if (Storage::delete('public/admin-images/' . $admin->admin->image)) {
                         $file = $request->file('profile-image')->store('public/admin-images');
                         $file_name = basename($file);
@@ -398,9 +398,7 @@ class AdminController extends Controller
             return redirect()->route('admin.edit')->with('success', 'تم تحديث البيانات الشخصية بنجاح');
 
         } else {
-
             return $this->error_page();
-
         }
 
     }
@@ -464,13 +462,13 @@ class AdminController extends Controller
 
             $course = Course::where('identifier', $identifier)->first();
 
-            if (count($course) < 1) {
+            if (empty($course)) {
                 return $this->error_page("خطأ", "الرجاء التأكد من معرف الدورة");
             }
 
             $admin = CourseAdmin::where('course_id', $course->id)->where('admin_id', Auth::user()->admin->id)->where('role_id', 1)->first();
 
-            if (count($admin) < 1) {
+            if (empty($admin)) {
                 return $this->error_page("خطأ", "الرجاء التأكد من معرف الدورة");
             }
 
@@ -492,12 +490,12 @@ class AdminController extends Controller
         if (Auth::check() && Auth::user()->role_id == 3) {
 
             $course = Course::where('identifier', $identifier)->first();
-            if (count($course) < 1) {
+            if (empty($course)) {
                 return $this->error_page("خطأ", "الرجاء التأكد من معرف الدورة");
             } else {
 
                 $admin = CourseAdmin::where('course_id', $course->id)->where('admin_id', Auth::user()->admin->id)->where('role_id', 1)->first();
-                if (count($admin) < 1) {
+                if (empty($admin)) {
                     return $this->error_page("خطأ", "الرجاء التأكد من معرف الدورة");
                 } else {
 
@@ -506,7 +504,7 @@ class AdminController extends Controller
                     // Trainers Array That Will Hold Ids Of The Trainers Who Belong To The Center
                     $trainers_data = array();
                     // Getting Trainers Information
-                    $trainers = Trainer::where('center_id', Auth::user()->admin->center->id)->get();
+                    $trainers = Trainer::where('center_id', $center->id)->get();
 
                     // Making Sure That The Center Has Trainers
                     if (count($trainers) < 1) {
@@ -518,121 +516,114 @@ class AdminController extends Controller
                     }
 
                     $counter = 0;
-                    // Validating The Request Data
-                    $request->validate([
-                        // The Title Of The Course
-                        'title' => 'required|string|max:50|min:10',
-                        // the Category Of The Course
-                        'category' => 'required|integer|max:99|min:1|exists:categories,id',
-                        // If The Course Is Visible To The Users
-                        'visible' => 'required|integer|max:2|min:1',
-                        // The Template Of The Certificate Of The Course
-                        'template' => 'required|integer|max:3|min:1',
-                        // The Country Of The City
-                        'country' => 'required|integer|max:99|min:1|exists:countries,id',
-                        // The City Of The Course
-                        'city' => 'required|integer|max:99|min:1|exists:cities,id',
-                        // The Address Of tHE Course
-                        'address' => 'required|string|max:150|min:10',
-                        // The Location The Course On Google Map
-                        'location' => 'required|string|max:150|min:20',
-                        // The Cover And Image Of The Course
-                        'course-poster-1' => 'nullable|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
-                        'course-poster-2' => 'nullable|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
-                        // The Description Of The Course
-                        'description' => 'required|string|max:200|min:50',
-
-
-                        //The Trainers Array Of The Course
-                        'trainer' => 'required|array|max:' . count($center->trainer),
-                        // The Trainers Array Data
-                        'trainer.*' => 'required|integer|distinct|' . Rule::in($trainers_data),
-
-                        // The Type Of Course Payed Or Free
-                        'type' => 'required|string|' . Rule::in(['payed', 'free']),
-                        //The Coupons Indicator Of The Coupons
-                        'coupon' => 'required_if:type,payed|integer|max:1|min:0',
-                        //The Coupons Array Data
-                        'coupon_code' => 'required_if:coupon,2|array',
-                        'coupon_code.*' => 'required|string|distinct',
-                        'coupon_discount' => 'required_if:coupon,2|array|size:' . count($request->coupon_code),
-                        'coupon_discount.*' => 'required|integer',
-
-                        // The Start Date Of The Course
-                        'start_date' => 'required|date|after_or_equal:' . date('Y-m-d'),
-                        // The Finish Date Of The Course
-                        'finish_date' => 'required|date|after_or_equal:' . $request->start_date,
-                        // The Deadline Of Reservation
-                        'end_reservation' => 'required|date|before_or_equal:' . $request->start_date,
-                        // The Start Time Of The Course
-                        'start_time' => ['required', 'regex:/(^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$)/', 'string', 'max:5', 'min:5'],
-                        // The Total Attendance Of The Course
-                        'attendance' => 'required|digits_between:1,4',
-                        // The Price Of The Course
-                        'price' => 'required_if:type,2|digits_between:1,4',
-                        // The Attendance Gender
-                        'gender' => 'required|digits_between:1,3|',
-
-                    ]);
 
                     if ($course->title != $request->title) {
+                        $request->validate([
+                            // The Title Of The Course
+                            'title' => 'required|string|max:50|min:10',
+                        ]);
                         $course->title = $request->title;
                         $counter++;
                     }
 
                     if ($course->category_id != $request->category) {
+                        $request->validate([
+                            // the Category Of The Course
+                            'category' => 'required|integer|max:99|min:1|exists:categories,id',
+                        ]);
                         $course->category_id = $request->category;
                         $counter++;
                     }
 
                     if ($course->visible != $request->visible) {
+                        $request->validate([
+                            // If The Course Is Visible To The Users
+                            'visible' => 'required|integer|max:2|min:1',
+                        ]);
                         $course->visible = $request->visible;
                         $counter++;
                     }
 
                     if ($course->template_id != $request->template) {
+                        $request->validate([
+                            // The Template Of The Certificate Of The Course
+                            'template' => 'required|integer|max:3|min:1',
+                        ]);
                         $course->template_id = $request->template;
                         $counter++;
                     }
 
                     if ($course->city_id != $request->city) {
+                        $request->validate([
+                            // The Country Of The City
+                            'country' => 'required|integer|exists:countries,id',
+                            // The City Of The Course
+                            'city' => 'required|integer|exists:cities,id',
+                        ]);
                         $course->city_id = $request->city;
                         $counter++;
                     }
 
                     if ($course->address != $request->address) {
+                        $request->validate([
+                            // The Address Of tHE Course
+                            'address' => 'required|string|max:150|min:10',
+                        ]);
                         $course->address = $request->address;
                         $counter++;
                     }
 
 
                     if ($course->location != $request->location) {
+                        $request->validate([
+                            // The Location The Course On Google Map
+                            'location' => 'required|string|max:150|min:20',
+                        ]);
                         $course->location = $request->location;
                         $counter++;
                     }
 
                     if ($course->description != $request->description) {
+                        $request->validate([
+                            // The Description Of The Course
+                            'description' => 'required|string|max:200|min:10',
+                        ]);
                         $course->description = $request->description;
                         $counter++;
                     }
 
                     if ($course->type != $request->type) {
+                        $request->validate([
+                            // The Type Of Course Payed Or Free
+                            'type' => 'required|string|' . Rule::in(['payed', 'free']),
+                        ]);
                         $course->type = $request->type;
                         $counter++;
                     }
 
                     // Checking If There Are Changes In The Coupons List
+                    // If The Coupon Parameter Is Null The Course iS Free Then Check If There Are Old Coupons For The Course
                     if (is_null($request->coupon)) {
                         if ($course->coupon != 0) {
                             $course->coupon = 0;
+                            for ($i = 0; $i < count($course->discountCoupon); $i++) {
+                                $course->discountCoupon[$i]->delete();
+                            }
                             $counter++;
                         }
-                        for ($i = 0; $i < count($course->discountCoupon); $i++) {
-                            $course->discountCoupon[$i]->delete();
-                        }
-                    } else {
+                    } else { // If The Coupon Parameter Is Not Empty
 
-                        if (count($request->coupon_code) > count($course->discountCoupon)) {
+                        $request->validate([
+                            //The Coupons Indicator Of The Coupons
+                            'coupon' => 'required_if:type,payed|integer|max:1|min:0',
+                            //The Coupons Array Data
+                            'coupon_code' => 'required_if:coupon,2|array',
+                            'coupon_code.*' => 'required|string|distinct',
+                            'coupon_discount' => 'required_if:coupon,2|array|size:' . count($request->coupon_code),
+                            'coupon_discount.*' => 'required|integer',
+                        ]);
+
+                        if (count($request->coupon_code) > count($course->discountCoupon)) { // If The Coupon Parameter Count Greater Than The Old Coupon Count, We Need To Add The New One
 
                             for ($i = 0; $i < count($request->coupon_code); $i++) {
 
@@ -665,7 +656,7 @@ class AdminController extends Controller
 
                             }
 
-                        } elseif (count($request->coupon_code) < count($course->discountCoupon)) {
+                        } elseif (count($request->coupon_code) < count($course->discountCoupon)) { // If The Coupon Parameter Count Less Than The Old Coupon Count, We Need To Delete One
 
                             for ($i = 0; $i < count($course->discountCoupon); $i++) {
 
@@ -694,7 +685,7 @@ class AdminController extends Controller
 
                             }
 
-                        } else {
+                        } else { // If The Coupon Parameter Count Equal The Old Coupon Count, We Need To Check If There Are Changes
                             for ($i = 0; $i < count($course->discountCoupon); $i++) {
                                 $counter_ = 0;
                                 if ($course->discountCoupon[$i]->code != $request->coupon_code[$i]) {
@@ -714,16 +705,25 @@ class AdminController extends Controller
                         }
                     }
 
-                    $total_trainers = Trainer::where('center_id', Auth::user()->admin->center->id)->get();
+                    $total_trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
 
                     // Checking If There Are Changes In The Trainer List
                     if (count($course->trainer) == count($total_trainers)) {
 
+                        // Checking If The Trainers Count In The Request Are Greater Than The Total Trainers Of The Center
                         if (count($request->trainer) > count($total_trainers)) {
                             return redirect()->route('admin.course.edit', $course->id)->withErrors(['لا يمكنك إضافة مدربين ليسوا مسجلين في النظام']);
-                        } elseif (count($request->trainer) < 1) {
+                        } elseif (count($request->trainer) < 1) { // Checking If The Trainers Count In The Request Are Less Than 1 Or Equal To 0
                             return redirect()->route('admin.course.edit', $course->id)->withErrors(['لا يمكنك حذف كافة المدربين من الدورة']);
                         } else {
+
+                            $request->validate([
+                                //The Trainers Array Of The Course
+                                'trainer' => 'required|array|max:' . count($center->trainer) . 'min:' . count($center->trainer),
+                                // The Trainers Array Data
+                                'trainer.*' => 'required|integer|distinct|' . Rule::in($trainers_data),
+                            ]);
+
                             for ($i = 0; $i < count($course->trainer); $i++) {
                                 if ($course->trainer[$i]->trainer_id != $request->trainer[$i]) {
                                     $course->trainer[$i]->trainer_id = $request->trainer[$i];
@@ -758,7 +758,7 @@ class AdminController extends Controller
                                         'course_id' => $course->id,
                                         'trainer_id' => $request->trainer[$x],
                                     ]);
-
+                                    $counter++;
                                 }
 
 
@@ -770,12 +770,15 @@ class AdminController extends Controller
 
                     }
 
-
-//        dd($request->hasFile('course-poster-1'));
-
                     // Checking If The Request Has An Image
                     if ($request->hasFile('course-poster-1')) {
-                        if (File::exists('storage/course-images/', $course->image[0]->image)) {
+
+                        $request->validate([
+                            // The Cover And Image Of The Course
+                            'course-poster-1' => 'nullable|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
+                        ]);
+
+                        if (file_exists('storage/course-images/', $course->image[0]->image)) {
                             if (Storage::delete('public/course-images/' . $course->image[0]->image)) {
                                 $file = $request->file('course-poster-1')->store('public/course-images');
                                 $file_name = basename($file);
@@ -788,7 +791,13 @@ class AdminController extends Controller
 
                     // Checking If The Request Has An Image
                     if ($request->hasFile('course-poster-2')) {
-                        if (File::exists('storage/course-images/', $course->image[1]->image)) {
+
+                        $request->validate([
+                            // The Cover And Image Of The Course
+                            'course-poster-2' => 'nullable|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
+                        ]);
+
+                        if (file_exists('storage/course-images/', $course->image[1]->image)) {
                             if (Storage::delete('public/course-images/' . $course->image[1]->image)) {
                                 $file = $request->file('course-poster-2')->store('public/course-images');
                                 $file_name = basename($file);
@@ -800,27 +809,56 @@ class AdminController extends Controller
                     }
 
                     if ($course->start_date != $request->start_date) {
+                        $request->validate([
+                            // The Start Date Of The Course
+                            'start_date' => 'required|date|after_or_equal:' . date('Y-m-d'),
+                        ]);
                         $course->start_date = $request->start_date;
                         $counter++;
                     }
 
 
-                    if ($course->finish_date != $request->finish_date) {
-                        $course->finish_date = $request->finish_date;
+                    if ($course->end_date != $request->end_date) {
+                        $request->validate([
+                            // The Finish Date Of The Course
+                            'end_date' => 'required|date|after_or_equal:' . $request->start_date,
+                        ]);
+                        $course->end_date = $request->end_date;
                         $counter++;
                     }
 
                     if ($course->end_reservation != $request->end_reservation) {
+                        $request->validate([
+                            // The Deadline Of Reservation
+                            'end_reservation' => 'required|date|before_or_equal:' . $request->start_date,
+                        ]);
                         $course->end_reservation = $request->end_reservation;
                         $counter++;
                     }
 
                     if ($course->start_time != $request->start_time . ":00") {
+                        $request->validate([
+                            // The Start Time Of The Course
+                            'start_time' => ['required', 'regex:/(^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$)/', 'string', 'max:5', 'min:5'],
+                        ]);
                         $course->start_time = $request->start_time;
                         $counter++;
                     }
 
                     if ($course->attendance != $request->attendance) {
+
+                        $reservation_count = 0;
+                        foreach ($course->reservation as $reservation) {
+                            if ($reservation->confirmation == 1) {
+                                $reservation_count++;
+                            }
+                        }
+
+                        $request->validate([
+                            // The Total Attendance Of The Course
+                            'attendance' => 'required|integer|min:' . $reservation_count,
+                        ]);
+
                         $course->attendance = $request->attendance;
                         $counter++;
                     }
@@ -832,12 +870,23 @@ class AdminController extends Controller
                         }
                     } else {
                         if ($course->price != $request->price) {
+
+                            $request->validate([
+                                // The Price Of The Course
+                                'price' => 'required_if:type,2|digits_between:1,4',
+                            ]);
+
                             $course->price = $request->price;
                             $counter++;
                         }
                     }
 
                     if ($course->gender != $request->gender) {
+                        $request->validate([
+                            // The Attendance Gender
+                            'gender' => 'required|integer|max:3|min:1|',
+                        ]);
+
                         $course->gender = $request->gender;
                         $counter++;
                     }
@@ -845,10 +894,10 @@ class AdminController extends Controller
 
                     if ($counter == 0) {
                         return redirect()->route('admin.course.edit', $identifier)->withErrors(['قم بتحديث بعض الحقول لكي يتم حفظها']);
+                    } else {
+                        $course->save();
+                        return redirect()->route('admin.course.edit', $identifier)->with('success', 'تم تحديث معلومات الدورة بنجاح');
                     }
-
-                    $course->save();
-                    return redirect()->route('admin.course.edit', $identifier)->with('success', 'تم تحديث معلومات الدورة بنجاح');
 
                 }
 
@@ -883,7 +932,7 @@ class AdminController extends Controller
 
             $course = Course::where('identifier', $identifier)->first();
 
-            if (count($course) < 1) {
+            if (empty($course)) {
 
                 return $this->error_page("خطأ", "الرجاء التأكد من معرف الدورة");
 
@@ -891,7 +940,7 @@ class AdminController extends Controller
 
                 $admin = CourseAdmin::where('course_id', $course->id)->where('admin_id', Auth::user()->admin->id)->first();
 
-                if (count($admin) < 1) {
+                if (empty($admin)) {
                     return $this->error_page();
                 } else {
 
@@ -1022,13 +1071,13 @@ class AdminController extends Controller
 
             $course = Course::where('identifier', $identifier)->first();
 
-            if (count($course) < 1) {
+            if (empty($course)) {
                 return $this->error_page("خطأ", "الرجاء التأكدمن معرف الدورة");
             } else {
 
                 $admin = CourseAdmin::where('course_id', $course->id)->where('admin_id', Auth::user()->admin->id)->first();
 
-                if (count($admin) < 1) {
+                if (empty($admin)) {
 
                     return $this->error_page();
 
@@ -1059,7 +1108,7 @@ class AdminController extends Controller
 
             $course = Course::where('identifier', $identifier)->first();
 
-            if (count($course) < 1) {
+            if (empty($course)) {
                 return $this->error_page("", "الرجاء التاأكد من معرف الدورة");
             } else {
 
@@ -1091,7 +1140,7 @@ class AdminController extends Controller
                         $attendance = Attendance::where('course_id', $course->id)->where('student_id', $total_student[$i])->where('date', $date)->first();
                         $reservation = Reservation::where('course_id', $course->id)->where('student_id', $request->student[$i])->where('confirmation', 1)->first();
 
-                        if (count($attendance) > 0) {
+                        if (empty($attendance)) {
 
                             if ($attendance->status != $request->attendance[$i]) {
                                 $attendance->status = $request->attendance[$i];
@@ -1142,7 +1191,7 @@ class AdminController extends Controller
 
             $admin = CourseAdmin::where('course_id', $course->id)->where('admin_id', Auth::user()->admin->id)->first();
 
-            if (count($admin) < 1) {
+            if (empty($admin)) {
                 return $this->error_page();
             } else {
 
@@ -1191,24 +1240,25 @@ class AdminController extends Controller
     }
 
     // This Function Returns All Students Who Got Certificate In The Selected Course
-    public function show_students_certificate($identifier){
+    public function show_students_certificate($identifier)
+    {
 
         $course = Course::where('identifier', $identifier)->first();
 
 
-        if ( count($course) < 1 ){
+        if (empty($course)) {
 
             return $this->error_page();
 
-        }else{
+        } else {
 
             $admin = CourseAdmin::where('course_id', $course->id)->where('admin_id', Auth::user()->admin->id)->first();
 
-            if ( count($admin) < 1 ){
+            if (empty($admin)) {
 
                 return $this->error_page();
 
-            }else{
+            } else {
 
                 $date1 = date_create($course->start_date);
                 $date2 = date_create($course->end_date);
@@ -1218,7 +1268,7 @@ class AdminController extends Controller
 
                 $students = Reservation::where('course_id', $course->id)->where('confirmation', 1)->count();
                 $certificates = Certificate::where('course_id', $course->id)->get();
-                return view('admin.show-course-certificates', compact('certificates','course', 'days', 'students'));
+                return view('admin.show-course-certificates', compact('certificates', 'course', 'days', 'students'));
 
             }
 
@@ -1232,13 +1282,13 @@ class AdminController extends Controller
 
             $course = Course::where('identifier', $identifier)->first();
 
-            if (count($course) < 1) {
+            if (empty($course)) {
                 return $this->error_page("خطأ", "الرجاء التأكد من معرف الدورة");
             } else {
 
                 $admin = CourseAdmin::where('course_id', $course->id)->where('admin_id', Auth::user()->admin->id)->where('role_id', 1)->first();
 
-                if (count($admin) < 1) {
+                if (empty($admin)) {
                     return $this->error_page();
                 } else {
 
@@ -1284,13 +1334,13 @@ class AdminController extends Controller
             ]);
 
             $counter = 0;
-            if (count($course) < 1) {
+            if (empty($course)) {
                 return $this->error_page();
             } else {
 
                 $admin = CourseAdmin::where('course_id', $course->id)->where('admin_id', Auth::user()->admin->id)->first();
 
-                if (count($admin) < 1) {
+                if (empty($admin)) {
                     return $this->error_page();
                 } else {
 
@@ -1298,7 +1348,7 @@ class AdminController extends Controller
 
                         $user = Reservation::where('course_id', $course->id)->where('confirmation', 1)->where('student_id', $request->students[$i])->first();
 
-                        if (count($user) > 0) {
+                        if (!empty($user)) {
 
                             Certificate::create([
                                 'date' => date('Y-m-d'),
@@ -1330,91 +1380,4 @@ class AdminController extends Controller
         }
 
     }
-
-    public function financial_report(){
-
-        if( Auth::check() && Auth::user()->role_id == 3 ){
-
-            $courses = Course::where('center_id', Auth::user()->admin->center->id)->get();
-
-            $months = array();
-            $details = array();
-
-            foreach ($courses as $course){
-
-                $reservation_count = Reservation::where('course_id', $course->id)->where('confirmation', 1)->count();
-
-
-
-                // Getting The Courses Count
-                if ( isset($details[substr($course->start_date,0,7)]) ){
-                    $details[substr($course->start_date,0,7)][0] += 1;
-                }else{
-                    $details[substr($course->start_date,0,7)] = array(1);
-                }
-
-                // Getting The Student Count
-                if ( isset($details[substr($course->start_date,0,7)][1]) ){
-                    $details[substr($course->start_date,0,7)][1] += $reservation_count;
-                }else{
-                    array_push($details[substr($course->start_date,0,7)], $reservation_count);
-                }
-
-                // Getting The Total Expected Money Of All Courses
-                if ( isset($details[substr($course->start_date,0,7)][2]) ){
-                    $details[substr($course->start_date,0,7)][2] += ($course->price * $reservation_count);
-                }else{
-                    array_push($details[substr($course->start_date,0,7)], ($course->price * $reservation_count) );
-                }
-
-                // Getting The Total Income Money Of All Courses
-                if ( isset($details[substr($course->start_date,0,7)][3]) ){
-                    $details[substr($course->start_date,0,7)][3] += ( $course->price * $course->attendance);
-                }else{
-                    array_push($details[substr($course->start_date,0,7)],  $course->price * $course->attendance);
-                }
-
-
-                if (!in_array(substr($course->start_date,0,7), $months)){
-                    array_push($months, substr($course->start_date,0,7));
-                }
-
-            }
-
-
-            return view('admin.show-financial-reports', compact('courses', 'details'));
-
-        }else{
-
-            return $this->error_page();
-
-        }
-
-    }
-
-    public function courses_financial_report($date){
-
-        if ( Auth::check() && Auth::user()->role_id == 3 ){
-
-            if( strlen($date) != 7 ){
-                return $this->error_page();
-            }else{
-                preg_match('/(^20[0-9]{2}+-[0-9]{2})/', $date, $output_array);
-
-                if ( empty($output_array) ){
-                    return $this->error_page('fewfv');
-                }else{
-                    $courses = Course::where('center_id', Auth::user()->admin->center->id)->where('start_date', 'like', '%'. $date .'%')->get();
-                    return view('admin.show-courses-report', compact('courses'));
-
-                }
-
-            }
-
-        }else{
-            return $this->error_page();
-        }
-
-    }
-
 }

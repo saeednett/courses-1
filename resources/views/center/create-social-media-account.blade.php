@@ -1,9 +1,9 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('title', 'إضافة حساب تواصل إجتماعي')
 
 @section('style-file')
-    <link rel="stylesheet" href="{{ asset('css/center/edit-bank-account.css') }}">
+
 @endsection
 
 @section('content')
@@ -67,7 +67,7 @@
                                     <div class="col-lg-3">
                                         <label class="col-form-label required-field" for="username">اسم المستخدم</label>
                                         <input type="text" id="username"
-                                               class="form-control custom-input" maxlength="20" minlength="5"
+                                               class="form-control custom-input text-center" maxlength="20" minlength="5"
                                                name="username" placeholder="اسم المستخدم" autocomplete="off" required>
                                     </div>
 
@@ -88,11 +88,6 @@
                                             <button type="submit" class="btn btn-block custom-btn">حفظ</button>
                                         </div>
                                     </div>
-
-                                    {{--<div class="col-xl-1 col-lg-1 col-md-12 col-sm-12 col-xs-4 col-lg-offset-0 col-xs-offset-4 text-center">--}}
-                                    {{--<label class="col-form-label opacity-0" for="bank">المزيد</label>--}}
-                                    {{--<span class="btn-success text-center fa fa-plus add-account"></span>--}}
-                                    {{--</div>--}}
                                 </div>
                             </form>
                         </div>

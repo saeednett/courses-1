@@ -1,4 +1,4 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('title', "عرض حسابات منصة هللة")
 @section('main-title', "عرض حسابات منصة هللة")
@@ -12,10 +12,6 @@
 
 @section('style-file')
     <link rel="stylesheet" href="{{ asset('css/center/show-halalah-account.css') }}"/>
-@endsection
-
-@section('script-file')
-    <script src="{{ asset('js/center/show-halalah-account.js') }}"></script>
 @endsection
 
 @section('content')
@@ -139,4 +135,9 @@
             </div>
         </div>
     </div>
+@endsection
+
+
+@section('script-file')
+    <script src="{{ asset('js/center/show-halalah-account.js') }}"></script>
 @endsection

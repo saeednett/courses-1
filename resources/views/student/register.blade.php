@@ -1,40 +1,9 @@
-@extends('student.master-v-1-1')
+@extends('student.layouts.master-v-1-1')
 
 @section('title', 'تسجيل مستخدم جديد')
 
 @section('guest-links')
     <a class="dropdown-item" href="{{ route('account.login') }}">تسجيل الدخول</a>
-@endsection
-
-@section('script-file')
-    <script>
-        $(document).on("keypress", '.num-only', function (evt) {
-
-            let charCode = (evt.which) ? evt.which : event.keyCode;
-
-            if ( $(this).val().length == 0 ){
-
-                if ( charCode == 53 ){
-                    return true;
-                }else {
-                    return false;
-                }
-
-            }else{
-                if ( $(this).val().length == 9 ){
-                    $("#warning-model").modal("show");
-                    return false;
-                }else{
-                    if ( charCode > 31 && (charCode < 48 || charCode > 57)) {
-                        return false;
-                    }else{
-                        return true;
-                    }
-                }
-            }
-
-        });
-    </script>
 @endsection
 
 @section('content')
@@ -294,4 +263,8 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script-file')
+    <script src="{{ asset('js/student/register.js') }}"></script>
 @endsection

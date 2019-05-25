@@ -11,6 +11,8 @@
 |
 */
 
+// NHSxk1fz8FYx
+
 
 /* Account || User || Student Routes Part */
 
@@ -77,99 +79,136 @@ Route::group(['middleware' => 'auth'], function () {
 /* Center Routes Part */
 
 
-Route::group(['middleware' => 'guest'], function () {
+Route::group(['prefix' => 'Center', 'middleware' => 'guest'], function () {
 
     // To Register As A Center
-    Route::get('Center/sign-up', 'CenterController@register')->name('center.register');
+    Route::get('sign-up', 'CenterController@register')->name('center.register');
     // The Data Of Registering Goes Here
-    Route::post('Center/sign-up', 'CenterController@store')->name('center.store');
+    Route::post('sign-up', 'CenterController@store')->name('center.store');
     // To Login As A Center
-    Route::get('Center/sign-in', 'CenterController@login')->name('center.login');
+    Route::get('sign-in', 'CenterController@login')->name('center.login');
 
 });
 
-Route::group(['middleware' => 'auth-center'], function () {
+Route::group(['prefix' => 'Center', 'middleware' => 'auth-center'], function () {
 
     // To Show The Main Or The Index Page Of The Center
-    Route::get('Center/{center}/Index', 'CenterController@index')->name('center.index');
+    Route::get('{center}/Index', 'CenterController@index')->name('center.index');
     // To Show And Edit The Profile Information Of The Center
-    Route::get('Center/Profile/Edit', 'CenterController@edit')->name('center.edit');
+    Route::get('Profile/Edit', 'CenterController@edit')->name('center.edit');
     // The New Information Goes Here
-    Route::put('Center/Profile/Update', 'CenterController@update')->name('center.update');
+    Route::put('Profile/Update', 'CenterController@update')->name('center.update');
     // To Create Social Media Account
-    Route::get('Center/SocialMedia/Create', 'CenterController@create_social_media_account')->name('center.social.media.account.create');
+    Route::get('SocialMedia/Create', 'CenterController@create_social_media_account')->name('center.social.media.account.create');
     // The Data Of Creating Social Media Account
-    Route::post('Center/SocialMedia/Store', 'CenterController@store_social_media_account')->name('center.social.media.account.store');
+    Route::post('SocialMedia/Store', 'CenterController@store_social_media_account')->name('center.social.media.account.store');
     // To Show All Social Media Accounts
-    Route::get('Center/SocialMedia/Show', 'CenterController@show_social_media_account')->name('center.social.media.account.show');
+    Route::get('SocialMedia/Show', 'CenterController@show_social_media_account')->name('center.social.media.account.show');
     // To Edit The Information Of Social Media Accounts
-    Route::get('Center/SocialMedia/Edit/{id}', 'CenterController@edit_social_media_account')->name('center.social.media.account.edit');
+    Route::get('SocialMedia/Edit/{id}', 'CenterController@edit_social_media_account')->name('center.social.media.account.edit');
     // The Edit Data Goes Here And The Process Happens Here
-    Route::put('Center/SocialMedia/Update/{id}', 'CenterController@update_social_media_account')->name('center.social.media.account.update');
+    Route::put('SocialMedia/Update/{id}', 'CenterController@update_social_media_account')->name('center.social.media.account.update');
     // To Delete Social Media Account
-    Route::get('Center/SocialMedia/Delete/{id}', 'CenterController@delete_social_media_account')->name('center.social.media.account.delete');
-
+    Route::get('SocialMedia/Delete/{id}', 'CenterController@delete_social_media_account')->name('center.social.media.account.delete');
     // To Show Halalah Account
-    Route::get('Center/Halalah/Show', 'CenterController@show_halalah_account')->name('center.halalah.account.show');
+    Route::get('Halalah/Show', 'CenterController@show_halalah_account')->name('center.halalah.account.show');
     // To Create Halalah Account
-    Route::get('Center/Halalah/Create', 'CenterController@create_halalah_account')->name('center.halalah.account.create');
+    Route::get('Halalah/Create', 'CenterController@create_halalah_account')->name('center.halalah.account.create');
     // To Data Of Creating Halalah Account
-    Route::post('Center/Halalah/Store', 'CenterController@store_halalah_account')->name('center.halalah.account.store');
+    Route::post('Halalah/Store', 'CenterController@store_halalah_account')->name('center.halalah.account.store');
     // To Edit The Information Of Halalah Account
-    Route::get('Center/Halalah/Edit', 'CenterController@edit_halalah_account')->name('center.halalah.account.edit');
+    Route::get('Halalah/Edit', 'CenterController@edit_halalah_account')->name('center.halalah.account.edit');
     // The Edit Data Goes Here And The Process Happens Here
-    Route::put('Center/Halalah/Update', 'CenterController@update_halalah_account')->name('center.halalah.account.update');
+    Route::put('Halalah/Update', 'CenterController@update_halalah_account')->name('center.halalah.account.update');
     // To Delete Halalah Account
-    Route::put('Center/Halalah/Delete', 'CenterController@delete_halalah_account')->name('center.halalah.account.delete');
-
-
+    Route::put('Halalah/Delete', 'CenterController@delete_halalah_account')->name('center.halalah.account.delete');
     // To Create A New Trainer Belongs To The Center
-    Route::get('Center/CreateTrainer', 'CenterController@create_trainer')->name('center.trainer.create');
+    Route::get('CreateTrainer', 'CenterController@create_trainer')->name('center.trainer.create');
     // The Information Of The Trainer Goes Here
-    Route::post('Center/CreateStore', 'CenterController@store_trainer')->name('center.trainer.store');
+    Route::post('CreateStore', 'CenterController@store_trainer')->name('center.trainer.store');
     // To Show All Trainers Who Belong To The Center
-    Route::get('Center/ShowTrainers', 'CenterController@show_trainers')->name('center.trainer.show');
+    Route::get('ShowTrainers', 'CenterController@show_trainers')->name('center.trainer.show');
     // To Edit A Trainer Information
-    Route::get('Center/Trainer/Edit/{id}', 'CenterController@edit_trainer')->name('center.trainer.edit');
+    Route::get('Trainer/Edit/{id}', 'CenterController@edit_trainer')->name('center.trainer.edit');
     // The New Information Goes Here
-    Route::put('Center/Trainer/Update/{id}', 'CenterController@update_trainer')->name('center.trainer.update');
+    Route::put('Trainer/Update/{id}', 'CenterController@update_trainer')->name('center.trainer.update');
     // To Create An Admin For The Courses
-    Route::get('Center/CreateAdmin/', 'CenterController@create_admin')->name('center.admin.create');
+    Route::get('CreateAdmin/', 'CenterController@create_admin')->name('center.admin.create');
     // The Data Of The Creation Goes Here
-    Route::post('Center/StoreAdmin', 'CenterController@store_admin')->name('center.admin.store');
+    Route::post('StoreAdmin', 'CenterController@store_admin')->name('center.admin.store');
     // To Show All Admins Who Belong To The Center
-    Route::get('Center/ShowAdmins/show', 'CenterController@show_admins')->name('center.admin.show');
+    Route::get('ShowAdmins/show', 'CenterController@show_admins')->name('center.admin.show');
     // To Edit Admin Information
-    Route::get('Center/Admin/Edit/{id}', 'CenterController@edit_admin')->name('center.admin.edit');
+    Route::get('Admin/Edit/{id}', 'CenterController@edit_admin')->name('center.admin.edit');
     // The New Information Goes Here
-    Route::put('Center/Admin/Update/{id}', 'CenterController@update_admin')->name('center.admin.update');
+    Route::put('Admin/Update/{id}', 'CenterController@update_admin')->name('center.admin.update');
     // To Assign Admin To The Course
-    Route::get('Center/AssignAdmin', 'CenterController@assign_course_admin')->name('center.course.admin.assign');
+    Route::get('AssignAdmin', 'CenterController@assign_course_admin')->name('center.course.admin.assign');
     // The Data Of Assignation Goes Here
-    Route::post('Center/AssignAdmin/Confirm', 'CenterController@store_course_admin')->name('center.course.admin.store');
+    Route::post('AssignAdmin/Confirm', 'CenterController@store_course_admin')->name('center.course.admin.store');
     // To Create A New Course
-    Route::get('Center/CreateCourse', 'CenterController@create_course')->name('center.course.create');
+    Route::get('CreateCourse', 'CenterController@create_course')->name('center.course.create');
     // The Data Of Creation Goes Here
-    Route::post('Center/StoreCourse', 'CenterController@store_course')->name('center.course.store');
+    Route::post('StoreCourse', 'CenterController@store_course')->name('center.course.store');
     // To Show All Courses Who Belong To The Center
-    Route::get('Center/ShowCourses', 'CenterController@show_courses')->name('center.course.show');
+    Route::get('Courses/{type}/Show', 'CenterController@show_courses')->name('center.courses.show');
+    // To Show All Students Of Specific Course
+    Route::get('{identifier}/Students', 'CenterController@show_students')->name('center.students.show');
     // To Show The Form Of Resetting Password
-    Route::get('Center/PasswordReset', 'CenterController@reset_password')->name('center.password.reset');
+    Route::get('PasswordReset', 'CenterController@reset_password')->name('center.reset.password');
     // The Data Of Resetting Password Goes Here And The Process Happens Here
-    Route::post('center/PasswordReset/Confirm', 'CenterController@reset_password_confirm')->name('center.password.reset.confirm');
-
+    Route::post('PasswordReset/Confirm', 'CenterController@reset_password_confirm')->name('center.reset.password.confirm');
     // To Show The Form Of Creating Bank Account
-    Route::get('Center/BankAccount/Create', 'CenterController@create_bank_account')->name('center.bank.account.create');
+    Route::get('BankAccount/Create', 'CenterController@create_bank_account')->name('center.bank.account.create');
     //The Data Of Creating Bank Account
-    Route::post('Center/BankAccount/Store', 'CenterController@store_bank_account')->name('center.bank.account.store');
+    Route::post('BankAccount/Store', 'CenterController@store_bank_account')->name('center.bank.account.store');
     // To Show All Bank Account Of The Center
-    Route::get('Center/BankAccounts/Show', 'CenterController@show_bank_account')->name('center.bank.account.show');
+    Route::get('BankAccounts/Show', 'CenterController@show_bank_account')->name('center.bank.account.show');
     // To Show The Form Of Editing Or Adding Bank Account
-    Route::get('Center/BankAccount/Edit/{id}', 'CenterController@edit_bank_account')->name('center.bank.account.edit');
+    Route::get('BankAccount/Edit/{id}', 'CenterController@edit_bank_account')->name('center.bank.account.edit');
     // The Data Of Editing Or Adding Bank Account Goes Here And The Process Happens Here
-    Route::put('Center/BankAccount/Update/{id}', 'CenterController@update_bank_account')->name('center.bank.account.update');
+    Route::put('BankAccount/Update/{id}', 'CenterController@update_bank_account')->name('center.bank.account.update');
     // To Delete Bank Account
-    Route::get('Center/BankAccount/Delete/{id}', 'CenterController@delete_bank_account')->name('center.bank.account.delete');
+    Route::get('BankAccount/Delete/{id}', 'CenterController@delete_bank_account')->name('center.bank.account.delete');
+    // To Confirm Course Payment
+    Route::get('{course}/Payment', 'CenterController@course_payment')->name('center.courses.payment');
+    // The Data Of Confirming Course Payment
+    Route::post('{course}/Payment/Confirm', 'CenterController@confirm_course_payment')->name('center.courses.payment.confirm');
+    // To Activate Courses
+    Route::get('Courses/Activation', 'CenterController@activate_deactivate_courses')->name('center.courses.activation');
+    // The Data Of Activate And Deactivate Courses
+    Route::post('Courses/Activation/Confirm', 'CenterController@activate_deactivate_courses_confirm')->name('center.courses.activation.confirm');
+    // To Show Course Attendance
+    Route::get('{course}/Attendance', 'CenterController@course_attendance')->name('center.courses.attendance');
+    // To Show All Generated Certificates Of The Course
+    Route::get('{course}/Certificates', 'CenterController@course_certificates')->name('center.courses.certificates');
+    // To Show The Students To Generate Certificates For Them
+    Route::get('{course}/Certificates/Generate', 'CenterController@generate_certificates')->name('center.courses.certificates.generate');
+    // To Generate Certificate Of Student For One Course
+    Route::post('{course}/Certificate/confirm', 'CenterController@generate_certificates_confirm')->name('center.courses.certificate.generate.confirm');
+    // To Show The Financial Report Of The Center
+    Route::get('Financial/Report', 'CenterController@financial_report')->name('center.financial.report');
+    // To Show More Details About One Month Courses
+    Route::get('Financial/Report/{date}', 'CenterController@month_financial_report')->name('center.financial.report.month');
+    // To Show Student Attendance Details
+    Route::get('{course}/Attendance/{student}', 'CenterController@student_attendance_details')->name('center.student.attendance.details');
+    // To Show Course Schedule
+    Route::get('{course}/Schedule/', 'CenterController@course_schedule')->name('center.course.schedule');
+    // To Take Student Attendance
+    Route::get('{course}/TakeAttendance/{date}', 'CenterController@take_attendance')->name('center.student.attendance.take');
+    // The Data Of The Attendance
+    Route::post('{course}/TakeAttendance/{date}', 'CenterController@take_attendance_confirm')->name('center.student.take.attendance.confirm');
+
+
+
+    // To Show The Form Of Editing A Course
+    Route::get('Course/Edit/{course}', 'CenterController@course_edit')->name('center.course.edit');
+    // The Data Of Editing Goes Here And The Process Happens Here
+    Route::put('Course/Update/{course}', 'CenterController@course_update')->name('center.course.update');
+
+    // To Review A Selected Course
+    Route::get('{course}/Preview', 'CenterController@course_preview')->name('center.courses.preview');
+
 
 
 });
@@ -177,67 +216,60 @@ Route::group(['middleware' => 'auth-center'], function () {
 
 /*  Admin Routes Part */
 
-Route::group(['middleware' => 'auth-center'], function () {
+Route::group(['prefix' => 'Admin', 'middleware' => 'auth-center', 'namespace' => 'API'], function () {
 
     // The Index Page Of The Admin
-    Route::get('Admin/{admin}', 'AdminController@index')->name('admin.index');
+    Route::get('/{admin}', 'AdminController@index')->name('admin.index');
     // To Show All Courses Of The Admin
-    Route::get('Admin/Courses/Show', 'AdminController@show_courses')->name('admin.courses.show');
+    Route::get('Courses/Show', 'AdminController@show_courses')->name('admin.courses.show');
     // To Show The Course That Will Confirm Payment For One Course
-    Route::get('Admin/Courses/Payments', 'AdminController@courses_payment_show')->name('admin.courses.payment.show');
+    Route::get('Courses/Payments', 'AdminController@courses_payment_show')->name('admin.courses.payment.show');
     // To Show The Course Information And The Student To Confirm The Payment For Them
-    Route::get('Admin/{course}/Payments/Students', 'AdminController@course_payment_show_students')->name('admin.courses.payment');
+    Route::get('{course}/Payments/Students', 'AdminController@course_payment_show_students')->name('admin.courses.payment');
     // The Data Of Confirming Payment Goes Here And The Process Happens Here
-    Route::post('Admin/{course}/Payment/Confirm', 'AdminController@course_payment_confirm')->name('admin.courses.payment.confirm');
+    Route::post('{course}/Payment/Confirm', 'AdminController@course_payment_confirm')->name('admin.courses.payment.confirm');
     // To Show The List Of Courses To Activate Or Deactivate The Course
-    Route::get('Admin/Courses/Activation', 'AdminController@courses_activation')->name('admin.courses.activation');
+    Route::get('Courses/Activation', 'AdminController@courses_activation')->name('admin.courses.activation');
     // To Show The List Of Courses To Activate Or Deactivate The Course
-    Route::post('Admin/CoursesActivation/Confirm', 'AdminController@courses_activation_confirm')->name('admin.courses.activation.confirm');
+    Route::post('CoursesActivation/Confirm', 'AdminController@courses_activation_confirm')->name('admin.courses.activation.confirm');
     // To Review A Selected Course
-    Route::get('Admin/{course}/Preview', 'AdminController@course_preview')->name('admin.courses.preview');
+    Route::get('{course}/Preview', 'AdminController@course_preview')->name('admin.courses.preview');
     // To Show All Courses That Are Available To Select One And Move To Another Page
-    Route::get('Admin/Courses/Students', 'AdminController@show_courses_for_show_student')->name('admin.courses.student.show');
+    Route::get('Courses/Students', 'AdminController@show_courses_for_show_student')->name('admin.courses.student.show');
     // To Show The Student Of The Selected Course
-    Route::get('Admin/{course}/Students/Show', 'AdminController@show_course_students')->name('admin.course.students.show');
+    Route::get('{course}/Students/Show', 'AdminController@show_course_students')->name('admin.course.students.show');
     // To Show The Form Of Editing A Course
-    Route::get('Admin/Course/Edit/{course}', 'AdminController@course_edit')->name('admin.course.edit');
+    Route::get('Course/Edit/{course}', 'AdminController@course_edit')->name('admin.course.edit');
     // The Data Of Editing Goes Here And The Process Happens Here
-    Route::put('Admin/Course/Update/{course}', 'AdminController@course_update')->name('admin.course.update');
+    Route::put('Course/Update/{course}', 'AdminController@course_update')->name('admin.course.update');
     // To Show The Form Of Editing The Admin Information
-    Route::get('Admin/Profile/Edit', 'AdminController@edit')->name('admin.edit');
+    Route::get('Profile/Edit', 'AdminController@edit')->name('admin.edit');
     // The Editing Data Goes Here And The Process Happens Here
-    Route::put('Admin/Profile/Update', 'AdminController@update')->name('admin.update');
+    Route::put('Profile/Update', 'AdminController@update')->name('admin.update');
     // To Show The Form Of Resetting Password Of Admin
-    Route::get('Admin/Password/Reset', 'AdminController@reset_password')->name('admin.reset.password');
+    Route::get('Password/Reset', 'AdminController@reset_password')->name('admin.reset.password');
     // The Data Of Resetting Password Goes Here And The Process Happens Here
-    Route::post('Admin/Password/Reset/Confirm', 'AdminController@reset_password_confirm')->name('admin.reset.password.confirm');
+    Route::post('Password/Reset/Confirm', 'AdminController@reset_password_confirm')->name('admin.reset.password.confirm');
     // Show All Courses That Are Available To Select One And Move To Another Page Of Show More Information
-    Route::get('Admin/Courses/Attendance', 'AdminController@show_courses_for_students_attendance')->name('admin.courses.attendance');
+    Route::get('Courses/Attendance', 'AdminController@show_courses_for_students_attendance')->name('admin.courses.attendance');
     // Show The Attendance Of The Selected Course
-    Route::get('Admin/{course}/Attendance', 'AdminController@show_student_attendance')->name('admin.course.attendance');
+    Route::get('{course}/Attendance', 'AdminController@show_student_attendance')->name('admin.course.attendance');
     // Show All Courses That Are Available To Select One And Move To Another Page Of Show More Information
-    Route::get('Admin/Courses/TakeAttendance', 'AdminController@show_courses_for_take_students_attendance')->name('admin.courses.take.attendance');
+    Route::get('Courses/TakeAttendance', 'AdminController@show_courses_for_take_students_attendance')->name('admin.courses.take.attendance');
     // To Show The Schedule Of The Selected Course
-    Route::get('Admin/{course}/Schedule', 'AdminController@show_course_schedule_for_take_attendance')->name('admin.course.schedule');
+    Route::get('{course}/Schedule', 'AdminController@show_course_schedule_for_take_attendance')->name('admin.course.schedule');
     // Show The Attendance Of The Selected Course
-    Route::get('Admin/{course}/TakeAttendance/{date}', 'AdminController@take_students_attendance')->name('admin.course.take.attendance');
+    Route::get('{course}/TakeAttendance/{date}', 'AdminController@take_students_attendance')->name('admin.course.take.attendance');
     // The Data Of Taking Attendance Goes Here And The Process Happens Here
-    Route::post('Admin/{course}/TakeAttendance/{date}/Confirm', 'AdminController@take_students_attendance_confirm')->name('admin.course.take.attendance.confirm');
-
+    Route::post('{course}/TakeAttendance/{date}/Confirm', 'AdminController@take_students_attendance_confirm')->name('admin.course.take.attendance.confirm');
     // To Show All Course To Select One The Create Certificates For It
-    Route::get('Admin/Courses/Certificates', 'AdminController@show_courses_for_creating_certificates')->name('admin.courses.certificate.create');
+    Route::get('Courses/Certificates', 'AdminController@show_courses_for_creating_certificates')->name('admin.courses.certificate.create');
     // The Data Of Creating Certificates Goes Here And The Process Happens Here
-    Route::get('Admin/{course}/Certificates/Students', 'AdminController@show_course_students_for_certificate')->name('admin.courses.certificate.students');
+    Route::get('{course}/Certificates/Students', 'AdminController@show_course_students_for_certificate')->name('admin.courses.certificate.students');
     // To Show All Students Who Get The Certificates
-    Route::get('Admin/{course}/Certificates/Show', 'AdminController@show_students_certificate')->name('admin.courses.certificate.show');
+    Route::get('{course}/Certificates/Show', 'AdminController@show_students_certificate')->name('admin.courses.certificate.show');
     // To Generate Certificate For Student
-    Route::post('Admin/{course}/Certificates/Students/Confirm', 'AdminController@generate_certificate')->name('admin.courses.certificate.confirm');
-
-
-    // To Show The Financial Report Of The Center
-    Route::get('Admin/Financial/Report', 'AdminController@financial_report')->name('admin.financial.report');
-    // To Show More Details About One Month Courses
-    Route::get('Admin/Financial/Report/{date}', 'AdminController@courses_financial_report')->name('admin.financial.report.courses');
+    Route::post('{course}/Certificates/Students/Confirm', 'AdminController@generate_certificate')->name('admin.courses.certificate.confirm');
 
 });
 
@@ -246,140 +278,109 @@ Route::group(['middleware' => 'auth-center'], function () {
 
 /* Administrator Part */
 // 96b4b28dc1@mailboxy.fun
-Route::group(['middleware' => 'guest'], function () {
+Route::group(['prefix' => 'Administrator', 'middleware' => 'guest'], function () {
     // To Register An Account For The Student
-    Route::get('Administrator/sign-up', 'AdministratorController@register')->name('administrator.register');
+    Route::get('sign-up', 'AdministratorController@register')->name('administrator.register');
     // The Data Of Registering Goes Here
-    Route::post('Administrator/sign-up', 'AdministratorController@store')->name('administrator.store');
+    Route::post('sign-up', 'AdministratorController@store')->name('administrator.store');
 });
 
-Route::group(['middleware' => 'auth-center'], function () {
+Route::group(['prefix' => 'Administrator', 'middleware' => 'auth-center'], function () {
 
     // The Index Page Of The Admin
-    Route::get('Administrator/{admin}', 'AdministratorController@index')->name('administrator.index');
+    Route::get('{admin}', 'AdministratorController@index')->name('administrator.index');
     // To Show All Advertising Banners
-    Route::get('Administrator/AdvertisingBanner/Show', 'AdministratorController@show_banners')->name('administrator.advertising.banners.show');
+    Route::get('AdvertisingBanner/Show', 'AdministratorController@show_banners')->name('administrator.advertising.banners.show');
     // To Show All Advertising Banners
-    Route::get('Administrator/AdvertisingBanner/Create', 'AdministratorController@create_banner')->name('administrator.advertising.banner.create');
+    Route::get('AdvertisingBanner/Create', 'AdministratorController@create_banner')->name('administrator.advertising.banner.create');
     // To Show All Advertising Banners
-    Route::post('Administrator/AdvertisingBanner/Store', 'AdministratorController@store_banner')->name('administrator.advertising.banner.store');
+    Route::post('AdvertisingBanner/Store', 'AdministratorController@store_banner')->name('administrator.advertising.banner.store');
     // To Show All Advertising Banners
-    Route::get('Administrator/AdvertisingBanner/Edit/{id}', 'AdministratorController@edit_banner')->name('administrator.advertising.banner.edit');
+    Route::get('AdvertisingBanner/Edit/{id}', 'AdministratorController@edit_banner')->name('administrator.advertising.banner.edit');
     // To Show All Advertising Banners
-    Route::put('Administrator/AdvertisingBanner/Update/{id}', 'AdministratorController@update_banner')->name('administrator.advertising.banner.update');
+    Route::put('AdvertisingBanner/Update/{id}', 'AdministratorController@update_banner')->name('administrator.advertising.banner.update');
     // To Delete One Advertising Banner
-    Route::get('Administrator/AdvertisingBanner/Delete/{id}', 'AdministratorController@delete_banner')->name('administrator.advertising.banner.delete');
+    Route::get('AdvertisingBanner/Delete/{id}', 'AdministratorController@delete_banner')->name('administrator.advertising.banner.delete');
     // To Confirm Course
-    Route::post('Administrator/Courses/Confirmation/', 'AdministratorController@confirm_courses')->name('administrator.courses.confirmation');
+    Route::post('Courses/Confirmation/', 'AdministratorController@confirm_courses')->name('administrator.courses.confirmation');
     // To Preview Course Before Confirm It
-    Route::get('Administrator/{course}/Preview', 'AdministratorController@course_preview')->name('administrator.course.preview');
+    Route::get('{course}/Preview', 'AdministratorController@course_preview')->name('administrator.course.preview');
     // To Show All Contact Us Messages
-    Route::get('Administrator/Contact-Us/Show', 'AdministratorController@show_contact_us')->name('administrator.contact_us.show');
+    Route::get('Contact-Us/Show', 'AdministratorController@show_contact_us')->name('administrator.contact_us.show');
     // To Show All Students
-    Route::get('Administrator/Students/Show', 'AdministratorController@show_students')->name('administrator.students.show');
+    Route::get('Students/Show', 'AdministratorController@show_students')->name('administrator.students.show');
     // To Show All Public Courses For Confirmation
-    Route::get('Administrator/PublicCourses/Show', 'AdministratorController@show_public_courses')->name('administrator.courses.public.show');
+    Route::get('PublicCourses/Show', 'AdministratorController@show_public_courses')->name('administrator.courses.public.show');
     // To Show All Private Courses For Confirmation
-    Route::get('Administrator/PrivateCourses/Show', 'AdministratorController@show_private_courses')->name('administrator.courses.private.show');
+    Route::get('PrivateCourses/Show', 'AdministratorController@show_private_courses')->name('administrator.courses.private.show');
     // To Show All Students For Activation And Deactivation
-    Route::get('Administrator/StudentActivation/Show', 'AdministratorController@show_students_for_activation')->name('administrator.students.activation.deactivation');
+    Route::get('StudentActivation/Show', 'AdministratorController@show_students_for_activation')->name('administrator.students.activation.deactivation');
     // The Data Of Activation And Deactivation Students Goes here
-    Route::post('Administrator/StudentActivation/Confirm', 'AdministratorController@confirm_activation_deactivation_students')->name('administrator.students.activation.deactivation.confirm');
+    Route::post('StudentActivation/Confirm', 'AdministratorController@confirm_activation_deactivation_students')->name('administrator.students.activation.deactivation.confirm');
     // To Show All Trainers
-    Route::get('Administrator/Trainers/Show', 'AdministratorController@show_trainers')->name('administrator.trainers.show');
+    Route::get('Trainers/Show', 'AdministratorController@show_trainers')->name('administrator.trainers.show');
     // To Show All Centers
-    Route::get('Administrator/Centers/Show', 'AdministratorController@show_centers')->name('administrator.centers.show');
+    Route::get('Centers/Show', 'AdministratorController@show_centers')->name('administrator.centers.show');
     // To Activate And Deactivate Centers
-    Route::get('Administrator/CentersActivation/Show', 'AdministratorController@show_centers_for_activation')->name('administrator.centers.activation.deactivation');
+    Route::get('CentersActivation/Show', 'AdministratorController@show_centers_for_activation')->name('administrator.centers.activation.deactivation');
     // The Data Of Activation And Deactivation Centers Goes here
-    Route::post('Administrator/CentersActivation/Confirm', 'AdministratorController@confirm_activation_deactivation_centers')->name('administrator.centers.activation.deactivation.confirm');
+    Route::post('CentersActivation/Confirm', 'AdministratorController@confirm_activation_deactivation_centers')->name('administrator.centers.activation.deactivation.confirm');
     // To Show All Admins
-    Route::get('Administrator/Admins/Show', 'AdministratorController@show_admins')->name('administrator.admins.show');
+    Route::get('Admins/Show', 'AdministratorController@show_admins')->name('administrator.admins.show');
+    // To Activate And Deactivate Admins
+    Route::get('AdminsActivation/Show', 'AdministratorController@show_admins_for_activation')->name('administrator.admins.activation.deactivation');
+    // The Data Of Activation And Deactivation Centers Goes here
+    Route::post('AdminsActivation/Confirm', 'AdministratorController@confirm_activation_deactivation_admins')->name('administrator.admins.activation.deactivation.confirm');
+    // To Show All Centers Then To Show Courses Then Certificates
+    Route::get('CentersCertificates/Show', 'AdministratorController@show_centers_for_certificates')->name('administrator.centers.certificates.show');
+    // To Show All Courses Then Certificates
+    Route::get('{center}/CoursesCertificates/Show', 'AdministratorController@show_courses_for_certificates')->name('administrator.courses.certificates.show');
+    // To Show All Certificates Of Courses
+    Route::get('{course}/Certificates/Show', 'AdministratorController@show_certificates')->name('administrator.certificates.show');
+    // To Show The Form Of Resetting Student Email
+    Route::get('StudentsEmailRest/Show', 'AdministratorController@show_students_for_reset_email')->name('administrators.students.reset.email.show');
+    // To Show The Form Of Resetting Password Email For The Student | User
+    Route::get('{student}/StudentEmailReset/Edit', 'AdministratorController@edit_student_email')->name('administrator.student.reset.email.edit');
+    // The Data Of Resetting Password Email For The Student | User
+    Route::put('{student}/EmailRest/Update', 'AdministratorController@update_student_email')->name('administrator.student.reset.email.update');
+    // To Show The Form Of Resetting Center Email
+    Route::get('CentersEmailReset/Show', 'AdministratorController@show_centers_for_reset_email')->name('administrator.centers.reset.email.show');
+    // To Show The Form Of Resetting Password Email For The Student | User
+    Route::get('{centers}/CenterEmailReset/Edit', 'AdministratorController@edit_center_email')->name('administrator.center.reset.email.edit');
+    // The Data Of Resetting Password Email For The Student | User
+    Route::put('{centers}/CenterEmailReset/Update', 'AdministratorController@update_center_email')->name('administrator.center.reset.email.update');
+    // To Show The Form Of Resetting Admin Email
+    Route::get('AdminsEmailReset/Show', 'AdministratorController@show_admins_for_reset_email')->name('administrator.admins.reset.email.show');
+    // To Show The Form Of Resetting Password Email For The Student | User
+    Route::get('{centers}/AdminEmailReset/Edit', 'AdministratorController@edit_admin_email')->name('administrator.admin.reset.email.edit');
+    // The Data Of Resetting Password Email For The Student | User
+    Route::put('{centers}/AdminEmailReset/Update', 'AdministratorController@update_admin_email')->name('administrator.admin.reset.email.update');
+    // To Show The Form Of Resetting Administrator
+    Route::get('Password/Reset/Edit', 'AdministratorController@reset_password')->name('administrator.reset.password');
+    // The Data Of Resetting Administrator Password
+    Route::post('Password/Reset/Update', 'AdministratorController@update_password')->name('administrator.reset.password.confirm');
+    // To Show The Form Of Editing Administrator Information
+    Route::get('Profile/Edit', 'AdministratorController@edit')->name('administrator.edit');
+    // The Data Of Editing Administrator Information
+    Route::put('Profile/Update', 'AdministratorController@update')->name('administrator.update');
 
-
-//    // To Show All Courses Of The Admin
-//    Route::get('Admin/Courses/Show', 'AdminController@show_courses')->name('admin.courses.show');
-//    // To Show The Course That Will Confirm Payment For One Course
-//    Route::get('Admin/Courses/Payments', 'AdminController@courses_payment_show')->name('admin.courses.payment.show');
-//    // To Show The Course Information And The Student To Confirm The Payment For Them
-//    Route::get('Admin/{course}/Payments/Students', 'AdminController@course_payment_show_students')->name('admin.courses.payment');
-//    // The Data Of Confirming Payment Goes Here And The Process Happens Here
-//    Route::post('Admin/{course}/Payment/Confirm', 'AdminController@course_payment_confirm')->name('admin.courses.payment.confirm');
-//    // To Show The List Of Courses To Activate Or Deactivate The Course
-//    Route::get('Admin/Courses/Activation', 'AdminController@courses_activation')->name('admin.courses.activation');
-//    // To Show The List Of Courses To Activate Or Deactivate The Course
-//    Route::post('Admin/CoursesActivation/Confirm', 'AdminController@courses_activation_confirm')->name('admin.courses.activation.confirm');
-//    // To Review A Selected Course
-//    Route::get('Admin/{course}/Preview', 'AdminController@course_preview')->name('admin.courses.preview');
-//    // To Show All Courses That Are Available To Select One And Move To Another Page
-//    Route::get('Admin/Courses/Students', 'AdminController@show_courses_for_show_student')->name('admin.courses.student.show');
-//    // To Show The Student Of The Selected Course
-//    Route::get('Admin/{course}/Students/Show', 'AdminController@show_course_students')->name('admin.course.students.show');
-//    // To Show The Form Of Editing A Course
-//    Route::get('Admin/Course/Edit/{course}', 'AdminController@course_edit')->name('admin.course.edit');
-//    // The Data Of Editing Goes Here And The Process Happens Here
-//    Route::put('Admin/Course/Update/{course}', 'AdminController@course_update')->name('admin.course.update');
-//    // To Show The Form Of Editing The Admin Information
-//    Route::get('Admin/Profile/Edit', 'AdminController@edit')->name('admin.edit');
-//    // The Editing Data Goes Here And The Process Happens Here
-//    Route::put('Admin/Profile/Update', 'AdminController@update')->name('admin.update');
-//    // To Show The Form Of Resetting Password Of Admin
-//    Route::get('Admin/Password/Reset', 'AdminController@reset_password')->name('admin.reset.password');
-//    // The Data Of Resetting Password Goes Here And The Process Happens Here
-//    Route::post('Admin/Password/Reset/Confirm', 'AdminController@reset_password_confirm')->name('admin.reset.password.confirm');
-//    // Show All Courses That Are Available To Select One And Move To Another Page Of Show More Information
-//    Route::get('Admin/Courses/Attendance', 'AdminController@show_courses_for_students_attendance')->name('admin.courses.attendance');
-//    // Show The Attendance Of The Selected Course
-//    Route::get('Admin/{course}/Attendance', 'AdminController@show_student_attendance')->name('admin.course.attendance');
-//    // Show All Courses That Are Available To Select One And Move To Another Page Of Show More Information
-//    Route::get('Admin/Courses/TakeAttendance', 'AdminController@show_courses_for_take_students_attendance')->name('admin.courses.take.attendance');
-//    // To Show The Schedule Of The Selected Course
-//    Route::get('Admin/{course}/Schedule', 'AdminController@show_course_schedule_for_take_attendance')->name('admin.course.schedule');
-//    // Show The Attendance Of The Selected Course
-//    Route::get('Admin/{course}/TakeAttendance/{date}', 'AdminController@take_students_attendance')->name('admin.course.take.attendance');
-//    // The Data Of Taking Attendance Goes Here And The Process Happens Here
-//    Route::post('Admin/{course}/TakeAttendance/{date}/Confirm', 'AdminController@take_students_attendance_confirm')->name('admin.course.take.attendance.confirm');
-//
-//    // To Show All Course To Select One The Create Certificates For It
-//    Route::get('Admin/Courses/Certificates', 'AdminController@show_courses_for_creating_certificates')->name('admin.courses.certificate.create');
-//    // The Data Of Creating Certificates Goes Here And The Process Happens Here
-//    Route::get('Admin/{course}/Certificates/Students', 'AdminController@show_course_students_for_certificate')->name('admin.courses.certificate.students');
-//    // To Show All Students Who Get The Certificates
-//    Route::get('Admin/{course}/Certificates/Show', 'AdminController@show_students_certificate')->name('admin.courses.certificate.show');
-//    // To Generate Certificate For Student
-//    Route::post('Admin/{course}/Certificates/Students/Confirm', 'AdminController@generate_certificate')->name('admin.courses.certificate.confirm');
-//
-//
-//    // To Show The Financial Report Of The Center
-//    Route::get('Admin/Financial/Report', 'AdminController@financial_report')->name('admin.financial.report');
-//    // To Show More Details About One Month Courses
-//    Route::get('Admin/Financial/Report/{date}', 'AdminController@courses_financial_report')->name('admin.financial.report.courses');
 
 });
 
 /* End Of Administrator Part */
 
-
-/*  API Part */
-// To Get The Cities Of A Counter
-Route::get('api/v-1/cities/country={id}', 'CenterController@cities')->name('api.cities');
-// To Get Account Information Of Center
-Route::get('api/v-1/account/center={center_id}&bank={bank_id}', 'CenterController@bank_account')->name('api.center.bank.account');
-// To Check The Coupon Result
-Route::get('api/v-1/coupon/course={course}&coupon={coupon}', 'CenterController@check_coupon')->name('api.coupon.check');
-Route::get('Service/Banks/', 'CenterController@banks')->name('service.banks');
-
-
-
-
-/* Test Routes Part */
-Route::get('/home', 'HomeController@index')->name('home')->middleware('auth');
-Route::get('/master',
-    function (){ return view('layouts.app');
+Route::group(['prefix' => 'Ajax'], function (){
+    // To Get The Cities Of A Counter
+    Route::get('Cities/{id}', 'AjaxController@cities')->name('cities');
+    // To Get The All Banks Information
+    Route::get('Banks/', 'AjaxController@banks')->name('banks');
+    // To Check If Course Coupon Is Valid
+    Route::get('Coupon/{course}/{coupon}', 'AjaxController@check_coupon')->name('check_coupon');
+    // To Get Bank Account Information Of Center
+    Route::get('Account/{center}/{bank_id}', 'AjaxController@center_bank_account')->name('center.bank.account');
+    // To Get All Banks Accounts Information Of Center
+    Route::get('Accounts/{center}', 'AjaxController@center_banks_accounts')->name('center.banks.accounts');
 });
-Route::get('/master/v/1.2',
-    function (){ return view('student.master-v-1-1');
-    });
 
 /* Authentication Routes Part */
 Auth::routes();

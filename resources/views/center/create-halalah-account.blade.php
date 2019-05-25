@@ -1,4 +1,4 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('title', 'إضافة حساب منصة هللة')
 
@@ -67,7 +67,7 @@
                                             <input type="text" id="barcode-image"
                                                    class="form-control custom-input text-center"
                                                    placeholder='اختر صورة الباركود' readonly/>
-                                            <input type="file" class="opacity-0" name="barcode-image"
+                                            <input type="file" class="op-0" name="barcode-image"
                                                    accept="image/png, image/jpg" onchange="readCover(this);">
                                         </div>
 
@@ -79,7 +79,7 @@
                                     <div class="col-lg-6 col-lg-offset-3 col-md-4 col-md-offset-2 col-sm-6 col-xs-6">
                                         <div class="form-group">
                                             <label class="required-field pr-10" for="account_owner">اسم المستخدم</label>
-                                            <input type="text" class="form-control custom-input" value="{{ old('account_owner') }}"
+                                            <input type="text" class="form-control custom-input text-center" value="{{ old('account_owner') }}"
                                                    id="account_owner" maxlength="50" placeholder="اسم صاحب الحساب"
                                                    name="account_owner" autocomplete="off">
                                         </div>

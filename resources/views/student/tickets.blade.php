@@ -1,13 +1,9 @@
-@extends('student.master-v-1-1')
+@extends('student.layouts.master-v-1-1')
 
 @section('title', 'تذاكري')
 
 @section('style-file')
     <link rel="stylesheet" href="{{ asset('css/student/tickets.css') }}"/>
-@endsection
-
-@section('script-file')
-    <script src="{{ asset('js/student/tickets.js') }}"></script>
 @endsection
 
 @section('content')
@@ -196,12 +192,14 @@
                                     </div>
                                 @endforeach
                             </div>
-
-
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+@endsection
+
+@section('script-file')
+    <script src="{{ asset('js/student/tickets.js') }}"></script>
 @endsection

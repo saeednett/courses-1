@@ -4,17 +4,13 @@
     /*border-top-right-radius: 5px;*/
 }
 
-.no-border{
-    border-radius: 0 !important;
-}
-
 .show-confirmed-ticket {
-    padding-top: 10px;
-    padding-bottom: 5px;
+    padding: 0;
 }
 
 .confirmed-ticket-label {
     padding-top: 8px;
+    padding-bottom: 5px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }

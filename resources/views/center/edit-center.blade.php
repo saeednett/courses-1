@@ -1,4 +1,4 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('main-title', "تعديل المعلومات الشخصية")
 
@@ -17,7 +17,7 @@
         @if($errors->any())
             <div class="col-lg-12 animatedParent animateOnce z-index-50">
                 <div class="alert alert-danger animated fadeInUp">
-                    <ul class="text-right rtl" style="margin-bottom: 0;">
+                    <ul class="text-right mb-0 rtl">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -29,7 +29,7 @@
         @if(session('success'))
             <div class="col-lg-12 animatedParent animateOnce z-index-50">
                 <div class="alert alert-success animated fadeInUp">
-                    <ul class="text-right rtl" style="margin-bottom: 0;">
+                    <ul class="text-right mb-0 rtl">
                         <li>{{ session('success') }}</li>
                     </ul>
                 </div>
@@ -194,11 +194,11 @@
                         <div class="row">
                             <div class="col-lg-12">
                                 <div class="form-group">
-                                    <label class="required-field" for="website">الموقع الاإلكتروني</label>
+                                    <label class="" for="website">الموقع الاإلكتروني</label>
                                     <input type="text"
-                                           class="form-control {{ $errors->has('website') ? ' is-invalid' : '' }} custom-input text-center"
-                                           name="website" id="website" style="direction: ltr;"
-                                           value="{{ $user->center->website }}" autocomplete="off" required>
+                                           class="form-control {{ $errors->has('website') ? ' is-invalid' : '' }} custom-input text-center ltr"
+                                           name="website" id="website"
+                                           value="{{ $user->center->website }}" autocomplete="off">
                                     @if ($errors->has('website'))
                                         <span class="invalid-feedback text-center" role="alert">
                                         <strong>{{ $errors->first('website') }}</strong>
@@ -214,8 +214,8 @@
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label for="profile-cover">صورة الغلاف</label>
-                                    <input type="text" id="profile-cover" class="form-control {{ $errors->has('profile-cover') ? ' is-invalid' : '' }} custom-input text-center" placeholder='اختر صورة الملف الشخصي' readonly/>
-                                    <input type="file" name="profile-cover" style="opacity: 0;" accept="image/png, image/jpg">
+                                    <input type="text" id="profile-cover" class="form-control {{ $errors->has('profile-cover') ? ' is-invalid' : '' }} custom-input text-center op-0" placeholder='اختر صورة الملف الشخصي' readonly/>
+                                    <input type="file" class="op-0" name="profile-cover" accept="image/png, image/jpg">
                                     @if ($errors->has('profile-cover'))
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $errors->first('profile-cover') }}</strong>
@@ -228,8 +228,8 @@
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label for="profile-logo">الصورة الشخصية</label>
-                                    <input type="text" id="profile-logo" class="form-control {{ $errors->has('profile-logo') ? ' is-invalid' : '' }} custom-input text-center" placeholder='اختر صورة الملف الشخصي' readonly/>
-                                    <input type="file" name="profile-logo" style="opacity: 0;" accept="image/png, image/jpg">
+                                    <input type="text" id="profile-logo" class="form-control {{ $errors->has('profile-logo') ? ' is-invalid' : '' }} custom-input text-center op-0" placeholder='اختر صورة الملف الشخصي' readonly/>
+                                    <input type="file" class="op-0" name="profile-logo" accept="image/png, image/jpg">
                                     @if ($errors->has('profile-logo'))
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $errors->first('profile-logo') }}</strong>
@@ -245,10 +245,10 @@
                             <div class="col-lg-12">
                                 <div class="form-group">
                                     <label class="required-field" for="about">وصف المركز</label>
-                                    <textarea id="about" class="form-control {{ $errors->has('about') ? ' is-invalid' : '' }} text-center required"
+                                    <textarea id="about" class="form-control {{ $errors->has('about') ? ' is-invalid' : '' }} text-center required no-resize p-40"
                                               name="about"
                                               minlength="10" placeholder="وصف المركز" rows="10" maxlength="150"
-                                              style="padding: 40px; resize: none;" required>{{ $user->center->about }}</textarea>
+                                              required>{{ $user->center->about }}</textarea>
                                     @if ($errors->has('about'))
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $errors->first('about') }}</strong>

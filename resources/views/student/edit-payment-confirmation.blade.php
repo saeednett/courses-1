@@ -1,4 +1,4 @@
-@extends('student.master-v-1-1')
+@extends('student.layouts.master-v-1-1')
 
 @section('title', 'تعديل معلومات الدغع')
 
@@ -10,11 +10,6 @@
 @section('style-file')
     <link rel="stylesheet" href="{{ asset('css/student/edit-payment-confirmation.css') }}" />
 @endsection
-
-@section('script-file')
-    <script src="{{ asset('js/student/edit-payment-confirmation.js') }}"></script>
-@endsection
-
 
 @section('content')
 
@@ -372,4 +367,8 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script-file')
+    <script src="{{ asset('js/student/edit-payment-confirmation.js') }}"></script>
 @endsection

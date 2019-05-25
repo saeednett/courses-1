@@ -40,13 +40,6 @@
     overflow-wrap: break-word;
 }
 
-.custom-rules {
-    list-style-type: none;
-    margin-right: 0;
-    width: 100%;
-    padding-right: 0px;
-}
-
 .map {
     height: 250px;
     width: 100%;

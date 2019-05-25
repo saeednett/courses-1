@@ -1,21 +1,41 @@
 $(document).ready(function () {
 
-    $(document).on("keypress", '.num-only', function (evt) {
+    $(document).on("keypress", '.phone', function (evt) {
 
         let charCode = (evt.which) ? evt.which : event.keyCode;
 
-        if ( $(this).val().length == 0 ){
-            if ( charCode == 43 ){
+        if ( $(this).val().length === 0 ){
+            if ( charCode === 48 ){
                 return true;
             }else {
                 return false;
             }
-        }else{
+        }else if($(this).val().length === 1){
+            if ( charCode === 53 ){
+                return true;
+            }else {
+                return false;
+            }
+        }else if($(this).val().length < 10){
             if ( charCode > 31 && (charCode < 48 || charCode > 57)) {
                 return false;
             }
             return true;
+        }else{
+            return false;
         }
+
+    });
+
+
+    $(document).on("keypress", '.num', function (evt) {
+
+        let charCode = (evt.which) ? evt.which : event.keyCode;
+
+        if ( charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
 
     });
 

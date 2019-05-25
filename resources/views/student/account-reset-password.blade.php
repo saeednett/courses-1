@@ -1,6 +1,6 @@
-@extends('student.master-v-1-1')
+@extends('student.layouts.master-v-1-1')
 
-@section('title', 'تسجيل مستخدم جديد')
+@section('title', 'إعادة تعيين كلمة المرور')
 
 @section('guest-links')
     <a class="dropdown-item" href="{{ route('account.register') }}">تسجيل مستخدم جديد</a>

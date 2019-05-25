@@ -62,8 +62,8 @@
                                 @endforeach
                             @else
                                 <tr class="gradeX">
-                                    <td class="text-danger" colspan="5">
-                                        <h3 style="margin-top: 15px">لاتوجد دورات مسجلة في النظام</h3>
+                                    <td class="text-danger" colspan="7">
+                                        <h3 class="mt-15">لاتوجد دورات مسجلة في النظام</h3>
                                     </td>
                                 </tr>
                             @endif

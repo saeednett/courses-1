@@ -1,4 +1,4 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('title', "إضافة مدرب جديد")
 @section('main-title', "إضافة مدرب جديد")
@@ -76,15 +76,15 @@
                                     <input type="text"
                                            class="form-control {{ $errors->has('phone') ? ' is-invalid' : '' }} custom-input num-only text-center ltr"
                                            name="phone" id="phone" value="{{ old('phone') }}"
-                                           placeholder="رقم هاتف المدرب" minlength="9" maxlength="13" autocomplete="off"
+                                           placeholder="رقم هاتف المدرب" minlength="9" maxlength="9" autocomplete="off"
                                            required>
                                     @if ($errors->has('phone'))
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $errors->first('phone') }}</strong>
                                         </span>
                                     @else
-                                        <small class="text-muted text-center center-block">الرجاء الإبتداء برمز الدولة..
-                                            966+
+                                        <small class="text-muted text-center center-block mt-2">
+                                            مثال: ********5
                                         </small>
                                     @endif
                                 </div>
@@ -172,22 +172,6 @@
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <div class="form-group">
-                                    <label class="required-field" for="password_confirmation">تأكيد كلمة المرور</label>
-                                    <input type="password"
-                                           class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }} custom-input text-center"
-                                           name="password_confirmation" id="password_confirmation"
-                                           placeholder="تأكيد كلمة المرور" minlength="8" maxlength="32"
-                                           autocomplete="off" required>
-                                    @if ($errors->has('password'))
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $errors->first('password') }}</strong>
-                                        </span>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                                <div class="form-group">
                                     <label class="required-field" for="website">كلمة المرور</label>
                                     <input type="password"
                                            class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }} custom-input text-center"
@@ -197,6 +181,23 @@
                                         <span class="invalid-feedback text-center" role="alert">
                                         <strong>{{ $errors->first('password') }}</strong>
                                     </span>
+                                    @endif
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label class="required-field" for="password_confirmation">تأكيد كلمة المرور</label>
+                                    <input type="password"
+                                           class="form-control {{ $errors->has('password') ? ' is-invalid' : '' }} custom-input text-center"
+                                           name="password_confirmation" id="password_confirmation"
+                                           placeholder="تأكيد كلمة المرور" minlength="6" maxlength="32"
+                                           autocomplete="off" required>
+                                    @if ($errors->has('password'))
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('password') }}</strong>
+                                        </span>
                                     @endif
                                 </div>
                             </div>
@@ -234,7 +235,7 @@
                                     <input type="text" id="profile-image"
                                            class="form-control {{ $errors->has('profile-image') ? ' is-invalid' : '' }} custom-input text-center"
                                            placeholder='اختر صورة الملف الشخصي' readonly required/>
-                                    <input class="op-0" type="file" name="profile-image" accept="image/png, image/jpg" required>
+                                    <input class="op-0" type="file" name="profile-image" accept="image/png" required>
                                     @if ($errors->has('profile-image'))
                                         <span class="invalid-feedback text-center" role="alert">
                                         <strong>{{ $errors->first('profile-image') }}</strong>

@@ -1,15 +1,18 @@
 $(document).ready(function () {
 
+    let receipt_image = $("input[name=receipt-image]");
+    let image_input = $("#receipt-image");
+
     $('.carousel').carousel();
 
 
-    $("#receipt-image").on('click', function () {
-        $("input[name=receipt-image]").trigger('click');
+    image_input.on('click', function () {
+        receipt_image.trigger('click');
     });
 
-    $("input[name=receipt-image]").on('change', function () {
-        let file = $("input[name=receipt-image]")[0].files[0];
-        $("#receipt-image").val(file.name);
+    receipt_image.on('change', function () {
+        let file = receipt_image[0].files[0];
+        image_input.val(file.name);
     });
 
 

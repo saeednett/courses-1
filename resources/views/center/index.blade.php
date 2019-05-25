@@ -1,15 +1,7 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('content')
-
     <!-- Main content -->
-
-    <style>
-        .warning-color {
-            color: #fff466;
-        }
-    </style>
-
     <div class="row">
         <div class="col-lg-12 animatedParent animateOnce z-index-50">
             <div class="panel panel-default animated fadeInUp">
@@ -76,7 +68,7 @@
                                 @endforeach
                             @else
                                 <tr class="gradeX">
-                                    <td class="text-danger" colspan="5"><h3 style="margin-top: 15px">لا توجد دورات مسجلة
+                                    <td class="text-danger" colspan="5"><h3 class="mt-15">لا توجد دورات مسجلة
                                             في النظام</h3></td>
                                 </tr>
                             @endif
@@ -98,7 +90,6 @@
             </div>
         </div>
     </div>
-
 
     <div class="row">
         <div class="col-lg-12 animatedParent animateOnce z-index-50">
@@ -152,7 +143,7 @@
                             @else
                                 <tr class="gradeX">
                                     <td class="text-danger" colspan="5">
-                                        <h3 style="margin-top: 15px">لا يوجد مسؤولين مسجلين في النظام</h3>
+                                        <h3 class="mt-15">لا يوجد مسؤولين مسجلين في النظام</h3>
                                     </td>
                                 </tr>
                             @endif
@@ -211,7 +202,7 @@
                                 @endforeach
                             @else
                                 <tr class="gradeX">
-                                    <td class="text-danger" colspan="5"><h3 style="margin-top: 15px">لا يوجد مدربين
+                                    <td class="text-danger" colspan="5"><h3 class="mt-15">لا يوجد مدربين
                                             مسجلين في النظام</h3></td>
                                 </tr>
                             @endif
@@ -233,8 +224,4 @@
             </div>
         </div>
     </div>
-
-    <!-- /main content -->
-
-
 @endsection

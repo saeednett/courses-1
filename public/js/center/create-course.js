@@ -161,7 +161,7 @@ $(document).ready(function () {
 
     $("select[name=type]").on('change', function () {
         let value = $(this).val();
-        if (value == 2) {
+        if (parseInt(value) === 1) {
             $("#tab2-3").append("<div class='row'> <div class='col-lg-6 col-lg-offset-3'> <div class='form-group'> <label class='required-field' for='price'>قيمة الدورة</label> <input type='text' class='form-control custom-input text-center num-only ltr' name='price' id='price'  placeholder='قيمة الدورة' autocomplete='off' required> </div></div> </div>   <div class='row'> <div class='col-lg-6 col-lg-offset-3'> <div class='form-group'> <label class='required-field' for='coupon'>كوبونات الخصم</label> <select class='form-control select2-placeholer {{ $errors->has('coupon') ? 'is-invalid' : '' }}' name='coupon' id='coupon'> <option value='0'> لا يوجد كوبونات خصم</option><option value='1'>يوجد كوبونات خصم</option></select></div></div> </div>");
             refreshSelect();
         } else {
@@ -171,7 +171,7 @@ $(document).ready(function () {
 
     $(document).on('change', 'select[name=coupon]', function () {
         let value = $(this).val();
-        if (value == 1) {
+        if (parseInt(value) === 1) {
             $("#tab2-3").append("<div class='row'><div class='col-lg-2 col-lg-offset-5'> <label for='trainer'></label><button type='button' class='btn btn-success btn-block custom-input' id='add-coupon'><i class='fa fa-plus-circle'></i></button> </div> </div>");
             $("#tab2-3").append("<div class='row' style='margin-top:20px;'><div class='col-lg-4 col-lg-offset-2'> <div class='form-group'> <label class='required-field' for='coupon'>كود الخصم</label> <input type='text' class='form-control custom-input text-center ltr' name='coupon_code[]'  placeholder='كود الخصم' autocomplete='off' required> </div></div> <div class='col-lg-4'> <div class='form-group'> <label class='required-field' for='coupon'>قيمة الخصم</label> <input type='text' class='form-control custom-input text-center num-only ltr' name='coupon_discount[]'  placeholder='قيمة الخصم بالنسبة المئوية' autocomplete='off' required> </div></div> </div>");
         } else {
@@ -283,22 +283,22 @@ $(document).ready(function () {
 
     }
 
-    $("#course-poster-1").on('click', function () {
-        $("input[name=course-poster-1]").trigger('click');
+    $("#course-image-1").on('click', function () {
+        $("input[name=course-image-1]").trigger('click');
     });
 
-    $("input[name=course-poster-1]").on('change', function () {
-        let file = $("input[name=course-poster-1]")[0].files[0];
-        $("#course-poster-1").val(file.name);
+    $("input[name=course-image-1]").on('change', function () {
+        let file = $("input[name=course-image-1]")[0].files[0];
+        $("#course-image-1").val(file.name);
     });
 
-    $("#course-poster-2").on('click', function () {
-        $("input[name=course-poster-2]").trigger('click');
+    $("#course-image-2").on('click', function () {
+        $("input[name=course-image-2]").trigger('click');
     });
 
-    $("input[name=course-poster-2]").on('change', function () {
-        let file = $("input[name=course-poster-2]")[0].files[0];
-        $("#course-poster-2").val(file.name);
+    $("input[name=course-image-2]").on('change', function () {
+        let file = $("input[name=course-image-2]")[0].files[0];
+        $("#course-image-2").val(file.name);
     });
 
 
@@ -312,8 +312,7 @@ $(document).ready(function () {
 
     // For The Attendance Gender
     $("select[name=gender]").on('change', function () {
-
-        if ( $(this).val() == 3 ){
+        if ( parseInt($(this).val()) === 3 ){
             $('<div class="row" id="attendance-amount"> <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12"> <div class="form-group"> <label class="required-field" for="men-amount">مقاعد الرجال</label> <input type="text" class="form-control custom-input text-center num-only ltr" name="men_amount" id="men-amount" placeholder="مقاعد الرجال" minlength="1" maxlength="4" autocomplete="off" required> </div> </div>  <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12"> <div class="form-group"> <label class="required-field" for="women-amount">مقاعد النساء</label> <input type="text" class="form-control custom-input text-center num-only ltr" name="women_amount" id="women-amount" placeholder="مقاعد النساء" minlength="1" maxlength="4" autocomplete="off" required> </div> </div> </div>').insertAfter(  $(this).parent().parent().parent()  );
         }else{
             if ( $("#attendance-amount").length > 0 ){
@@ -322,4 +321,54 @@ $(document).ready(function () {
         }
 
     });
+
+
+    $(document).on("change", "input[name=attendance]", function () {
+
+        if ( $("input[name=men_amount]").length > 0 ){
+            let men_amount = $("input[name=men_amount]");
+            let women_amount = $("input[name=women_amount]");
+
+
+            men_amount.val("");
+            women_amount.val("");
+        }
+    });
+
+    $(document).on("change", "input[name=men_amount]", function () {
+        let attendance = $("input[name=attendance]");
+        let men_amount = $("input[name=men_amount]");
+        let women_amount = $("input[name=women_amount]");
+
+        if ( $.isNumeric(attendance.val()) && parseInt(attendance.val()) > 0 ){
+            if ( $.isNumeric(men_amount.val()) && parseInt(men_amount.val()) <= parseInt(attendance.val()) ){
+                women_amount.val( ( attendance.val() - men_amount.val() ) );
+            }else{
+                men_amount.val(0);
+                women_amount.val(attendance.val());
+            }
+        }else{
+            men_amount.val("");
+            women_amount.val("");
+        }
+    });
+
+    $(document).on("change", "input[name=women_amount]", function () {
+        let attendance = $("input[name=attendance]");
+        let men_amount = $("input[name=men_amount]");
+        let women_amount = $("input[name=women_amount]");
+
+        if ( $.isNumeric(attendance.val()) && parseInt(attendance.val()) > 0 ){
+            if ( $.isNumeric(women_amount.val()) && parseInt(women_amount.val()) <= parseInt(attendance.val()) ){
+                men_amount.val( ( attendance.val() - women_amount.val() ) );
+            }else{
+                men_amount.val(attendance.val());
+                women_amount.val(0);
+            }
+        }else{
+            men_amount.val("");
+            women_amount.val("");
+        }
+    });
+
 });

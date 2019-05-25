@@ -107,45 +107,12 @@
                     </ul>
                 </li>
 
-                <li class="has-sub"><a href="basic-tables.html"><i class="icon-paypal"></i><span
-                                class="title">التقارير المالية</span></a>
-                    <ul class="nav collapse">
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">السجل المالي</span></a></li>
-                    </ul>
-                </li>
-
                 <li class="has-sub"><a href="form-basic.html"><i class="icon-user"></i><span class="title">الملف الاشخصي</span></a>
                     <ul class="nav collapse">
                         <li><a href="{{ route('admin.reset.password') }}"><span class="title">كلمة المرور</span></a></li>
                     </ul>
                     <ul class="nav collapse">
                         <li><a href="{{ route('admin.edit') }}"><span class="title">بياناتي الشخصية</span></a></li>
-                    </ul>
-                </li>
-                <li class="has-sub">
-                    <a href="#/"><i class="icon-flow-tree"></i><span class="title">Menu Levels</span></a>
-                    <ul class="nav collapse">
-                        <li><a href="#/"><span class="title">Menu Level 1.1</span></a></li>
-                        <li><a href="#/"><span class="title">Menu Level 1.2</span></a></li>
-                        <li class="has-sub">
-                            <a href="#/"><span class="title">Menu Level 1.3</span></a>
-                            <ul class="nav collapse">
-                                <li><a href="#/"><span class="title">Menu Level 2.1</span></a></li>
-                                <li class="has-sub">
-                                    <a href="#/"><span class="title">Menu Level 2.2</span></a>
-                                    <ul class="nav collapse">
-                                        <li class="has-sub">
-                                            <a href="#/"><span class="title">Menu Level 3.1</span></a>
-                                            <ul class="nav collapse">
-                                                <li><a href="#/"><span class="title">Menu Level 4.1</span></a></li>
-                                            </ul>
-                                        </li>
-                                        <li><a href="#/"><span class="title">Menu Level 3.2</span></a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="#/"><span class="title">Menu Level 2.3</span></a></li>
-                            </ul>
-                        </li>
                     </ul>
                 </li>
             </ul>
@@ -370,8 +337,8 @@
         @yield('content')
         <!-- Footer -->
             <footer class="animatedParent animateOnce z-index-10">
-                <div class="footer-main animated fadeInUp slow">&copy; 2016 <strong>Mouldifi</strong> Admin Theme by <a
-                            target="_blank" href="#/">G-axon</a></div>
+                <div class="footer-main animated fadeInUp slow">&copy; 2019 <strong><a
+                                target="_blank" href="http://meccacode.com/">The Code Team </a></strong></div>
             </footer>
             <!-- /footer -->
 

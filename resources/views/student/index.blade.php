@@ -1,4 +1,4 @@
-@extends('student.master-v-1-1')
+@extends('student.layouts.master-v-1-1')
 
 @section('title', 'الدورات')
 
@@ -8,15 +8,7 @@
 @endsection
 
 @section('style-file')
-    <link rel="stylesheet" href="{{ asset('css/student/courses-index.css') }}"/>
-@endsection
-
-@section('script-file')
-    <script>
-        $('.carousel').carousel();
-    </script>
-    <script src="{{ asset('js/student/courses-index.js') }}"></script>
-
+    <link rel="stylesheet" href="{{ asset('css/student/index.css') }}"/>
 @endsection
 
 @section('content')
@@ -51,51 +43,63 @@
                 @endif
 
                 <div class="row justify-content-center">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-12 p-0">
-                        <div class="banner">
-                            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-                                <div class="carousel-inner">
-                                    <?php $counter = 1; ?>
+                    <div class="col-lg-8 col-md-8 col-sm-12 col-12 p-0">
+                        @if($banners_state == 1)
+                            <div class="banner">
+                                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                                    <div class="carousel-inner">
+                                        <?php $counter = 1; ?>
 
-                                    @foreach($banners as $banner)
-                                        @if($counter == 1)
-                                            <div class="carousel-item active">
-                                                <a href="{{ $banner->link }}"> <img src="{{ $banner->banner }}"
-                                                                                    class="banner-img"
-                                                                                    alt="image"> </a>
-                                                <div class="carousel-caption d-block d-md-block">
-                                                    <h5>{{ $banner->title }}</h5>
-                                                    <p>{{ $banner->description }}</p>
-                                                </div>
-                                            </div>
-                                            <?php $counter++; ?>
-                                        @else
-                                            <div class="carousel-item">
-                                                <a href="{{ $banner->link }}"> <img src="{{ $banner->banner }}"
-                                                                                    class="banner-img"
-                                                                                    alt="image"> </a>
-                                                <div class="carousel-caption d-block d-md-block">
-                                                    <h5>{{ $banner->title }}</h5>
-                                                    <p>{{ $banner->description }}</p>
-                                                </div>
-                                            </div>
-                                        @endif
-                                    @endforeach
+                                        @foreach($banners as $banner)
+                                            @if($counter == 1)
+                                                @if($banner->status == 1)
+                                                    <div class="carousel-item active">
+                                                        <a href="{{ $banner->link }}"> <img
+                                                                    src="storage/banner-images/{{ $banner->banner }}"
+                                                                    class="banner-img"
+                                                                    alt="image"> </a>
+                                                        <div class="carousel-caption d-block d-md-block">
+                                                            <h5>{{ $banner->title }}</h5>
+                                                            <p>{{ $banner->description }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <?php $counter++; ?>
+                                                @endif
+                                            @else
+                                                @if($banner->status == 1)
+                                                    <div class="carousel-item">
+                                                        <a href="{{ $banner->link }}"> <img
+                                                                    src="storage/banner-images/{{ $banner->banner }}"
+                                                                    class="banner-img"
+                                                                    alt="image"> </a>
+                                                        <div class="carousel-caption d-block d-md-block">
+                                                            <h5>{{ $banner->title }}</h5>
+                                                            <p>{{ $banner->description }}</p>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            @endif
+                                        @endforeach
 
 
-                                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
-                                       data-slide="prev">
-                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                        <span class="sr-only">Previous</span>
-                                    </a>
-                                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button"
-                                       data-slide="next">
-                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                        <span class="sr-only">Next</span>
-                                    </a>
+                                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
+                                           data-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button"
+                                           data-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
+                    </div>
+
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-12 p-0 order-first">
+
                     </div>
                 </div>
 
@@ -172,4 +176,8 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script-file')
+    <script src="{{ asset('js/student/index.js') }}"></script>
 @endsection

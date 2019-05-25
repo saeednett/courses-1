@@ -1,4 +1,4 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('title', 'إضافة حساب بنكي')
 
@@ -56,14 +56,15 @@
                                             صاحب
                                             الحساب</label>
                                         <input type="account_owner" id="account_owner"
-                                               class="form-control custom-input" maxlength="50" minlength="10"
+                                               class="form-control custom-input text-center" value="{{ old('account_owner') }}" maxlength="50" minlength="10"
                                                name="account_owner" placeholder="اسم صاحب الحساب" autocomplete="off" required>
                                     </div>
 
                                     <div class="col-lg-3">
                                         <label class="col-form-label required-field" for="account_number">رقم
                                             الحساب</label>
-                                        <input type="text" id="account_number" class="form-control custom-input"
+                                        <input type="text" id="account_number" class="form-control custom-input text-center"
+                                               value="{{ old('account_number') }}"
                                                name="account_number" maxlength="25" minlength="15"
                                                placeholder="رقم الحساب" autocomplete="off" required>
                                     </div>
@@ -75,22 +76,22 @@
                                                 class="form-control {{ $errors->has('bank') ? 'is-invalid' : '' }} custom-input"
                                                 name="bank" required>
                                             @foreach($banks as $bank)
-                                                <option value="{{ $bank->id }}">{{ $bank->name }}</option>
+                                                @if ( old('bank') == $bank->id )
+                                                    <option value="{{ $bank->id }}" selected>{{ $bank->name }}</option>
+                                                @else
+                                                    <option value="{{ $bank->id }}">{{ $bank->name }}</option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </div>
 
                                     <div class="col-lg-3">
                                         <div class="form-group">
-                                            <label class="col-form-label opacity-0" for="bank">المزيد</label>
+                                            <label class="col-form-label op-0" for="bank">المزيد</label>
                                             <button type="submit" class="btn btn-block custom-btn">حفظ</button>
                                         </div>
                                     </div>
 
-                                    {{--<div class="col-xl-1 col-lg-1 col-md-12 col-sm-12 col-xs-4 col-lg-offset-0 col-xs-offset-4 text-center">--}}
-                                    {{--<label class="col-form-label opacity-0" for="bank">المزيد</label>--}}
-                                    {{--<span class="btn-success text-center fa fa-plus add-account"></span>--}}
-                                    {{--</div>--}}
                                 </div>
                             </form>
                         </div>

@@ -1,4 +1,4 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('main-title', "إضافة دورة جديدة")
 
@@ -274,10 +274,10 @@
                                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="personal-profile">غلاف الدورة</label>
-                                            <input type="text" id="course-poster-1"
+                                            <input type="text" id="course-image-1"
                                                    class="form-control custom-input text-center"
                                                    placeholder='اختر غلاف الدورة' readonly required/>
-                                            <input type="file" class="op-0" name="course-poster-1"
+                                            <input type="file" class="op-0" name="course-image-1"
                                                    accept="image/png, image/jpg" required>
                                         </div>
                                     </div>
@@ -286,10 +286,10 @@
                                         <div class="form-group">
                                             <label class="required-field" for="personal-profile">غلاف الدورة -
                                                 02 </label>
-                                            <input type="text" id="course-poster-2"
+                                            <input type="text" id="course-image-2"
                                                    class="form-control custom-input text-center"
                                                    placeholder='اختر غلاف الدورة - 02' readonly required/>
-                                            <input type="file" class="op-0" name="course-poster-2"
+                                            <input type="file" class="op-0" name="course-image-2"
                                                    accept="image/png, image/jpg" required>
                                         </div>
                                     </div>
@@ -299,7 +299,7 @@
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                         <div class="form-group">
                                             <label class="required-field" for="description">وصف الدورة</label>
-                                            <textarea id="description" class="form-control text-center required"
+                                            <textarea class="form-control text-center required no-resize"
                                                       name="description"
                                                       minlength="10" placeholder="وصف الدورة" rows="10" required>{{ old('description') }}</textarea>
                                         </div>
@@ -341,15 +341,15 @@
                                             <label class="required-field" for="type">نوع الدورة</label>
                                             <select class="form-control select2-placeholer {{ $errors->has('type') ? 'is-invalid' : '' }}"
                                                     name="type" required>
-                                                @if(old('type') == 1)
-                                                    <option value="1" selected>مجانية</option>
-                                                    <option value="2">مدفوعة</option>
-                                                @elseif(old('type') == 2)
-                                                    <option value="1">مجانية</option>
-                                                    <option value="2" selected>مدفوعة</option>
+                                                @if(old('type') == 0)
+                                                    <option value="0" selected>مجانية</option>
+                                                    <option value="1">مدفوعة</option>
+                                                @elseif(old('type') == 1)
+                                                    <option value="0">مجانية</option>
+                                                    <option value="1" selected>مدفوعة</option>
                                                 @else
-                                                    <option value="1">مجانية</option>
-                                                    <option value="2">مدفوعة</option>
+                                                    <option value="0">مجانية</option>
+                                                    <option value="1">مدفوعة</option>
                                                 @endif
                                             </select>
                                             @if ($errors->has('type'))

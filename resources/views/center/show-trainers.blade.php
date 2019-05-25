@@ -1,4 +1,4 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('title', "عرض المدربين")
 @section('main-title', "عرض المدربين")
@@ -71,7 +71,7 @@
                                 @endforeach
                             @else
                                 <tr class="gradeX">
-                                    <td class="text-danger" colspan="5"><h3>لا يوجد مدربين مسجلين في النظام</h3></td>
+                                    <td class="text-danger" colspan="6"><h3>لا يوجد مدربين مسجلين في النظام</h3></td>
                                 </tr>
                             @endif
                             </tbody>

@@ -1,4 +1,4 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('title', 'حساب تطبيق هللة')
 
@@ -85,7 +85,7 @@
                                     <div class="col-lg-6 col-lg-offset-3 col-md-4 col-md-offset-2 col-sm-6 col-xs-6">
                                         <div class="form-group">
                                             <label class="required-field pr-10" for="account_owner">اسم المستخدم</label>
-                                            <input type="text" class="form-control custom-input"
+                                            <input type="text" class="form-control custom-input text-center"
                                                    id="account_owner" maxlength="50" placeholder="اسم صاحب الحساب"
                                                    value="{{ $halalah->name }}"
                                                    name="account_owner" autocomplete="off">

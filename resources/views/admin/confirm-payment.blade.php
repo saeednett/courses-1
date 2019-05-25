@@ -122,24 +122,12 @@
                                     @endif
                                 @else
                                     <tr class="gradeX">
-                                        <td class="text-danger" colspan="7">
+                                        <td class="text-danger" colspan="9">
                                             <h3 class="mt-15">لايوجد طلاب مسجلين في الدورة</h3>
                                         </td>
                                     </tr>
                                 @endif
                                 </tbody>
-                                @if(count($course->reservation) > 2)
-                                    <tfoot>
-                                    <tr>
-                                        <th class="text-center">اسم الطالب</th>
-                                        <th class="text-center">تاريخ الدورة</th>
-                                        <th class="text-center">اسم صاحب الحساب</th>
-                                        <th class="text-center">رقم الحساب</th>
-                                        <th class="text-center" colspan="2">خيارات</th>
-                                        </th>
-                                    </tr>
-                                    </tfoot>
-                                @endif
                             </form>
                         </table>
                     </div>

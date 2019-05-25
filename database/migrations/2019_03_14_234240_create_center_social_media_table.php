@@ -18,6 +18,7 @@ class CreateCenterSocialMediaTable extends Migration
             $table->string('username')->nullable();
             $table->integer('center_id');
             $table->integer('social_media_id');
+            $table->integer('status');
             $table->timestamps();
         });
     }

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Admin;
+use App\Attendance;
 use App\Bank;
 use App\Category;
 use App\Center;
 use App\CenterAccount;
 use App\CenterSocialMedia;
+use App\Certificate;
 use App\City;
 use App\Country;
 use App\Coupon;
@@ -40,40 +42,47 @@ class CenterController extends Controller
 //        $this->middleware('auth-center')->except([['register']]);
     }
 
-    public function banks(Request $request)
-    {
-        if ($request->ajax()) {
-
-            $banks = Bank::all();
-            $data['data'] = array();
-            foreach ($banks as $bank) {
-                $array = array('id' => $bank->id, 'name' => $bank->name);
-                array_push($data['data'], $array);
-            }
-
-            return response()->json($data);
-
-        } else {
-            return response(400)->json($data['data'] = array('Error'));
-        }
-    }
-
-
     // This Function Returns An Error Page
     private function error_page($title, $message)
     {
-        $courses = $this->get_center_courses();
-        $trainers = $this->get_center_trainers();
-        $admins = $this->get_center_admins();
+        $total_courses = $this->get_center_courses();
+        $total_trainers = $this->get_center_trainers();
+        $total_admins = $this->get_center_admins();
         $total_students = $this->get_center_students();
 
-        return view("center.error-description", compact('courses', 'trainers', 'admins', 'total_students'))->withErrors(['title' => $title, 'error' => $message]);
+        return view('center.error-description', compact('total_courses', 'total_trainers', 'total_admins', 'total_students'))->withErrors(['title' => $title, 'error' => $message]);
+    }
+
+    // This Function Checks For The Role Id And Returns An Error Page For Other User But Center
+    private function external_error_page()
+    {
+        $title = "خطأ";
+        $message = "صلاحياتك لاتسمح لك بالوصول للصفحة المطلوبة";
+        $role_id = Auth::user()->role_id;
+        switch ($role_id) {
+            case 1:
+                return redirect()->route("administrator.error-description")->withErrors(['title' => $title, 'error' => $message]);
+                break;
+
+            case 3:
+                return redirect()->route("admin.error-description")->withErrors(['title' => $title, 'error' => $message]);
+                break;
+
+            case 4:
+                return redirect()->route("admin.error-description")->withErrors(['title' => $title, 'error' => $message]);
+                break;
+
+            case 5:
+                return redirect()->route('account.error.description')->withErrors(['title' => $title, 'error' => $message]);
+                break;
+        }
+
     }
 
     // This Function Returns The Amount Of Trainers Of One Course
     private function get_center_trainers()
     {
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
             // All Trainers Who Belongs To The Center
             $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
             return count($trainers);
@@ -85,7 +94,7 @@ class CenterController extends Controller
     // This Function Returns The Amount Of Admins Of One Course
     private function get_center_admins()
     {
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
             // All Admins Who Belongs To The Center
             $admins = Admin::where('center_id', Auth::user()->center->id)->get();
             return count($admins);
@@ -97,7 +106,7 @@ class CenterController extends Controller
     // This Function Returns The Amount Of Courses Of One Course
     private function get_center_courses()
     {
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
             // All Courses Which Belongs To The Center
             $courses = Course::where('center_id', Auth::user()->center->id)->get();
             return count($courses);
@@ -109,7 +118,7 @@ class CenterController extends Controller
     // This Function Returns The Amount Of Students Of One Course
     private function get_center_students()
     {
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
             // All Courses Id's Of The Courses Which Who Belongs To The Center
             $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
             // All Students Who Reserved A Course Of The Center
@@ -131,250 +140,178 @@ class CenterController extends Controller
         }
     }
 
-    // To Check A Coupon Of A Course If It Is Valid
-    public function check_coupon($course_identifier, $coupon)
+    // This Function Checks If User Is Authenticated Or Not And If The Username If Valid
+    private function check_authentication_username($username)
     {
-        $course = Course::select('id')->where('identifier', $course_identifier)->first();
-        $response['status'] = array();
-        $response['errors'] = array();
-        $response['response'] = array();
-
-        if (count($course) == 0) {
-            array_push($response['status'], "Error");
-            array_push($response['errors'], "Wrong Course Identifier");
-            array_push($response['response'], null);
-            return response()->json($response);
-        }
-
-        $coupon = Coupon::where('code', $coupon)->where('course_id', $course->id)->first();
-
-        if (count($coupon) == 0) {
-            array_push($response['status'], "Failed");
-            array_push($response['errors'], null);
-            array_push($response['response'], "كود الخصم غير موجود");
-            return response()->json($response);
+        if (Auth::check() && $username == Auth::user()->username && Auth::user()->role_id == 2) {
+            return true;
         } else {
-            array_push($response['status'], "Success");
-            array_push($response['errors'], null);
-            array_push($response['response'], "%" . $coupon->discount . " كود الخصم موجود بقيمة  ");
-            return response()->json($response);
+            return false;
         }
-
     }
 
-    // To Return A Cities List Of A Country
-    public function cities(Request $request, $id)
+    // This Function Checks If User Is Authenticated Or Not
+    private function check_authentication()
     {
-        if ($request->ajax()) {
-            $cities = City::where('country_id', $id)->get();
-            $data['data'] = array();
-            foreach ($cities as $city) {
-                $array = array('id' => $city->id, 'name' => $city->name);
-                array_push($data['data'], $array);
-            }
-
-            return response()->json($data);
+        if (Auth::check() && Auth::user()->role_id == 2) {
+            return true;
         } else {
-            return response(400)->json($data['data'] = array('Error'));
+            return false;
         }
     }
 
-    // To Return A Bank Account Information Of The Center
-    public function bank_account($center_id, $bank_id)
-    {
-
-        $center = User::find($center_id);
-
-        if ($center->role_id != 2) {
-            $response['error'] = ['Wrong Center Identifier'];
-            return response()->json($response);
-        }
-
-        $banks_data = array();
-        $banks_id = CenterAccount::select('bank_id')->where('center_id', $center->center->id)->get();
-
-        foreach ($banks_id as $id) {
-            array_push($banks_data, $id->bank_id);
-        }
-
-        if (!in_array((int)$bank_id, $banks_data)) {
-            $response['error'] = ['Wrong Bank Identifier'];
-            return response()->json($response);
-        }
-
-        $bank = Bank::find($bank_id);
-        $accounts = CenterAccount::where('center_id', $center->center->id)->where('bank_id', $bank_id)->get();
-        $response['response'] = array();
-        foreach ($accounts as $account) {
-            $response['response'] = ['id' => $bank->id, 'name' => $bank->name, 'logo' => $bank->image, 'account_owner' => $account->account_owner, 'account_number' => $account->account_number];
-        }
-
-        return response()->json($response);
-    }
-
-    // To Show The Index Of The Center After Login
+    // This Function Is The Main Page After Login
     public function index($center)
     {
 
-        if ($center == Auth::user()->username && Auth::user()->role_id == 2) {
+        if ($this->check_authentication_username($center)) {
 
-            $courses = $this->get_center_courses();
-            $trainers = $this->get_center_trainers();
-            $admins = $this->get_center_admins();
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_admins();
             $total_students = $this->get_center_students();
 
             $all_courses = Course::where('center_id', Auth::user()->center->id)->get();
             $all_admins = Admin::where('center_id', Auth::user()->center->id)->get();
             $all_trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
-            return view('center.index', compact('all_courses', 'all_admins', 'all_trainers', 'courses', 'trainers', 'admins', 'total_students'));
+
+            return view('center.index', compact('all_courses', 'all_admins', 'all_trainers', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
+
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-    // To Show The Form Of Creating A New Center
+    // This Function Returns The View Of Registering New Center
     public function register()
     {
-        if (Auth::guest()) {
+        $banks = Bank::all();
+        $countries = Country::all();
+        $cities = City::where('country_id', 1)->get();
+        return view('center.register', compact('countries', 'banks', 'cities'));
+    }
 
-            $banks = Bank::all();
-            $countries = Country::all();
-            $cities = City::where('country_id', 1)->get();
-            return view('center.register', compact('countries', 'banks', 'cities'));
+    // This Function Handle The Data Of Registering
+    public function store(Request $request)
+    {
 
-        } else {
+        $request->validate([
+            'center_type' => 'required|integer|max:1|min:0',
+        ]);
 
-            return redirect()->route('center.register');
+        // type of 1 means the center is profit and need some more information
+        if ($request->center_type == 1) {
+
+            $request->validate([
+                // This Part For User Account
+                'email' => 'required|email|unique:users,email',
+                'phone' => 'required|digits:10|unique:users,phone|',
+                'username' => 'required|string|max:20|min:5|unique:users,username',
+                'password' => 'required|string|max:32|min:6|confirmed',
+                // This Part For Center Account
+                'name' => 'required|string|max:20|min:5|unique:centers,name',
+                'country' => 'required|integer|exists:countries,id',
+                'city' => 'required|integer|exists:cities,id',
+                'center_type' => 'required|integer|max:1|min:0',
+                'about' => 'required|string|max:200',
+                'website' => 'nullable|string|regex:/www[.]+([a-zA-z]{1,20})+[.](com|org|net|edu|biz{3})/|max:50|min:10',
+                'profile-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+                'verification_code' => 'required|string|max:10|min:4|unique:centers,verification_code',
+                'verification_authority' => 'required|string|max:30|min:10',
+                // This Part For Center Bank Account Information
+                'bank' => 'required|integer|exists:banks,id',
+                'account_owner' => 'required|string|max:20|min:5',
+                'account_number' => 'required|digits:20|unique:center_accounts,account_number',
+
+            ]);
+
+        } else if ($request->center_type == 0) {
+
+            $request->validate([
+                // This Part For User Account
+                'email' => 'required|email|unique:users,email',
+                'phone' => 'required|digits:10|unique:users,phone|',
+                'username' => 'required|string|unique:users,username',
+                'password' => 'required|string|max:32|min:6|confirmed',
+                // This Part For Center Account
+                'name' => 'required|string|max:20|min:5|unique:centers,name',
+                'country' => 'required|integer|exists:countries,id',
+                'city' => 'required|integer|exists:cities,id',
+                'center_type' => 'required|integer|max:1|min:0',
+                'about' => 'required|string|max:200',
+                'website' => 'nullable|string|regex:/www[.]+([a-zA-z]{1,20})+[.](com|org|net|edu|biz{3})/|max:50|min:10',
+                'profile-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+            ]);
 
         }
 
-    }
+        DB::beginTransaction();
 
-    // The Data Of Creating Or Registering For The Center Goes Here And The Process Happens Here
-    public function store(Request $request)
-    {
-        if (Auth::guest()) {
+        try {
+
+            $user = User::create([
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'username' => $request->username,
+                'role_id' => 2,
+                'password' => Hash::make($request->password),
+            ]);
+
+
+            $file = $request->file('profile-image')->store('public/center-images');
+            $file_name = basename($file);
+            $image = $file_name;
+
+
+            $center = Center::create([
+                'user_id' => $user->id,
+                'name' => $request->name,
+                'city_id' => $request->city,
+                'type' => $request->center_type,
+                'about' => $request->about,
+                'website' => $request->website,
+                'image' => $image,
+                'verification_code' => $request->verification_code,
+                'verification_authority' => $request->verification_authority,
+            ]);
 
             if ($request->center_type == 1) {
 
-                $request->validate([
-                    'name' => 'required|string|max:50|min:10|unique:centers,name',
-                    'center_type' => 'required|integer|max:1|min:0',
-                    'verification_code' => 'required|string|max:10|min:4|unique:centers,verification_code',
-                    'verification_authority' => 'required|string|max:50|min:10',
-                    'country' => 'required|integer|max:99|min:1|exists:countries,id',
-                    'city' => 'required|integer|max:99|min:1|exists:cities,id',
-                    'email' => 'required|email|unique:users,email',
-                    'phone' => 'required|digits_between:9,20|unique:users,phone|',
-                    'username' => 'required|string|unique:users,username',
-                    'password' => 'required|string|max:32|min:8|confirmed',
-                    'about' => 'required|string|max:150',
-                    'bank' => 'required|integer|min:1|exists:banks,id',
-                    'account_owner' => 'required|string|max:50|min:10',
-                    'account_number' => 'required|digits:20|unique:center_accounts,account_number',
-                    'website' => 'nullable|string|max:50|min:10',
-                    'profile-logo' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+                CenterAccount::create([
+                    'center_id' => $center->id,
+                    'bank_id' => $request->bank,
+                    'account_owner' => $request->account_owner,
+                    'account_number' => $request->account_number,
                 ]);
 
-            } else if ($request->center_type == 0) {
-
-                $request->validate([
-                    'name' => 'required|string|max:50|min:10|unique:centers,name',
-                    'center_type' => 'required|integer|max:1|min:0',
-                    'country' => 'required|integer|max:99|min:1|exists:countries,id',
-                    'city' => 'required|integer|max:99|min:1|exists:cities,id',
-                    'email' => 'required|email|unique:users,email',
-                    'phone' => 'required|digits_between:9,20|unique:users,phone|',
-                    'username' => 'required|string|unique:users,username',
-                    'password' => 'required|string|max:32|min:8|confirmed',
-                    'about' => 'required|string|max:150',
-                    'website' => 'nullable|string|max:50|min:10',
-                    'profile-logo' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
-                ]);
-
-            } else {
-                return redirect()->route('center.register')->withErrors(['الرجاء اختيار تصنيف المركز']);
             }
 
-            DB::beginTransaction();
+            DB::commit();
 
-            try {
-                $user = User::create([
-                    'email' => $request->email,
-                    'username' => $request->username,
-                    'phone' => $request->phone,
-                    'role_id' => 2,
-                    'password' => Hash::make($request->password),
-                ]);
+            auth()->login($user);
+            return redirect()->route('center.index', $request->username);
 
-
-                $file = $request->file('profile-logo')->store('public/center-images');
-                $file_name = basename($file);
-                $logo = $file_name;
-
-
-                $center = Center::create([
-                    'name' => $request->name,
-                    'user_id' => $user->id,
-                    'verification_code' => $request->verification_code,
-                    'verification_authority' => $request->verification_authority,
-                    'website' => $request->website,
-                    'city_id' => $request->city,
-                    'about' => $request->about,
-                    'type' => $request->center_type,
-                    'logo' => $logo,
-                ]);
-
-                if ($request->center_type == 1) {
-
-                    CenterAccount::create([
-                        'account_owner' => $request->account_owner,
-                        'account_number' => $request->account_number,
-                        'bank_id' => $request->bank,
-                        'center_id' => $center->id,
-                    ]);
-
-                }
-
-                DB::commit();
-
-                auth()->login($user);
-                return redirect()->route('center.index', $request->username);
-
-            } catch (\Exception $e) {
-                DB::rollback();
-                return redirect()->route('center.register')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع'])->withInput()->exceptInput('profile-logo');
-                // something went wrong
-            }
-
-        } else {
-            return redirect()->route('center.login');
+        } catch (\Exception $e) {
+            // something went wrong
+            DB::rollback();
+            return redirect()->route('center.register')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع'])->withInput()->exceptInput('profile-image');
         }
+
     }
 
-
+    // This Function Returns A View With A Specific Admin Information
     public function show_admin_details($username)
     {
 
     }
 
-    // To Show The Form Of Editing Center Information
+    // This Function Returns A View With Center Information To Be Edit
     public function edit()
     {
-        if (Auth::check() && Auth::user()->role_id == 2) {
-
+        if ($this->check_authentication()) {
             // The Center That Will Be Edited
             $user = User::find(Auth::user()->center->user_id);
-
             // Get All Banks
             $banks = Bank::all();
             // Get All Countries
@@ -382,104 +319,85 @@ class CenterController extends Controller
             // All Cities
             $cities = City::where('country_id', $user->center->city->country_id)->get();
 
-            $courses = $this->get_center_courses();
-            $trainers = $this->get_center_trainers();
-            $admins = $this->get_center_admins();
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_admins();
             $total_students = $this->get_center_students();
-
-            return view('center.edit-center', compact('user', 'banks', 'countries', 'cities', 'courses', 'trainers', 'admins', 'total_students'));
-
+            return view('center.edit-center', compact('user', 'banks', 'countries', 'cities', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
         } else {
-
-            if (Auth::check() && Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::check() && Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول لهذه الصفحة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول لهذه الصفحة']);
-            }
-
+            return $this->external_error_page();
         }
     }
 
-    // The Data Of Updating A Center Goes Here And The Process Happens Here
+    // This Function Handle The Data Of Editing Center Information
     public function update(Request $request)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
             $counter = 0;
+            $user = User::find(Auth::user()->center->user_id);
 
-            $center = User::find(Auth::user()->center->user_id);
-
-            if ($center->name != $request->name) {
+            if ($user->center->name != $request->name) {
                 $request->validate([
-                    'name' => 'required|string|max:50|min:10',
+                    'name' => 'required|string|max:30|min:5',
                 ]);
 
-                $center->center->name = $request->name;
+                $user->center->name = $request->name;
                 $counter++;
             }
 
-            if ($center->center->verification_code != $request->verification_code) {
+            if ($user->center->city_id != $request->city) {
                 $request->validate([
-                    'verification_code' => 'required|string|max:10|min:4|',
+                    'city' => 'required|integer|exists:cities,id',
                 ]);
 
-                $center->center->verification_code = $request->verification_code;
+                $user->center->city_id = $request->city;
                 $counter++;
             }
 
-            if ($center->center->verification_authority != $request->verification_authority) {
+            if ($user->email != $request->email) {
                 $request->validate([
-                    'verification_authority' => 'required|string|max:50|min:10',
+                    'email' => 'required|email|max:100',
                 ]);
 
-                $center->center->verification_authority = $request->verification_authority;
+                $user->email = $request->email;
                 $counter++;
             }
 
-            if ($center->center->city_id != $request->city) {
-                $request->validate([
-                    'city' => 'required|integer|max:99|min:1|exists:cities,id',
-                ]);
-
-                $center->center->city_id = $request->city;
-                $counter++;
-            }
-
-            if ($center->email != $request->email) {
-                $request->validate([
-                    'email' => 'required|email|max:50',
-                ]);
-
-                $center->email = $request->email;
-                $counter++;
-            }
-
-            if ($center->phone != $request->phone) {
+            if ($user->phone != $request->phone) {
                 $request->validate([
                     'phone' => 'required|string|max:15|starts_with:+966',
                 ]);
 
-                $center->phone = $request->phone;
+                $user->phone = $request->phone;
                 $counter++;
             }
 
-            if ($center->username != $request->username) {
+            if ($user->username != $request->username) {
                 $request->validate([
-                    'username' => 'required|string|unique:users,email',
+                    'username' => 'required|string|max:20|min:5|unique:users,email',
                 ]);
 
-                $center->username = $request->username;
+                $user->username = $request->username;
                 $counter++;
             }
 
-            if ($center->center->website != $request->website) {
+            if ($user->center->about != $request->about) {
+
                 $request->validate([
-                    'website' => 'required|string|max:50|min:10|',
+                    'about' => 'required|max:200|min:7|string|',
                 ]);
 
-                $center->center->website = $request->website;
+                $user->center->about = $request->about;
+                $counter++;
+            }
+
+            if ($user->center->website != $request->website) {
+                $request->validate([
+                    'website' => 'required|string|max:60|min:10|',
+                ]);
+
+                $user->center->website = $request->website;
                 $counter++;
             }
 
@@ -491,55 +409,62 @@ class CenterController extends Controller
                 ]);
 
                 $counter++;
-                if (File::exists('storage/center-images/' . $center->center->cover)) {
-                    if (Storage::delete('public/center-images/' . $center->center->cover)) {
+                if (file_exists('storage/center-images/' . $user->center->cover)) {
+                    if (Storage::delete('public/center-images/' . $user->center->cover)) {
                         $file = $request->file('profile-cover')->store('public/center-images');
                         $file_name = basename($file);
-                        $center->center->cover = $file_name;
+                        $user->center->cover = $file_name;
                     }
                 } else {
                     $file = $request->file('profile-cover')->store('public/center-images');
                     $file_name = basename($file);
-                    $center->center->cover = $file_name;
+                    $user->center->cover = $file_name;
                 }
 
             }
 
-            if ($request->hasFile('profile-logo')) {
+            if ($request->hasFile('profile-image')) {
 
                 $request->validate([
-                    'profile-logo' => 'sometimes|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+                    'profile-image' => 'sometimes|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
                 ]);
 
                 $counter++;
-                if (File::exists('public/center-images/' . $center->center->logo)) {
-                    if (Storage::delete('public/center-images/' . $center->center->logo)) {
-                        $file = $request->file('profile-logo')->store('public/center-images');
+                if (file_exists('public/center-images/' . $user->center->logo)) {
+                    if (Storage::delete('public/center-images/' . $user->center->logo)) {
+                        $file = $request->file('profile-image')->store('public/center-images');
                         $file_name = basename($file);
-                        $center->center->logo = $file_name;
+                        $user->center->image = $file_name;
                     }
                 } else {
-                    $file = $request->file('profile-logo')->store('public/center-images');
+                    $file = $request->file('profile-image')->store('public/center-images');
                     $file_name = basename($file);
-                    $center->center->logo = $file_name;
+                    $user->center->image = $file_name;
                 }
 
             }
 
-            if ($center->center->about != $request->about) {
-
+            if ($user->center->verification_code != $request->verification_code) {
                 $request->validate([
-                    'about' => 'required|string|',
+                    'verification_code' => 'required|integer|max:10|min:4|',
                 ]);
 
-                $center->center->about = $request->about;
+                $user->center->verification_code = $request->verification_code;
                 $counter++;
             }
 
+            if ($user->center->verification_authority != $request->verification_authority) {
+                $request->validate([
+                    'verification_authority' => 'required|string|max:50|min:10',
+                ]);
+
+                $user->center->verification_authority = $request->verification_authority;
+                $counter++;
+            }
 
             if ($counter > 0) {
-                $center->save();
-                $center->center->save();
+                $user->save();
+                $user->center->save();
             } else {
                 return redirect()->route('center.edit')->withErrors(['قم بتحديث بعض الحقول لكي يتم حفظها', 'لم يتم تحديث اي حقل']);
             }
@@ -547,76 +472,60 @@ class CenterController extends Controller
             return redirect()->route('center.edit')->with('success', 'تم تعديل البيانات بنجاح');
 
         } else {
-
-            if (Auth::check() && Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::check() && Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول لهذه الصفحة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول لهذه الصفحة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-    // Remove Course Function
+    // This Function Delete A Course
     public function destroy($id)
     {
 
     }
 
-    // To Show The Form Of Signing in For The Center
+    // This Function Returns The View Of Login
     public function login()
     {
         return view('center.login');
     }
 
-    // To Show The Form Of Creating New Trainer
+    // This Function Returns The View Of Creating Trainer
     public function create_trainer()
     {
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $nationalities = Nationality::all();
             $titles = Title::all();
 
-            $courses = $this->get_center_courses();
-            $trainers = $this->get_center_trainers();
-            $admins = $this->get_center_admins();
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_admins();
             $total_students = $this->get_center_students();
 
-            return view('center.create-trainer', compact('nationalities', 'titles', 'courses', 'trainers', 'admins', 'total_students'));
+            return view('center.create-trainer', compact('nationalities', 'titles', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-    // The Data Of Storing New Trainer Goes Here And The Process Happens Here
+    // This Function Handles The Process Of Creating Trainer
     public function store_trainer(Request $request)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $request->validate([
-                'name' => 'required|string|max:50|min:6|unique:trainers,name',
+                'name' => 'required|string|max:20|min:5|unique:trainers,name',
+                'phone' => 'required|starts_with:5|digits:9|unique:users,phone',
                 'username' => 'required|string|max:20|:min:5|unique:users,username',
-                'phone' => 'required|starts_with:+|max:15|min:9|unique:users,phone',
-                'email' => 'required|string|email|unique:users,email',
+                'email' => 'required|string|max:100|email|unique:users,email',
                 'password' => 'required|string|max:32|min:6|confirmed',
                 'status' => 'required|integer|max:1|min:0',
-                'title' => 'required|integer|max:99|min:1|exists:titles,id',
-                'nationality' => 'required|integer|max:99|min:1|exists:nationalities,id',
-                'profile-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
+                'title' => 'required|integer|exists:titles,id',
+                'nationality' => 'required|integer|exists:nationalities,id',
+                'profile-image' => 'required|image|mimetypes:image/png|max:400',
             ]);
 
             DB::beginTransaction();
@@ -625,8 +534,8 @@ class CenterController extends Controller
 
                 $user = User::create([
                     'email' => $request->email,
-                    'username' => $request->username,
                     'phone' => $request->phone,
+                    'username' => $request->username,
                     'role_id' => 4,
                     'status' => $request->status,
                     'password' => Hash::make($request->password),
@@ -636,46 +545,38 @@ class CenterController extends Controller
                 $file_name = basename($file);
 
                 Trainer::create([
-                    'name' => $request->name,
                     'user_id' => $user->id,
                     'center_id' => Auth::user()->center->id,
                     'title_id' => $request->title,
-                    'nationality_id' => $request->nationality,
+                    'name' => $request->name,
                     'image' => $file_name,
+                    'nationality_id' => $request->nationality,
                 ]);
 
                 DB::commit();
                 return redirect()->route('center.trainer.create')->with('success', 'تم إضافة المدرب بنجاح');
 
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 DB::rollback();
                 return redirect()->route('center.trainer.create')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع']);
             }
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-    // To Show The Form Of Editing A Trainer
+    // This Function Returns The View Of Editing Trainer
     public function edit_trainer($id)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             // The Trainer That Will Be Edited
             $trainer = Trainer::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
 
-            if (count($trainer) < 1) {
+            if (empty($trainer)) {
 
                 return $this->error_page('لايوجد مدربيين في النظام', 'من فضلك قم بالتأكد من معرف المدرب المراد تعديل بياناته');
 
@@ -685,42 +586,35 @@ class CenterController extends Controller
                 $titles = Title::all();
                 // Get All Nationalities To Chose One Of Them
                 $nationalities = Nationality::all();
-                // All Admins Who Belongs To The Center
-                $admins = $this->get_center_admins();
+
                 // All Courses Which Belongs To The Center
-                $courses = $this->get_center_courses();
+                $total_courses = $this->get_center_courses();
                 // All Trainers Who Belongs To The Center
-                $trainers = $this->get_center_trainers();
+                $total_trainers = $this->get_center_trainers();
+                // All Admins Who Belongs To The Center
+                $total_admins = $this->get_center_admins();
                 // All Students Who Reserved A Course Of The Center
                 $total_students = $this->get_center_students();
 
-                return view('center.edit-trainer', compact('trainer', 'titles', 'nationalities', 'trainers', 'courses', 'admins', 'total_students'));
+                return view('center.edit-trainer', compact('trainer', 'titles', 'nationalities', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
 
             }
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-    // The Data Of Updating A Trainer Goes Here And The Process Happens Here
+    // This FUnction Handles The Process Of Editing Trainer
     public function update_trainer(Request $request, $id)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $trainer = Trainer::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
 
-            if (count($trainer) < 1) {
+            if (empty($trainer)) {
 
                 return redirect()->route('center.admin.edit', $id)->withErrors(['لايوجد مدربيين في النظام', 'الرجاء قم بالتأكد من وجود مدربيين مسجلين في النظام']);
 
@@ -728,12 +622,12 @@ class CenterController extends Controller
 
                 $counter = 0;
 
-                if ($trainer->user->name != $request->name) {
+                if ($trainer->name != $request->name) {
                     $request->validate([
-                        'name' => 'required|string|max:50|min:10|unique:users,name',
+                        'name' => 'required|string|max:50|min:10|unique:trainers,name',
                     ]);
 
-                    $trainer->user->name = $request->name;
+                    $trainer->name = $request->name;
                     $counter++;
                 }
 
@@ -748,7 +642,7 @@ class CenterController extends Controller
 
                 if ($trainer->user->phone != $request->phone) {
                     $request->validate([
-                        'phone' => 'required|string|starts_with:+966|max:13|min:13||unique:users,phone',
+                        'phone' => 'required|string|starts_with:05|max:10|min:9|unique:users,phone',
                     ]);
 
                     $trainer->user->phone = $request->phone;
@@ -757,7 +651,7 @@ class CenterController extends Controller
 
                 if ($trainer->user->email != $request->email) {
                     $request->validate([
-                        'email' => 'required|string|email|unique:users,email',
+                        'email' => 'required|string|email|max:100|unique:users,email',
                     ]);
 
                     $trainer->user->email = $request->email;
@@ -768,18 +662,16 @@ class CenterController extends Controller
                     $request->validate([
                         'status' => 'required|integer|max:1|min:0',
                     ]);
-                }
 
-                $request->validate([
-                    'title' => 'required|integer|max:99|min:1|exists:titles,id',
-                    'nationality' => 'required|integer|max:99|min:1|exists:nationalities,id',
-                ]);
+                    $trainer->user->status = $request->status;
+                    $counter++;
+                }
 
 
                 if ($trainer->title_id != $request->title) {
 
                     $request->validate([
-                        'title' => 'required|integer|max:99|min:1|exists:titles,id',
+                        'title' => 'required|integer|exists:titles,id',
                     ]);
 
                     $trainer->title_id = $request->title;
@@ -789,7 +681,7 @@ class CenterController extends Controller
                 if ($trainer->nationality_id != $request->nationality) {
 
                     $request->validate([
-                        'nationality' => 'required|integer|max:99|min:1|exists:nationalities,id',
+                        'nationality' => 'required|integer|exists:nationalities,id',
                     ]);
 
                     $trainer->nationality_id = $request->nationality;
@@ -802,7 +694,7 @@ class CenterController extends Controller
                         'profile-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
                     ]);
 
-                    if (File::exists('storage/trainer-images/' . $trainer->image)) {
+                    if (file_exists('storage/trainer-images/' . $trainer->image)) {
                         if (Storage::delete('public/trainer-images/' . $trainer->image)) {
                             $file = $request->file('profile-image')->store('public/trainer-images');
                             $file_name = basename($file);
@@ -817,112 +709,90 @@ class CenterController extends Controller
 
                 }
 
-
                 if ($counter == 0) {
                     return redirect()->route('center.trainer.edit', $trainer->id)->withErrors(['لم يتم التعديل على اي حقل', 'الرجاء تعديل بعض الحقول لكي يتم حفظها']);
+                } else {
+                    $trainer->save();
+                    $trainer->user->save();
+                    return redirect()->route('center.trainer.edit', $trainer->id)->with('success', 'تم تعديل البيانات بنجاح');
                 }
-
-                $trainer->save();
-                $trainer->user->save();
-                return redirect()->route('center.trainer.edit', $trainer->id)->with('success', 'تم تعديل البيانات بنجاح');
 
             }
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-    // To Show All Trainers Who Belongs To The Center
+    // This Function Returns A View With All Trainers
     public function show_trainers()
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
-            $courses = $this->get_center_courses();
-            $trainers = $this->get_center_trainers();
-            $admins = $this->get_center_admins();
+            // Courses Which Belongs To The Center
+            $total_courses = $this->get_center_courses();
+            // Trainers Who Belongs To The Center
+            $total_trainers = $this->get_center_trainers();
+            // Admins Who Belongs To The Center
+            $total_admins = $this->get_center_admins();
+            //Students Who Reserved A Course Of The Center
             $total_students = $this->get_center_students();
+
             $all_trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
 
-
-            return view('center.show-trainers', compact('all_trainers', 'courses', 'trainers', 'admins', 'total_students'));
+            return view('center.show-trainers', compact('total_courses', 'total_trainers', 'total_admins', 'total_students', 'all_trainers'));
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-    // To Show The Form Of Creating New Course
+    // This Function Returns A View Of Creating Course
     public function create_course()
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             // All Courses Which Belongs To The Center
-            $courses = $this->get_center_courses();
+            $total_courses = $this->get_center_courses();
             // All Trainers Who Belongs To The Center
-            $trainers = $this->get_center_trainers();
+            $total_trainers = $this->get_center_trainers();
             // All Admins Who Belongs To The Center
-            $admins = $this->get_center_admins();
+            $total_admins = $this->get_center_admins();
             // All Students Who Reserved A Course Of The Center
             $total_students = $this->get_center_students();
 
 
-            if ($trainers < 1) {
-                (['title' => 'لاتوجد دورات في النظام', 'error' => 'من فضلك قم بإضافة بعض الدورات لكي تتمكن من تعيين مدربين لها',]);
-                return view("center.error-description", compact('courses', 'trainers', 'admins', 'total_students'))->withErrors(['title' => 'لايوجد مدربين في النظام', 'error' => 'من فضلك قم بإضافة بعض المدربين لكي تتمكن من إضافة الدورات']);
+            if ($total_trainers < 1) {
+                return view("center.error-description", compact('total_courses', 'total_trainers', 'total_admins', 'total_students'))->withErrors(['title' => 'لايوجد مدربين في النظام', 'error' => 'من فضلك قم بإضافة بعض المدربين لكي تتمكن من إضافة الدورات']);
+            } else {
+
+                // Get The First Cities The The Rest With Ajax Rexuest
+                $cities = City::where('country_id', 1)->get();
+                // Get All Countries
+                $countries = Country::all();
+                // Get All Categories
+                $categories = Category::all();
+
+                $all_trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+                return view('center.create-course', compact('all_trainers', 'countries', 'cities', 'categories', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
             }
-
-            // Get The First Cities The The Rest With Ajax Rexuest
-            $cities = City::where('country_id', 1)->get();
-            // Get All Countries
-            $countries = Country::all();
-            // Get All Categories
-            $categories = Category::all();
-
-            $all_trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
-            return view('center.create-course', compact('all_trainers', 'countries', 'cities', 'categories', 'trainers', 'admins', 'courses', 'total_students'));
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-    // The Data Of Storing New Course Goes Here And The Process Happens Here
+    // This Function Handles The Process Of Creating Course
     public function store_course(Request $request)
     {
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
-            // Getting Center Main Information
-            $center = Center::find(Auth::user()->id);
+
             // Trainers Array That Will Hold Ids Of The Trainers Who Belong To The Center
             $trainers_data = array();
             // Getting Trainers Information
@@ -930,275 +800,743 @@ class CenterController extends Controller
 
             // Making Sure That The Center Has Trainers
             if (count($trainers) < 1) {
-                abort(404);
-            }
-            // Fetching Trainers Data Into The Array
-            foreach ($center->trainer as $trainer) {
-                array_push($trainers_data, $trainer->id);
-            }
-
-            // Validating The Request Data
-            $request->validate([
-                // The Title Of The Course
-                'title' => 'required|string|max:50|min:10',
-                // the Category Of The Course
-                'category' => 'required|integer|max:99|min:1|exists:categories,id',
-                // If The Course Is Visible To The Users
-                'visible' => 'required|integer|max:2|min:1',
-                // The Template Of The Certificate Of The Course
-                'template' => 'required|integer|max:3|min:1',
-                // The Country Of The City
-                'country' => 'required|integer|max:99|min:1|exists:countries,id',
-                // The City Of The Course
-                'city' => 'required|integer|max:99|min:1|exists:cities,id',
-                // The Address Of tHE Course
-                'address' => 'required|string|max:150|min:10',
-                // The Location The Course On Google Map
-                'location' => 'required|string|max:150|min:20',
-                // The Cover And Image Of The Course
-                'course-poster-1' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:400',
-                'course-poster-2' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:400',
-                // The Description Of The Course
-                'description' => 'required|string|max:200|min:50',
+                return $this->error_page('خطأ', 'لايوجد مدربين مسجلين في النظام لذا لايمكنك إضافة دورات');
+            } else {
 
 
-                //The Trainers Array Of The Course
-                'trainer' => 'required|array|max:' . count($center->trainer),
-                // The Trainers Array Data
-                'trainer.*' => 'required|integer|distinct|' . Rule::in($trainers_data),
 
-
-                // The Type Of Course Payed Or Free
-                'type' => 'required|integer|max:2|min:1',
-                //The Coupons Indicator Of The Coupons
-                'coupon' => 'required_if:type,2|integer|max:1|min:0',
-                //The Coupons Array Data
-                'coupon_code' => 'required_if:coupon,2|array',
-                'coupon_code.*' => 'required|string|distinct',
-                'coupon_discount' => 'required_if:coupon,2|array|size:' . count($request->coupon_code),
-                'coupon_discount.*' => 'required|integer',
-
-                // The Start Date Of The Course
-                'start_date' => 'required|date',
-                // The Finish Date Of The Course
-                'end_date' => 'required|date|after_or_equal:' . $request->start_date,
-                // The Deadline Of Reservation
-                'end_reservation' => 'required|date|before_or_equal:' . $request->start_date,
-                // The Start Time Of The Course
-                'start_time' => ['required', 'regex:/(^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$)/', 'string', 'max:5', 'min:5'],
-                // The Total Attendance Of The Course
-                'attendance' => 'required|digits_between:1,4',
-                // The Price Of The Course
-                'price' => 'required_if:type,2|digits_between:1,4',
-                // The Attendance Gender
-                'gender' => 'required|digits_between:1,3|',
-                // Attendance Amount Base On Gender
-                'men_amount' => 'required_if:gender,3|integer|max:1000|min:1',
-                'women_amount' => 'required_if:gender,3|integer|max:1000|min:1',
-
-                // Total Hours Of The Course
-                'hours' => 'required|digits_between:1,4|',
-                // The Activation of The Course
-                'activation' => 'required|digits_between:0,1|',
-
-            ]);
-
-            DB::beginTransaction();
-            try {
-
-                if (is_null($request->price)) {
-                    $price = 0;
-                } else {
-                    $price = $request->price;
-                }
-                if ($request->type == 1) {
-                    $type = 'free';
-                } else {
-                    $type = 'payed';
+                // Fetching Trainers Data Into The Array
+                foreach (Auth::user()->center->trainer as $trainer) {
+                    array_push($trainers_data, $trainer->id);
                 }
 
-                if (is_null($request->coupon)) {
-                    $coupon = 0;
-                } else {
-                    $coupon = $request->coupon;
+
+                $max_min_women = ($request->attendance - $request->men_amount);
+
+                if ( is_null($request->coupon_code) ){
+                    $coupon_code = 0;
+                }else{
+                    $coupon_code = count($request->coupon_code);
                 }
 
-                if ($request->gender == 1) {
-                    $men = $request->attendance;
-                    $women = 0;
-                } elseif ($request->gender == 2) {
-                    $men = 0;
-                    $women = $request->attendance;
-                } else {
-                    $men = $request->men_amount;
-                    $women = $request->women_amount;
-                }
+                // Validating The Request Data
+                $request->validate([
+                    // The Title Of The Course
+                    'title' => 'required|string|max:50|min:10',
+                    // the Category Of The Course
+                    'category' => 'required|integer|exists:categories,id',
+                    // If The Course Is Visible To The Users
+                    'visible' => 'required|integer|max:1|min:0',
+                    // The Template Of The Certificate Of The Course
+                    'template' => 'required|integer|max:3|min:1',
+                    // The Country Of The City
+                    'country' => 'required|integer|exists:countries,id',
+                    // The City Of The Course
+                    'city' => 'required|integer|exists:cities,id',
+                    // The Address Of tHE Course
+                    'address' => 'required|string|max:150|min:10',
+                    // The Location The Course On Google Map
+                    'location' => 'required|string|max:150|min:20',
+                    // The Cover And Image Of The Course
+                    'course-image-1' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:400',
+                    'course-image-2' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg|max:400',
+                    // The Description Of The Course
+                    'description' => 'required|string|max:200|min:50',
+                    //The Trainers Array Of The Course
+                    'trainer' => 'required|array|max:' . count(Auth::user()->center->trainer),
+                    // The Trainers Array Data
+                    'trainer.*' => 'required|integer|distinct|' . Rule::in($trainers_data),
+                    // The Type Of Course Payed Or Free
+                    'type' => 'required|integer|max:1|min:0',
+                    //The Coupons Indicator Of The Coupons
+                    'coupon' => 'required_if:type,1|integer|max:1|min:0',
+                    //The Coupons Array Data
+                    'coupon_code' => 'required_if:coupon,1|array',
+                    'coupon_code.*' => 'required|string|distinct',
+                    'coupon_discount' => 'required_if:coupon,1|array|size:' . $coupon_code,
+                    'coupon_discount.*' => 'required|integer',
+                    // The Start Date Of The Course
+                    'start_date' => 'required|date',
+                    // The Finish Date Of The Course
+                    'end_date' => 'required|date|after_or_equal:' . $request->start_date,
+                    // The Deadline Of Reservation
+                    'end_reservation' => 'required|date|before_or_equal:' . $request->start_date,
+                    // The Start Time Of The Course
+                    'start_time' => ['required', 'regex:/(^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$)/', 'string', 'max:5', 'min:5'],
+                    // The Total Attendance Of The Course
+                    'attendance' => 'required|digits_between:1,4',
+                    // The Price Of The Course
+                    'price' => 'required_if:type,1|digits_between:1,4',
+                    // The Attendance Gender
+                    'gender' => 'required|integer|max:3|min:1',
 
-                // Creating The New Course
-                $course = Course::create([
-                    'title' => $request->title,
-                    'identifier' => Str::random(10),
-                    'address' => $request->address,
-                    'location' => $request->location,
-                    'price' => $price,
-                    'type' => $type,
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'start_time' => $request->start_time,
-                    'hours' => $request->hours,
-                    'end_reservation' => $request->end_reservation,
-                    'attendance' => $request->attendance,
-                    'gender' => $request->gender,
-                    'men' => $men,
-                    'women' => $women,
-                    'coupon' => $coupon,
-                    'category_id' => $request->category,
-                    'city_id' => $request->city,
-                    'template_id' => $request->template,
-                    'center_id' => Auth::user()->center->id,
-                    'visible' => $request->visible,
-                    'description' => $request->description,
-                    'validation' => 0,
-                    'activation' => $request->activation,
+                    // Attendance Amount Base On Gender
+                    'men_amount' => 'required_if:gender,3|integer|max:'.$request->attendance.'|min:0',
+                    'women_amount' => 'required_if:gender,3|integer||max:'.$max_min_women.'|min:'.$max_min_women,
+
+                    // Total Hours Of The Course
+                    'hours' => 'required|digits_between:1,4|',
+                    // The Activation of The Course
+                    'activation' => 'required|integer|max:1|min:1',
 
                 ]);
 
-                // Making Sure That The Data Has A Cover And Image For The Course
-                if ($request->hasFile('course-poster-1') && $request->hasFile('course-poster-2')) {
+                DB::beginTransaction();
 
-                    $file = $request->file('course-poster-1')->store('public/course-images');
-                    $file_name = basename($file);
+                try {
 
-                    $file_2 = $request->file('course-poster-2')->store('public/course-images');
-                    $file_name_2 = basename($file_2);
+                    if (is_null($request->price)) {
+                        $price = 0;
+                    } else {
+                        $price = $request->price;
+                    }
 
-                    Image::create([
-                        'image' => $file_name,
-                        'image_2' => $file_name_2,
-                        'course_id' => $course->id,
+                    if ($request->type == 0) {
+                        $type = 'free';
+                    } else {
+                        $type = 'payed';
+                    }
+
+                    if (is_null($request->coupon)) {
+                        $coupon = 0;
+                    } else {
+                        $coupon = $request->coupon;
+                    }
+
+                    if ($request->gender == 1) {
+                        $men = $request->attendance;
+                        $women = 0;
+                    } elseif ($request->gender == 2) {
+                        $men = 0;
+                        $women = $request->attendance;
+                    } else {
+                        $men = $request->men_amount;
+                        $women = $request->women_amount;
+                    }
+
+                    // Creating The New Course
+                    $course = Course::create([
+                        'title' => $request->title,
+                        'identifier' => Str::random(10),
+                        'address' => $request->address,
+                        'location' => $request->location,
+                        'price' => $price,
+                        'type' => $type,
+                        'start_date' => $request->start_date,
+                        'end_date' => $request->end_date,
+                        'start_time' => $request->start_time,
+                        'hours' => $request->hours,
+                        'end_reservation' => $request->end_reservation,
+                        'attendance' => $request->attendance,
+                        'gender' => $request->gender,
+                        'men' => $men,
+                        'women' => $women,
+                        'coupon' => $coupon,
+                        'category_id' => $request->category,
+                        'city_id' => $request->city,
+                        'template_id' => $request->template,
+                        'center_id' => Auth::user()->center->id,
+                        'visible' => $request->visible,
+                        'description' => $request->description,
+                        'validation' => 0,
+                        'activation' => $request->activation,
+
                     ]);
-                }
 
-                // Storing The Course Trainers
-                for ($i = 0; $i < count($request->trainer); $i++) {
-                    CourseTrainer::create([
-                        'course_id' => $course->id,
-                        'trainer_id' => $request->trainer[$i],
-                    ]);
-                }
+                    // Making Sure That The Data Has A Cover And Image For The Course
+                    if ($request->hasFile('course-image-1') && $request->hasFile('course-image-2')) {
 
-                // Storing The Course Coupons If The Type Is Payed
-                if ($request->coupon == 2) {
-                    for ($i = 0; $i < count($request->coupon_code); $i++) {
-                        Coupon::create([
-                            'code' => $request->coupon_code[$i],
-                            'discount' => $request->coupon_discount[$i],
+                        $file = $request->file('course-image-1')->store('public/course-images');
+                        $file_name = basename($file);
+
+                        $file_2 = $request->file('course-image-2')->store('public/course-images');
+                        $file_name_2 = basename($file_2);
+
+                        Image::create([
+                            'image' => $file_name,
+                            'image_2' => $file_name_2,
                             'course_id' => $course->id,
                         ]);
                     }
+
+                    // Storing The Course Trainers
+                    for ($i = 0; $i < count($request->trainer); $i++) {
+                        CourseTrainer::create([
+                            'course_id' => $course->id,
+                            'trainer_id' => $request->trainer[$i],
+                        ]);
+                    }
+
+                    // Storing The Course Coupons If The Type Is Payed
+                    if ($request->coupon == 1) {
+                        for ($i = 0; $i < count($request->coupon_code); $i++) {
+                            Coupon::create([
+                                'code' => $request->coupon_code[$i],
+                                'discount' => $request->coupon_discount[$i],
+                                'course_id' => $course->id,
+                            ]);
+                        }
+                    }
+
+                    // Save The Changes If The Is No Errors
+                    DB::commit();
+
+                    return redirect()->route('center.course.create')->with('success', 'تم إضافة الدورة بنجاح');
+                } catch (\Exception $e) {
+                    // Don't Save The Changes If The Is Errors
+                    DB::rollBack();
+                    return redirect()->route('center.course.create')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع'])->withInput();
+
                 }
 
-                // Save The Changes If The Is No Errors
-                DB::commit();
-
-                return redirect()->route('center.course.create')->with('success', 'تم إضافة الدورة بنجاح');
-            } catch (\Exception $e) {
-                // Don't Save The Changes If The Is Errors
-                DB::rollBack();
-                return redirect()->route('center.course.create')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع'])->withInput();
-
             }
-
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
     }
 
-    // To Show The Form Of Editing A Course
-    public function edit_course()
+    // This Function Returns A View With The Course That Will Be Edited
+    public function course_edit($identifier)
     {
 
-    }
+        if ($this->check_authentication()) {
 
-    // The Data Of Updating A Course Goes Here And The Process Happens Here
-    public function update_course()
-    {
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
 
-    }
-
-    // To Show All Courses Which Belongs To The Center
-    public function show_courses()
-    {
-
-        if (Auth::check() && Auth::user()->role_id == 2) {
-
-            $courses = Course::where('center_id', Auth::user()->center->id)->get();
-            $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
-            $admins = Admin::where('center_id', Auth::user()->center->id)->get();
-            $course_id = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
-            $students = Reservation::find($course_id)->count();
-
-            return view('center.show-courses', compact('courses', 'trainers', 'admins', 'students'));
-
-        } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username);
+            if (empty($course)) {
+                return $this->error_page("خطأ", "الرجاء التأكد من معرف الدورة");
             } else {
-                return redirect()->route('account.index');
+                $categories = Category::all();
+                $countries = Country::all();
+                $cities = City::all();
+                $trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+
+
+                // Courses Which Belongs To The Center
+                $total_courses = $this->get_center_courses();
+                // Trainers Who Belongs To The Center
+                $total_trainers = $this->get_center_trainers();
+                // Admins Who Belongs To The Center
+                $total_admins = $this->get_center_admins();
+                //Students Who Reserved A Course Of The Center
+                $total_students = $this->get_center_students();
+
+                return view('center.edit-course', compact('course', 'categories', 'countries', 'cities', 'trainers', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
             }
 
+        } else {
+            return $this->external_error_page();
         }
     }
 
-    // To Show The Form Of Creating New Admin
-    public function create_admin()
+    // This Function Handles The Process Of Editing Course
+    public function course_update(Request $request, $identifier)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
-            $courses = $this->get_center_courses();
-            $trainers = $this->get_center_trainers();
-            $admins = $this->get_center_admins();
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
+            if (empty($course)) {
+                return $this->error_page("خطأ", "الرجاء التأكد من معرف الدورة");
+            } else {
+
+                // Getting Center Main Information
+                $center = Center::find(Auth::user()->center->id);
+                // Trainers Array That Will Hold Ids Of The Trainers Who Belong To The Center
+                $trainers_data = array();
+                // Getting Trainers Information
+                $trainers = Trainer::where('center_id', $center->id)->get();
+
+                // Making Sure That The Center Has Trainers
+                if (count($trainers) < 1) {
+                    return $this->error_page("خطأ", "لايمكنك إنشاء دورة من دون مدربين");
+                }
+                // Fetching Trainers Data Into The Array
+                foreach ($center->trainer as $trainer) {
+                    array_push($trainers_data, $trainer->id);
+                }
+
+                $counter = 0;
+
+                if ($course->title != $request->title) {
+                    $request->validate([
+                        // The Title Of The Course
+                        'title' => 'required|string|max:50|min:10',
+                    ]);
+                    $course->title = $request->title;
+                    $counter++;
+                }
+
+                if ($course->category_id != $request->category) {
+                    $request->validate([
+                        // the Category Of The Course
+                        'category' => 'required|integer|max:99|min:1|exists:categories,id',
+                    ]);
+                    $course->category_id = $request->category;
+                    $counter++;
+                }
+
+                if ($course->visible != $request->visible) {
+                    $request->validate([
+                        // If The Course Is Visible To The Users
+                        'visible' => 'required|integer|max:2|min:1',
+                    ]);
+                    $course->visible = $request->visible;
+                    $counter++;
+                }
+
+                if ($course->template_id != $request->template) {
+                    $request->validate([
+                        // The Template Of The Certificate Of The Course
+                        'template' => 'required|integer|max:3|min:1',
+                    ]);
+                    $course->template_id = $request->template;
+                    $counter++;
+                }
+
+                if ($course->city_id != $request->city) {
+                    $request->validate([
+                        // The Country Of The City
+                        'country' => 'required|integer|exists:countries,id',
+                        // The City Of The Course
+                        'city' => 'required|integer|exists:cities,id',
+                    ]);
+                    $course->city_id = $request->city;
+                    $counter++;
+                }
+
+                if ($course->address != $request->address) {
+                    $request->validate([
+                        // The Address Of tHE Course
+                        'address' => 'required|string|max:150|min:10',
+                    ]);
+                    $course->address = $request->address;
+                    $counter++;
+                }
+
+
+                if ($course->location != $request->location) {
+                    $request->validate([
+                        // The Location The Course On Google Map
+                        'location' => 'required|string|max:150|min:20',
+                    ]);
+                    $course->location = $request->location;
+                    $counter++;
+                }
+
+                if ($course->description != $request->description) {
+                    $request->validate([
+                        // The Description Of The Course
+                        'description' => 'required|string|max:200|min:10',
+                    ]);
+                    $course->description = $request->description;
+                    $counter++;
+                }
+
+                if ($course->type != $request->type) {
+                    $request->validate([
+                        // The Type Of Course Payed Or Free
+                        'type' => 'required|string|' . Rule::in(['payed', 'free']),
+                    ]);
+                    $course->type = $request->type;
+                    $counter++;
+                }
+
+                // Checking If There Are Changes In The Coupons List
+                // If The Coupon Parameter Is Null The Course iS Free Then Check If There Are Old Coupons For The Course
+                if (is_null($request->coupon)) {
+                    if ($course->coupon != 0) {
+                        $course->coupon = 0;
+                        for ($i = 0; $i < count($course->discountCoupon); $i++) {
+                            $course->discountCoupon[$i]->delete();
+                        }
+                        $counter++;
+                    }
+                } else { // If The Coupon Parameter Is Not Empty
+
+                    $request->validate([
+                        //The Coupons Indicator Of The Coupons
+                        'coupon' => 'required_if:type,payed|integer|max:1|min:0',
+                        //The Coupons Array Data
+                        'coupon_code' => 'required_if:coupon,2|array',
+                        'coupon_code.*' => 'required|string|distinct',
+                        'coupon_discount' => 'required_if:coupon,2|array|size:' . count($request->coupon_code),
+                        'coupon_discount.*' => 'required|integer',
+                    ]);
+
+                    if (count($request->coupon_code) > count($course->discountCoupon)) { // If The Coupon Parameter Count Greater Than The Old Coupon Count, We Need To Add The New One
+
+                        for ($i = 0; $i < count($request->coupon_code); $i++) {
+
+                            if (isset($course->discountCoupon[$i])) {
+                                for ($x = 0; $x < count($course->discountCoupon); $x++) {
+
+                                    $counter_ = 0;
+                                    if ($course->discountCoupon[$x]->code != $request->coupon_code[$i]) {
+                                        $course->discountCoupon[$x]->code = $request->coupon_code[$i];
+                                        $counter_++;
+                                    }
+
+                                    if ($course->discountCoupon[$x]->discount != $request->coupon_discount[$i]) {
+                                        $course->discountCoupon[$x]->discount = $request->coupon_discount[$i];
+                                        $counter_++;
+                                    }
+
+                                    if ($counter_ != 0) {
+                                        $course->discountCoupon[$x]->save();
+                                    }
+
+                                }
+                            } else {
+                                Coupon::create([
+                                    'code' => $request->coupon_code[$i],
+                                    'discount' => $request->coupon_discount[$i],
+                                    'course_id' => $course->id,
+                                ]);
+                            }
+
+                        }
+
+                    } elseif (count($request->coupon_code) < count($course->discountCoupon)) { // If The Coupon Parameter Count Less Than The Old Coupon Count, We Need To Delete One
+
+                        for ($i = 0; $i < count($course->discountCoupon); $i++) {
+
+                            if (isset($request->coupon_code[$i])) {
+                                for ($x = 0; $x < count($request->coupon_code); $x++) {
+
+                                    $counter_ = 0;
+                                    if ($course->discountCoupon[$i]->code != $request->coupon_code[$x]) {
+                                        $course->discountCoupon[$i]->code = $request->coupon_code[$x];
+                                        $counter_++;
+                                    }
+
+                                    if ($course->discountCoupon[$i]->discount != $request->coupon_discount[$x]) {
+                                        $course->discountCoupon[$i]->discount = $request->coupon_discount[$x];
+                                        $counter_++;
+                                    }
+
+                                    if ($counter_ != 0) {
+                                        $course->discountCoupon[$x]->save();
+                                    }
+
+                                }
+                            } else {
+                                $course->discountCoupon[$i]->delete();
+                            }
+
+                        }
+
+                    } else { // If The Coupon Parameter Count Equal The Old Coupon Count, We Need To Check If There Are Changes
+                        for ($i = 0; $i < count($course->discountCoupon); $i++) {
+                            $counter_ = 0;
+                            if ($course->discountCoupon[$i]->code != $request->coupon_code[$i]) {
+                                $course->discountCoupon[$i]->code = $request->coupon_code[$i];
+                                $counter_++;
+                            }
+
+                            if ($course->discountCoupon[$i]->discount != $request->coupon_discount[$i]) {
+                                $course->discountCoupon[$i]->discount = $request->coupon_discount[$i];
+                                $counter_++;
+                            }
+
+                            if ($counter_ != 0) {
+                                $course->discountCoupon[$i]->save();
+                            }
+                        }
+                    }
+                }
+
+                $total_trainers = Trainer::where('center_id', Auth::user()->center->id)->get();
+
+                // Checking If There Are Changes In The Trainer List
+                if (count($course->trainer) == count($total_trainers)) {
+
+                    // Checking If The Trainers Count In The Request Are Greater Than The Total Trainers Of The Center
+                    if (count($request->trainer) > count($total_trainers)) {
+                        return redirect()->route('admin.course.edit', $course->id)->withErrors(['لا يمكنك إضافة مدربين ليسوا مسجلين في النظام']);
+                    } elseif (count($request->trainer) < 1) { // Checking If The Trainers Count In The Request Are Less Than 1 Or Equal To 0
+                        return redirect()->route('admin.course.edit', $course->id)->withErrors(['لا يمكنك حذف كافة المدربين من الدورة']);
+                    } else {
+
+                        $request->validate([
+                            //The Trainers Array Of The Course
+                            'trainer' => 'required|array|max:' . count($center->trainer) . 'min:' . count($center->trainer),
+                            // The Trainers Array Data
+                            'trainer.*' => 'required|integer|distinct|' . Rule::in($trainers_data),
+                        ]);
+
+                        for ($i = 0; $i < count($course->trainer); $i++) {
+                            if ($course->trainer[$i]->trainer_id != $request->trainer[$i]) {
+                                $course->trainer[$i]->trainer_id = $request->trainer[$i];
+                                $counter++;
+                            }
+                            $course->trainer[$i]->save();
+                        }
+                    }
+
+                } else {
+
+                    if (count($request->trainer) > count($total_trainers)) {
+                        return redirect()->route('admin.course.edit', $course->id)->withErrors(['لا يمكنك إضافة مدربين ليسوا مسجلين في النظام']);
+                    } elseif (count($request->trainer) < 1) {
+                        return redirect()->route('admin.course.edit', $course->id)->withErrors(['لا يمكنك حذف كافة المدربين من الدورة']);
+                    } else {
+
+
+                        for ($x = 0; $x < count($request->trainer); $x++) {
+
+                            if (isset($course->trainer[$x])) {
+                                for ($i = 0; $i < count($course->trainer); $i++) {
+                                    if ($course->trainer[$i]->trainer_id != $request->trainer[$x]) {
+                                        $course->trainer[$i]->trainer_id = $request->trainer[$x];
+                                        $counter++;
+                                    }
+                                    $course->trainer[$i]->save();
+                                }
+                            } else {
+
+                                CourseTrainer::create([
+                                    'course_id' => $course->id,
+                                    'trainer_id' => $request->trainer[$x],
+                                ]);
+                                $counter++;
+                            }
+
+
+                        }
+
+
+                    }
+
+
+                }
+
+                // Checking If The Request Has An Image
+                if ($request->hasFile('course-poster-1')) {
+
+                    $request->validate([
+                        // The Cover And Image Of The Course
+                        'course-poster-1' => 'nullable|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
+                    ]);
+
+                    if (file_exists('storage/course-images/', $course->image[0]->image)) {
+                        if (Storage::delete('public/course-images/' . $course->image[0]->image)) {
+                            $file = $request->file('course-poster-1')->store('public/course-images');
+                            $file_name = basename($file);
+                            $course->image[0]->image = $file_name;
+                            $course->image[0]->save();
+                            $counter++;
+                        }
+                    }
+                }
+
+                // Checking If The Request Has An Image
+                if ($request->hasFile('course-poster-2')) {
+
+                    $request->validate([
+                        // The Cover And Image Of The Course
+                        'course-poster-2' => 'nullable|image|mimetypes:image/png,image/jpg,image/jpeg|max:500',
+                    ]);
+
+                    if (file_exists('storage/course-images/', $course->image[1]->image)) {
+                        if (Storage::delete('public/course-images/' . $course->image[1]->image)) {
+                            $file = $request->file('course-poster-2')->store('public/course-images');
+                            $file_name = basename($file);
+                            $course->image[1]->image = $file_name;
+                            $course->image[1]->save();
+                            $counter++;
+                        }
+                    }
+                }
+
+                if ($course->start_date != $request->start_date) {
+                    $request->validate([
+                        // The Start Date Of The Course
+                        'start_date' => 'required|date|after_or_equal:' . date('Y-m-d'),
+                    ]);
+                    $course->start_date = $request->start_date;
+                    $counter++;
+                }
+
+
+                if ($course->end_date != $request->end_date) {
+                    $request->validate([
+                        // The Finish Date Of The Course
+                        'end_date' => 'required|date|after_or_equal:' . $request->start_date,
+                    ]);
+                    $course->end_date = $request->end_date;
+                    $counter++;
+                }
+
+                if ($course->end_reservation != $request->end_reservation) {
+                    $request->validate([
+                        // The Deadline Of Reservation
+                        'end_reservation' => 'required|date|before_or_equal:' . $request->start_date,
+                    ]);
+                    $course->end_reservation = $request->end_reservation;
+                    $counter++;
+                }
+
+                if ($course->start_time != $request->start_time . ":00") {
+                    $request->validate([
+                        // The Start Time Of The Course
+                        'start_time' => ['required', 'regex:/(^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$)/', 'string', 'max:5', 'min:5'],
+                    ]);
+                    $course->start_time = $request->start_time;
+                    $counter++;
+                }
+
+                if ($course->attendance != $request->attendance) {
+
+                    $reservation_count = 0;
+                    foreach ($course->reservation as $reservation) {
+                        if ($reservation->confirmation == 1) {
+                            $reservation_count++;
+                        }
+                    }
+
+                    $request->validate([
+                        // The Total Attendance Of The Course
+                        'attendance' => 'required|integer|min:' . $reservation_count,
+                    ]);
+
+                    $course->attendance = $request->attendance;
+                    $counter++;
+                }
+
+                if ($request->type == 'free') {
+                    if ($course->price != 0) {
+                        $course->price = 0;
+                        $counter++;
+                    }
+                } else {
+                    if ($course->price != $request->price) {
+
+                        $request->validate([
+                            // The Price Of The Course
+                            'price' => 'required_if:type,2|digits_between:1,4',
+                        ]);
+
+                        $course->price = $request->price;
+                        $counter++;
+                    }
+                }
+
+                if ($course->gender != $request->gender) {
+                    $request->validate([
+                        // The Attendance Gender
+                        'gender' => 'required|integer|max:3|min:1|',
+                    ]);
+
+                    $course->gender = $request->gender;
+                    $counter++;
+                }
+
+
+                if ($counter == 0) {
+                    return redirect()->route('center.course.edit', $identifier)->withErrors(['قم بتحديث بعض الحقول لكي يتم حفظها']);
+                }else{
+                    $course->save();
+                    return redirect()->route('center.course.edit', $identifier)->with('success', 'تم تحديث معلومات الدورة بنجاح');
+                }
+
+
+            }
+
+        } else {
+            return $this->external_error_page();
+        }
+
+    }
+
+    // This Function Returns A View With Course Information
+    public function show_courses($type)
+    {
+        $types = array(
+            "Course",
+            "Student",
+            "Payment",
+            "Attendance",
+            "Certificate",
+            "TakeAttendance",
+            "GenerateCertificate",
+        );
+
+        if (!in_array($type, $types)) {
+            $type = "Course";
+        }
+
+        if ($this->check_authentication()) {
+
+            // Courses Which Belongs To The Center
+            $total_courses = $this->get_center_courses();
+            // Trainers Who Belongs To The Center
+            $total_trainers = $this->get_center_trainers();
+            // Admins Who Belongs To The Center
+            $total_admins = $this->get_center_admins();
+            //Students Who Reserved A Course Of The Center
             $total_students = $this->get_center_students();
 
-            return view('center.create-admin', compact('courses', 'trainers', 'admins', 'total_students'));
+            $courses = Course::where('center_id', Auth::user()->center->id)->get();
+
+            return view('center.show-courses', compact('courses', 'total_courses', 'total_trainers', 'total_admins', 'total_students', 'type'));
 
         } else {
+            return $this->external_error_page();
+        }
+    }
 
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username);
+    // This Function Preview The Course For The Center In New Page
+    public function course_preview($identifier)
+    {
+
+        if ($this->check_authentication()) {
+
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
+
+            if (empty($course)) {
+                return $this->error_page("خطأ", "الرجاء التأكد من معرف الدورة");
             } else {
-                return redirect()->route('account.index');
+                $date1 = date_create($course->start_date);
+                $date2 = date_create($course->end_date);
+                $diff = date_diff($date1, $date2);
+                $days = $diff->format("%a");
+
+                return view('center.course-preview', compact('course', 'days'));
             }
 
+        } else {
+            return $this->external_error_page();
         }
 
+    }
+
+    // This Function Returns A View Of Creating Admin
+    public function create_admin()
+    {
+        if ($this->check_authentication()) {
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_admins();
+            $total_students = $this->get_center_students();
+
+            return view('center.create-admin', compact('total_courses', 'total_trainers', 'total_admins', 'total_students'));
+        } else {
+            return $this->external_error_page();
+        }
     }
 
     // The Data Of Storing New Admin Goes Here And The Process Happens Here
     public function store_admin(Request $request)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $request->validate([
                 'name' => 'required|string|max:50|min:6|unique:admins,name',
+                'phone' => 'required|starts_with:5|max:9|min:9|unique:users,phone',
                 'username' => 'required|string|max:20|:min:5|unique:users,username',
-                'phone' => 'required|starts_with:+|max:15|min:9|unique:users,phone',
                 'email' => 'required|string|email|unique:users,email',
                 'status' => 'required|integer|max:1|min:0',
                 'password' => 'required|string|max:32|min:8|confirmed',
@@ -1237,78 +1575,62 @@ class CenterController extends Controller
             }
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username);
-            } else {
-                return redirect()->route('account.index');
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-    // To Show The Form Editing Admin
+    // This Function Returns A View With Admin Information That Will Be Edit
     public function edit_admin($id)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
-
+        if ($this->check_authentication()) {
 
             // The Data Of The Admin That Will Be Edited
             $admin = Admin::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
 
-            // All Courses Which Belongs To The Center
-            $courses = $this->get_center_courses();
-            // All Admins Who Belongs To The Center
-            $admins = $this->get_center_admins();
-            // All Trainers Who Belongs To The Center
-            $trainers = $this->get_center_trainers();
-            // All Students Who Reserved A Course Of The Center
-            $total_students = $this->get_center_students();
-
-            if (count($admin) < 1) {
+            if (empty($admin)) {
                 return $this->error_page('لايوجد مسؤول مسجل في النظام', 'من فضلك قم بالتأكد من معرف المسؤول المراد تعديل بياناته');
             } else {
-                return view('center.edit-admin', compact('admin', 'courses', 'trainers', 'admins', 'total_students'));
-            }
+                // All Courses Which Belongs To The Center
+                $total_courses = $this->get_center_courses();
+                // All Admins Who Belongs To The Center
+                $total_admins = $this->get_center_admins();
+                // All Trainers Who Belongs To The Center
+                $total_trainers = $this->get_center_trainers();
+                // All Students Who Reserved A Course Of The Center
+                $total_students = $this->get_center_students();
 
+                return view('center.edit-admin', compact('admin', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
+            }
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-    // The Data Of Updating Admin Goes Here And The Process Happens Here
+    // This Function Handles The Process Of Editing Admin
     public function update_admin(Request $request, $id)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $admin = Admin::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
 
-            if (count($admin) < 1) {
+            if (empty($admin)) {
 
                 return $this->error_page('لايوجد مسؤول مسجل في النظام', 'الرجاء قم بالتأكد من وجود مسؤولين مسجلين في النظام');
 
             } else {
 
                 $counter = 0;
+
                 if ($admin->user->name != $request->name) {
                     $request->validate([
-                        'name' => 'required|string|max:50|min:6|unique:admins,name',
+                        'name' => 'required|string|max:50|min:5|unique:admins,name',
                     ]);
+
                     $admin->name = $request->name;
                     $counter++;
                 }
@@ -1317,22 +1639,25 @@ class CenterController extends Controller
                     $request->validate([
                         'username' => 'required|string|max:20|:min:5|unique:users,username',
                     ]);
+
                     $admin->user->username = $request->username;
                     $counter++;
                 }
 
                 if ($admin->user->phone != $request->phone) {
                     $request->validate([
-                        'phone' => 'required|starts_with:+|max:15|min:9|unique:users,phone',
+                        'phone' => 'required|starts_with:+966|max:15|min:15|unique:users,phone',
                     ]);
+
                     $admin->user->phone = $request->phone;
                     $counter++;
                 }
 
                 if ($admin->user->email != $request->email) {
                     $request->validate([
-                        'email' => 'required|string|email|unique:users,email',
+                        'email' => 'required|string|email|max:100|unique:users,email',
                     ]);
+
                     $admin->user->email = $request->email;
                     $counter++;
                 }
@@ -1341,17 +1666,17 @@ class CenterController extends Controller
                     $request->validate([
                         'status' => 'required|integer|max:1|min:0',
                     ]);
+
                     $admin->user->status = $request->status;
                     $counter++;
                 }
 
                 if ($request->hasFile('profile-image')) {
-
                     $request->validate([
                         'profile-image' => 'required|image|mimetypes:image/png,image/jpg,image/jpeg||max:400',
                     ]);
 
-                    if (File::exists('storage/trainer-images/' . $admin->image)) {
+                    if (file_exists('storage/trainer-images/' . $admin->image)) {
                         if (Storage::delete('public/trainer-images/' . $admin->image)) {
                             $file = $request->file('profile-image')->store('public/trainer-images');
                             $file_name = basename($file);
@@ -1368,182 +1693,136 @@ class CenterController extends Controller
 
                 if ($counter == 0) {
                     return redirect()->route('center.admin.edit', $id)->withErrors(['لم يتم التعديل على اي حقل', 'الرجاء تعديل بعض الحقول لكي يتم حفظها']);
+                } else {
+                    $admin->save();
+                    $admin->user->save();
+                    return redirect()->route('center.admin.edit', $id)->with('success', 'تم تعديل البيانات بنجاح');
                 }
-
-                $admin->save();
-                $admin->user->save();
-                return redirect()->route('center.admin.edit', $id)->with('success', 'تم تعديل البيانات بنجاح');
 
             }
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-    // To Show All Admins Who Belongs To The Center
+    // This Function Returns A View With All Admins
     public function show_admins()
     {
-
-        if (Auth::check() && Auth::user()->role_id == 2) {
-
-            // All Admins Who Belongs To The Center
-            $admins = $this->get_center_admins();
+        if ($this->check_authentication()) {
             // All Courses Which Belongs To The Center
-            $courses = $this->get_center_courses();
+            $total_courses = $this->get_center_courses();
             // All Trainers Who Belongs To The Center
-            $trainers = $this->get_center_trainers();
+            $total_trainers = $this->get_center_trainers();
+            // All Admins Who Belongs To The Center
+            $total_admins = $this->get_center_admins();
             // To Hold The Count Of The Array And Pass It As String
             $total_students = $this->get_center_students();
             // Get All Admins
             $all_admins = Admin::where('center_id', Auth::user()->center->user_id)->get();
             // Returns View
-            return view('center.show-admins', compact('all_admins', 'admins', 'courses', 'trainers', 'students', 'total_students'));
+            return view('center.show-admins', compact('all_admins', 'total_courses', 'total_trainers', 'total_admins','students', 'total_students'));
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
-
     }
 
-    // To Show The Form Of Assigning Course Admin
+    // This Function Returns A View To Assign Admin To Course
     public function assign_course_admin()
     {
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $all_courses = Course::where('center_id', Auth::user()->center->id)->get();
             $all_admins = Admin::where('center_id', Auth::user()->center->id)->get();
 
-            $courses = $this->get_center_courses();
-            $trainers = $this->get_center_trainers();
-            $admins = $this->get_center_admins();
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_admins();
             $total_students = $this->get_center_students();
 
-
             if (count($all_courses) < 1) {
-                return view("center.error-description", compact('courses', 'trainers', 'admins', 'total_students'))->withErrors(['title' => 'لاتوجد دورات في النظام', 'error' => 'من فضلك قم بإضافة بعض الدورات لكي تتمكن من تعيين مدربين لها',]);
+                return view("center.error-description", compact('total_courses', 'total_trainers', 'total_admins', 'total_students'))->withErrors(['title' => 'لاتوجد دورات في النظام', 'error' => 'من فضلك قم بإضافة بعض الدورات لكي تتمكن من تعيين مسؤولين لها',]);
             } elseif (count($all_admins) < 1) {
-                return view("center.error-description", compact('courses', 'trainers', 'admins', 'total_students'))->withErrors(['title' => 'لايوجد مدراء في النظام', 'error' => 'من فضلك قم بإضافة بعض المدراء لكي تتمكن من تعيينهم مدربين للدورات',]);
-            }
-
-            return view('center.assign-course-admin', compact('all_courses', 'all_admins', 'courses', 'trainers', 'admins', 'total_students'));
-        } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+                return view("center.error-description", compact('total_courses', 'total_trainers', 'total_admins', 'total_students'))->withErrors(['title' => 'لايوجد مدراء في النظام', 'error' => 'من فضلك قم بإضافة بعض المدراء لكي تتمكن من تعيينهم مسؤولين للدورات',]);
             } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
+                return view('center.assign-course-admin', compact('all_courses', 'all_admins', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
             }
 
+        } else {
+            return $this->external_error_page();
         }
     }
 
-    // The Data Of Assigning Course Admin Goes Here And The Process Happens Here
+    // This Function Handles The Process Of Assigning Admin To Course
     public function store_course_admin(Request $request)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $courses = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
 
             if (count($courses) < 1) {
                 return redirect()->route('center.course.admin.assign')->withErrors(['ليست لديك دورات حتى تقوم بتعيين مسؤولينن لها']);
+            } else {
+                $course_data = array();
+
+                foreach ($courses as $course) {
+                    array_push($course_data, $course->id);
+                }
+
+                $admins = Admin::where('center_id', Auth::user()->center->id)->get();
+
+                $admin_data = array();
+
+                foreach ($admins as $admin) {
+                    array_push($admin_data, $admin->id);
+                }
+
+                $request->validate([
+                    'course' => 'required|integer|exists:courses,id|' . Rule::in($course_data),
+                    'admin' => 'required|integer|exists:admins,id' . Rule::in($admin_data),
+                    'role' => 'required|integer|max:2|min:1',
+                ]);
+
+
+                CourseAdmin::create([
+                    'course_id' => $request->course,
+                    'admin_id' => $request->admin,
+                    'role_id' => $request->role,
+                ]);
+
+                return redirect()->route('center.course.admin.assign')->with('success', 'تم تعيين المسؤول بنجاح');
             }
-
-            $course_data = array();
-
-            foreach ($courses as $course) {
-                array_push($course_data, $course->id);
-            }
-
-            $admins = Admin::where('center_id', Auth::user()->center->id)->get();
-
-            $admin_data = array();
-
-            foreach ($admins as $admin) {
-                array_push($admin_data, $admin->id);
-            }
-
-            $request->validate([
-                'course' => 'required|integer|max:99|min:0|exists:courses,id|' . Rule::in($course_data),
-                'admin' => 'required|integer|max:99|min:0|' . Rule::in($admin_data),
-                'role' => 'required|integer|max:2|min:1',
-            ]);
-
-
-            CourseAdmin::create([
-                'course_id' => $request->course,
-                'admin_id' => $request->admin,
-                'role_id' => $request->role,
-            ]);
-
-            return redirect()->route('center.course.admin.assign')->with('success', 'تم تعيين المسؤول بنجاح');
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-    // To Show The Form Of Resetting Password
+    // This Function Returns A View Of Resetting Password
     public function reset_password()
     {
-
-        if (Auth::check() && Auth::user()->role_id == 2) {
-
-            $courses = $this->get_center_courses();
-            $trainers = $this->get_center_trainers();
-            $admins = $this->get_center_admins();
+        if ($this->check_authentication()) {
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_admins();
             $total_students = $this->get_center_students();
 
-            return view('center.reset-password', compact('courses', 'trainers', 'admins', 'total_students'));
+            return view('center.reset-password', compact('total_courses', 'total_trainers', 'total_admins', 'total_students'));
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
-
     }
 
-    // The Data Of Resetting Password Goes Here And The Process Happens Here
+    // This Function Handles The Process Resetting Password
     public function reset_password_confirm(Request $request)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $center = User::find(Auth::user()->id);
             $request->validate([
@@ -1567,15 +1846,7 @@ class CenterController extends Controller
             }
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
@@ -1583,43 +1854,38 @@ class CenterController extends Controller
     // This Function Returns All Bank Account Of The Account
     public function show_bank_account()
     {
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $accounts = CenterAccount::where('center_id', Auth::user()->center->id)->get();
-            $courses = $this->get_center_courses();
-            $trainers = $this->get_center_trainers();
-            $admins = $this->get_center_trainers();
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_trainers();
             $total_students = $this->get_center_students();
-            return view('center.show-banks-accounts', compact('accounts', 'courses', 'trainers', 'admins', 'total_students'));
-
+            return view('center.show-banks-accounts', compact('accounts', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
     }
 
-    // To Show The Form Of Creating Bank Account
+    // This Function Returns A View Of Creating Bank Account
     public function create_bank_account()
     {
-        $banks = Bank::all();
-        $courses = $this->get_center_courses();
-        $trainers = $this->get_center_trainers();
-        $admins = $this->get_center_admins();
-        $total_students = $this->get_center_students();
-        return view('center.create-bank-account', compact('banks', 'courses', 'trainers', 'admins', 'total_students'));
+        if ($this->check_authentication()) {
+            $banks = Bank::all();
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_admins();
+            $total_students = $this->get_center_students();
+            return view('center.create-bank-account', compact('banks', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
+        } else {
+            return $this->external_error_page();
+        }
     }
 
-    // The Data Of Creating Bank Account Goes Here And The Process Happens Here
+    // This Function Handles The Process Of Creating Bank Account
     public function store_bank_account(Request $request)
     {
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $request->validate([
                 'bank' => 'required|integer|exists:banks,id',
@@ -1627,9 +1893,9 @@ class CenterController extends Controller
                 'account_number' => 'required|digits_between:15,25',
             ]);
 
-            try {
+            DB::beginTransaction();
 
-                DB::beginTransaction();
+            try {
                 CenterAccount::create([
                     'center_id' => Auth::user()->center->id,
                     'bank_id' => $request->bank,
@@ -1640,82 +1906,50 @@ class CenterController extends Controller
                 DB::commit();
 
                 return redirect()->route('center.bank.account.show')->with('success', 'تم إضافة الحساب البنكي بنجاح');
-
-
             } catch (\Exception $e) {
-
                 DB::rollBack();
-
                 return redirect()->route('center.bank.account.create')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع'])->withInput();
-
             }
 
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
     }
 
-    // To Show The Form Of Editing And Adding Bank Account
+    // This Function Returns A View With Bank Account Information To Be Edited
     public function edit_bank_account($id)
     {
-
-        if (Auth::check() && Auth::user()->role_id == 2) {
-
+        if ($this->check_authentication()) {
             $account = CenterAccount::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
-
-            if (count($account) < 1) {
-
+            if (empty($account)) {
                 return $this->error_page('خطأ', 'الرجاء التأكد من معرف الحساب المراد تعديله');
-
             } else {
-
-                $courses = $this->get_center_courses();
-                $trainers = $this->get_center_trainers();
-                $admins = $this->get_center_admins();
+                $total_courses = $this->get_center_courses();
+                $total_trainers = $this->get_center_trainers();
+                $total_admins = $this->get_center_admins();
                 $total_students = $this->get_center_students();
-
                 $banks = Bank::all();
 
-                return view('center.edit-bank-account', compact('account', 'banks', 'courses', 'trainers', 'admins', 'total_students'));
-
+                return view('center.edit-bank-account', compact('account', 'banks', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
             }
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-    // The Data Of Updating The Banks Accounts
+    // This Function Handles The Process Of Editing Bank Account
     public function update_bank_account(Request $request, $id)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
-
+        if ($this->check_authentication()) {
 
             $account = CenterAccount::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
 
-            if (count($account) < 1) {
-
+            if (empty($account)) {
                 return $this->error_page('خطأ', 'الرجاء التأكد من معرف الحساب المراد تعديله');
-
             } else {
 
                 $counter = 0;
@@ -1724,6 +1958,7 @@ class CenterController extends Controller
                     $request->validate([
                         'bank' => 'required|integer|exists:banks,id',
                     ]);
+
                     $account->bank_id = $request->bank;
                     $counter++;
                 }
@@ -1735,17 +1970,15 @@ class CenterController extends Controller
 
                     $account->account_owner = $request->account_owner;
                     $counter++;
-
                 }
 
                 if ($account->account_number != $request->account_number) {
                     $request->validate([
-                        'account_number' => 'required|digits_between:15,25',
+                        'account_number' => 'required|integer|max:20|min:20',
                     ]);
 
                     $account->account_number = $request->account_number;
                     $counter++;
-
                 }
 
                 if ($counter == 0) {
@@ -1754,20 +1987,9 @@ class CenterController extends Controller
                     $account->save();
                     return redirect()->route('center.bank.account.edit', $id)->with('success', 'تم تعديل البيانات بنجاح');
                 }
-
-
             }
-
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
@@ -1776,11 +1998,11 @@ class CenterController extends Controller
     public function delete_bank_account($id)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $account = CenterAccount::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
 
-            if (count($account) < 1) {
+            if (empty($account)) {
 
                 return $this->error_page('خطأ', 'الرجاء التأكد من معرف الحساب المراد تعديله');
 
@@ -1792,52 +2014,55 @@ class CenterController extends Controller
             }
 
         } else {
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
+            return $this->external_error_page();
         }
 
+    }
+
+    // This Function Returns A View With A Specific Course Students
+    public function show_students($identifier)
+    {
+        if ($this->check_authentication()) {
+
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
+            if (empty($course)) {
+                return $this->error_page('خطأ', 'الرجاا التأكد من معرف الدورة');
+            } else {
+                $reservations = Reservation::where('course_id', $course->id)->get();
+                $total_courses = $this->get_center_courses();
+                $total_trainers = $this->get_center_trainers();
+                $total_admins = $this->get_center_trainers();
+                $total_students = $this->get_center_students();
+                return view('center.show-students', compact('reservations', 'course', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
+            }
+        } else {
+            return $this->external_error_page();
+        }
     }
 
     // This Function Returns All Social Media Account That Belongs Th The Center
     public function show_social_media_account()
     {
-
-        if (Auth::check() && Auth::user()->role_id == 2) {
-
+        if ($this->check_authentication()) {
             $accounts = CenterSocialMedia::where('center_id', Auth::user()->center->id)->get();
 
-            $courses = $this->get_center_courses();
-            $trainers = $this->get_center_trainers();
-            $admins = $this->get_center_admins();
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_admins();
             $total_students = $this->get_center_students();
 
-            return view('center.show-social-media-accounts', compact('accounts', 'courses', 'trainers', 'admins', 'total_students'));
+            return view('center.show-social-media-accounts', compact('accounts', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
-
     }
 
     // This Function Returns The Form Of Creating Social Media Account
     public function create_social_media_account()
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
-
+        if ($this->check_authentication()) {
 
 
             $social_accounts = CenterSocialMedia::select('social_media_id')->where('center_id', Auth::user()->center->id)->get();
@@ -1851,16 +2076,16 @@ class CenterController extends Controller
                 $old_data = array();
                 $data = array();
 
-                foreach ($social_accounts as $old_account){
+                foreach ($social_accounts as $old_account) {
                     array_push($old_data, $old_account->social_media_id);
                 }
 
                 for ($i = 0; $i < count($social_accounts); $i++) {
 
-                    for ($x = 1; $x <= 4; $x++){
+                    for ($x = 1; $x <= 4; $x++) {
                         $result = array_search($x, $old_data, true);
-                        if ( !is_integer($result) ){
-                            if ( !in_array($x, $data) ) {
+                        if (!is_integer($result)) {
+                            if (!in_array($x, $data)) {
                                 array_push($data, $x);
                             }
                         }
@@ -1870,28 +2095,20 @@ class CenterController extends Controller
 
 
                 $accounts = SocialMedia::find($data);
-            }else{
+            } else {
                 return $this->error_page('خطأ', 'تم بلوغ أقصى عدد لحسابات التواصل الإجماعي');
             }
 
 
-            $courses = $this->get_center_courses();
-            $trainers = $this->get_center_trainers();
-            $admins = $this->get_center_trainers();
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_trainers();
             $total_students = $this->get_center_students();
 
-            return view('center.create-social-media-account', compact('accounts', 'courses', 'trainers', 'admins', 'total_students'));
+            return view('center.create-social-media-account', compact('accounts', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
@@ -1900,15 +2117,15 @@ class CenterController extends Controller
     public function store_social_media_account(Request $request)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $social_accounts = CenterSocialMedia::select('social_media_id')->where('center_id', Auth::user()->center->id)->get();
 
-            if (count($social_accounts) == 4 ) {
+            if (count($social_accounts) == 4) {
 
                 return $this->error_page('خطأ', 'تم بلوغ أقصى عدد لحسابات التواصل الإجماعي');
 
-            }else{
+            } else {
 
                 $request->validate([
                     'social_media' => 'required|integer|exists:social_media,id',
@@ -1929,55 +2146,37 @@ class CenterController extends Controller
             }
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
-
-
     }
 
     // This Function Returns The Form Of Editing Social Media Account Of The Center
     public function edit_social_media_account($id)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $social_accounts = SocialMedia::all();
             $account = CenterSocialMedia::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
 
-            if (count($account) < 1) {
+            if (empty($account)) {
 
                 return $this->error_page('خطأ', 'الرجاء التاأكد من معرف الحساب المراد تعديله');
 
             } else {
 
-                $courses = $this->get_center_courses();
-                $trainers = $this->get_center_trainers();
-                $admins = $this->get_center_trainers();
+                $total_courses = $this->get_center_courses();
+                $total_trainers = $this->get_center_trainers();
+                $total_admins = $this->get_center_trainers();
                 $total_students = $this->get_center_students();
 
 
-                return view('center.edit-social-media-account', compact('social_accounts', 'account', 'courses', 'trainers', 'admins', 'total_students'));
+                return view('center.edit-social-media-account', compact('social_accounts', 'account', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
 
             }
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
@@ -1986,13 +2185,13 @@ class CenterController extends Controller
     public function update_social_media_account(Request $request, $id)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
 
             $account = CenterSocialMedia::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
 
 
-            if (count($account) < 1) {
+            if (empty($account)) {
 
                 return $this->error_page('خطأ', 'الرجاء التاأكد من معرف الحساب المراد تعديله');
 
@@ -2043,15 +2242,7 @@ class CenterController extends Controller
             }
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
@@ -2060,11 +2251,11 @@ class CenterController extends Controller
     public function delete_social_media_account($id)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $account = CenterSocialMedia::where('center_id', Auth::user()->center->id)->where('id', $id)->first();
 
-            if (count($account) < 1) {
+            if (empty($account)) {
 
                 return $this->error_page('خطأ', 'الرجاء التأكد من معرف الحساب المراد حذفه');
 
@@ -2077,84 +2268,64 @@ class CenterController extends Controller
             }
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
-
     // This Function Returns Halalah Account
-    public function show_halalah_account(){
+    public function show_halalah_account()
+    {
 
-        if ( Auth::check() && Auth::user()->role_id == 2 ){
+        if ($this->check_authentication()) {
 
             $halalah = Halalah::where('center_id', Auth::user()->center->id)->first();
-            $courses = $this->get_center_courses();
-            $trainers = $this->get_center_trainers();
-            $admins = $this->get_center_trainers();
+
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_trainers();
             $total_students = $this->get_center_students();
-            return view('center.show-halalah-account', compact('halalah', 'courses', 'trainers', 'admins', 'total_students'));
 
-        }else{
+            return view('center.show-halalah-account', compact('halalah', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
 
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+        } else {
+            return $this->external_error_page();
         }
 
     }
 
     // This Function Returns The Form Of Creating Halalah Account
-    public function create_halalah_account(){
+    public function create_halalah_account()
+    {
 
-        if ( Auth::check() && Auth::user()->role_id == 2 ){
+        if ($this->check_authentication()) {
 
             $halalah = Halalah::where('center_id', Auth::user()->center->id)->first();
 
-            if ( count($halalah) < 1 ){
+            if (empty($halalah)) {
 
-                $courses = $this->get_center_courses();
-                $trainers = $this->get_center_trainers();
-                $admins = $this->get_center_trainers();
+                $total_courses = $this->get_center_courses();
+                $total_trainers = $this->get_center_trainers();
+                $total_admins = $this->get_center_trainers();
                 $total_students = $this->get_center_students();
-                return view('center.create-halalah-account', compact( 'courses', 'trainers', 'admins', 'total_students'));
+                return view('center.create-halalah-account', compact('total_courses', 'total_trainers', 'total_admins', 'total_students'));
 
-            }else{
+            } else {
 
                 return $this->error_page('خطأ', 'تم بلوغ أقصى عدد لحسابات منصة هللة');
             }
 
-        }else{
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+        } else {
+            return $this->external_error_page();
         }
 
     }
 
     // This Function Handle The Data Of Creating Halalah Account
-    public function store_halalah_account(Request $request){
+    public function store_halalah_account(Request $request)
+    {
 
-        if ( Auth::check() && Auth::user()->role_id == 2 ){
+        if ($this->check_authentication()) {
 
             $request->validate([
                 'account_owner' => 'required|string|max:50|min:10',
@@ -2162,9 +2333,9 @@ class CenterController extends Controller
                 'status' => 'required|integer|max:1|min:0',
             ]);
 
-            try{
+            DB::beginTransaction();
 
-                DB::beginTransaction();
+            try {
 
                 if ($request->hasFile('barcode-image')) {
 
@@ -2184,24 +2355,14 @@ class CenterController extends Controller
 
                 return redirect()->route('center.halalah.account.show')->with('success', 'تم إضافة الحساب بنجاح');
 
-            }catch (\Exception $e){
-
+            } catch (\Exception $e) {
                 DB::rollBack();
                 return redirect()->route('center.halalah.account.create')->withErrors(['هناك خطأ تقني الرجاء التواصل مع إدارة الموقع'])->withInput()->exceptInput('barcode-image');
-
             }
 
 
-        }else{
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+        } else {
+            return $this->external_error_page();
         }
 
 
@@ -2211,27 +2372,19 @@ class CenterController extends Controller
     public function edit_halalah_account()
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $halalah = Halalah::where('center_id', Auth::user()->center->id)->first();
 
-            $courses = $this->get_center_courses();
-            $trainers = $this->get_center_trainers();
-            $admins = $this->get_center_trainers();
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_trainers();
             $total_students = $this->get_center_students();
 
-            return view('center.edit-halalah-account', compact('halalah', 'courses', 'trainers', 'admins', 'total_students'));
+            return view('center.edit-halalah-account', compact('halalah', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
@@ -2240,16 +2393,15 @@ class CenterController extends Controller
     public function update_halalah_account(Request $request)
     {
 
-        if (Auth::check() && Auth::user()->role_id == 2) {
+        if ($this->check_authentication()) {
 
             $halalah = Halalah::where('center_id', Auth::user()->center->id)->first();
 
-
-            if ( count($halalah) < 1 ){
+            if (empty($halalah)) {
 
                 return $this->error_page('خطأ', 'الرجاء التأكد من وجود حساب مسجل في النظام');
 
-            }else{
+            } else {
 
                 $counter = 0;
 
@@ -2301,50 +2453,589 @@ class CenterController extends Controller
             }
 
         } else {
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+            return $this->external_error_page();
         }
 
     }
 
     // This Function Delete Halalah Account
-    public function delete_halalah_account(){
+    public function delete_halalah_account()
+    {
 
-        if ( Auth::check() && Auth::user()->role_id == 2 ){
+        if ($this->check_authentication()) {
 
             $halalah = Halalah::where('center_id', Auth::user()->center->id)->first();
 
-            if ( count($halalah) < 1 ){
+            if (empty($halalah)) {
 
                 return $this->error_page('خطأ', 'الرجاء التأكد من وجود حساب مسجل في النظام');
 
-            }else{
+            } else {
 
                 $halalah->delete();
                 return redirect()->route('center.halalah.account.show')->with('success', 'تم حذف الحساب بنجاح');
 
             }
 
-        }else{
-
-            if (Auth::user()->role_id == 1) {
-                dd("Fuck Off");
-            } elseif (Auth::user()->role_id == 3) {
-                return redirect()->route('admin.index', Auth::user()->username)->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            } else {
-                return redirect()->route('account.index')->withErrors(['صلاحياتك لاتسمح لك بالدخول للصفحة المطلوبة']);
-            }
-
+        } else {
+            return $this->external_error_page();
         }
 
     }
 
+    // This Function Confirm Student Course Payment
+    public function course_payment($identifier)
+    {
+        if ($this->check_authentication()) {
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
+
+            if (empty($course)) {
+                return $this->error_page('خطأ', 'الرجاء التأكد من معرف الدورة');
+            } else {
+                $reservations = Reservation::where('course_id', $course->id)->get();
+
+                $total_courses = $this->get_center_courses();
+                $total_trainers = $this->get_center_trainers();
+                $total_admins = $this->get_center_admins();
+                $total_students = $this->get_center_students();
+
+                return view('center.confirm-payments', compact('reservations', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
+            }
+        } else {
+            return $this->external_error_page();
+        }
+    }
+
+    // This Function Handle The Process Of Confirming Course
+    public function confirm_course_payment(Request $request, $identifier)
+    {
+        if ($this->check_authentication()) {
+
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
+
+            if (empty($course)) {
+                return $this->error_page("خطأ", "الرجاء التأكد من معرف الدورة");
+            } else {
+
+                $reservations = Reservation::where('course_id', $course->id)->get();
+
+
+                $students = array();
+                $identifiers = array();
+
+                foreach ($reservations as $reservation) {
+                    array_push($students, $reservation->student_id);
+                    array_push($identifiers, $reservation->identifier);
+                }
+
+                $request->validate([
+                    'student' => 'required|array|size:' . count($students),
+                    'student.*' => 'required|integer|' . Rule::in($students),
+                    'payment' => 'required|array|size:' . count($students),
+                    'payment.*' => 'required|integer|max:1|min:0',
+                    'identifier' => 'required|array|size:' . count($students),
+                    'identifier.*' => 'required|string|max:10|min:10|' . Rule::in($identifiers),
+                ]);
+
+                $counter = 0;
+
+                for ($i = 0; $i < count($students); $i++) {
+                    $reservation = Reservation::where('student_id', $students[$i])->where('identifier', $identifiers[$i])->first();
+                    $reservation->confirmation = $request->payment[$i];
+                    $reservation->barcode = $reservation->course->identifier . $reservation->identifier . Str::random(10);
+                    $reservation->save();
+                    $counter++;
+                }
+
+                if ($counter == 0) {
+                    return redirect()->route('center.courses.payment', $identifier)->withErrors(['الزجاء قم بتحديث بعض البيانات لكي يتم حفظها']);
+                } else {
+                    return redirect()->route('center.courses.payment', $identifier)->with('success', 'تم تحديث بيانات التأكيد بنجاح');
+                }
+            }
+
+        } else {
+
+            return $this->external_error_page();
+
+        }
+    }
+
+    // This Function Active And Deactivate Courses
+    public function activate_deactivate_courses()
+    {
+        if ($this->check_authentication()) {
+
+            $courses = Course::where('center_id', Auth::user()->center->id)->get();
+
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_admins();
+            $total_students = $this->get_center_students();
+
+            return view('center.courses-activation', compact('courses', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
+
+        } else {
+            return $this->external_error_page();
+        }
+    }
+
+    // This Function Handle The Process Of Activate And Deactivate Courses
+    public function activate_deactivate_courses_confirm(Request $request)
+    {
+        if ($this->check_authentication()) {
+
+            $courses = Course::select('identifier')->where('center_id', Auth::user()->center->id)->get();
+
+            $identifiers = array();
+
+            foreach ($courses as $course) {
+                array_push($identifiers, $course->identifier);
+            }
+
+
+            $request->validate([
+                'activation' => 'required|array|size:' . count($courses),
+                'activation.*' => 'required|integer|max:1|min:0',
+                'course' => 'required|array|size:' . count($courses),
+                'course.*' => 'required|string|max:10|min:10|' . Rule::in($identifiers),
+            ]);
+
+            $counter = 0;
+
+            for ($i = 0; $i < count($courses); $i++) {
+                if ($courses[$i]->activation != $request->activation[$i]) {
+                    $courses[$i]->activation = $request->activation[$i];
+                    $courses[$i]->save();
+                    $counter++;
+                }
+            }
+
+            if ($counter == 0) {
+                return redirect()->route('center.courses.activation')->withErrors(['قم بتحديث بعض الحقول لكي يتم حفظها']);
+            }
+            return redirect()->route('center.courses.activation')->with('success', 'تم تحديث البيانات بنجاح');
+
+        } else {
+            return $this->external_error_page();
+        }
+    }
+
+    // This Function Show Student Course Attendance
+    public function course_attendance($identifier)
+    {
+        if ($this->check_authentication()) {
+
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
+            if (empty($course)) {
+                return $this->error_page("خطأ", "الرجاء التأكد من معرف الدورة");
+            } else {
+
+                $date1 = date_create($course->start_date);
+                $date2 = date_create($course->end_date);
+                $diff = date_diff($date1, $date2);
+                $days = $diff->format("%a");
+
+                $reservations = Reservation::where('course_id', $course->id)->where('confirmation', 1)->get();
+                $total_courses = $this->get_center_courses();
+                $total_trainers = $this->get_center_trainers();
+                $total_admins = $this->get_center_admins();
+                $total_students = $this->get_center_students();
+
+                return view('center.show-course-attendance', compact('course', 'reservations', 'days', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
+            }
+
+        } else {
+            return $this->external_error_page();
+        }
+    }
+
+    // This Function Returns Details Of Student Attendance
+    public function student_attendance_details($identifier, $student)
+    {
+        if ( $this->check_authentication() ){
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
+
+            if (empty($course)) {
+                return $this->error_page('خطأ', 'الرجاء التأكد من معرف الدورة');
+            } else {
+                $date1 = date_create($course->start_date);
+                $date2 = date_create($course->end_date);
+                $diff = date_diff($date1, $date2);
+                $days = $diff->format("%a");
+
+                $total_courses = $this->get_center_courses();
+                $total_trainers = $this->get_center_trainers();
+                $total_admins = $this->get_center_admins();
+                $total_students = $this->get_center_students();
+
+                $attendances = Attendance::where('course_id', $course->id)->where('student_id', $student)->get();
+                return view('center.student-attendance-details', compact('course', 'attendances', 'total_courses', 'total_trainers', 'total_admins', 'total_students', 'days'));
+            }
+        }else{
+            return $this->external_error_page();
+        }
+    }
+
+    // This Function Shows All Certificate Of Course
+    public function course_certificates($identifier)
+    {
+
+        if ($this->check_authentication()) {
+
+
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
+
+            if (empty($course)) {
+                return $this->error_page('خطأ', 'الرجاء التأكد من معرف الدورة');
+            } else {
+
+                $date1 = date_create($course->start_date);
+                $date2 = date_create($course->end_date);
+                $diff = date_diff($date1, $date2);
+                $days = $diff->format("%a");
+
+                $certificates = Certificate::where('course_id', $course->id)->get();
+
+                $total_courses = $this->get_center_courses();
+                $total_trainers = $this->get_center_trainers();
+                $total_admins = $this->get_center_admins();
+                $total_students = $this->get_center_students();
+
+                return view('center.show-certificates', compact('certificates', 'total_courses', 'total_trainers', 'total_admins', 'total_students', 'days', 'course'));
+
+            }
+
+        } else {
+            return $this->external_error_page();
+        }
+
+    }
+
+    // This Function Returns All Student Of A Specific Course To Generate Certificate For Them
+    public function generate_certificates($identifier)
+    {
+
+        if ($this->check_authentication()) {
+
+
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
+
+            if (empty($course)) {
+                return $this->error_page('خطأ', 'الرجاء التأكد من معرف الدورة');
+            } else {
+
+                $date1 = date_create($course->start_date);
+                $date2 = date_create($course->end_date);
+                $diff = date_diff($date1, $date2);
+                $days = $diff->format("%a");
+
+                $reservations = Reservation::where('course_id', $course->id)->where('confirmation', 1)->get();
+
+                $total_courses = $this->get_center_courses();
+                $total_trainers = $this->get_center_trainers();
+                $total_admins = $this->get_center_admins();
+                $total_students = $this->get_center_students();
+
+                return view('center.generate-certificate', compact('reservations', 'total_courses', 'total_trainers', 'total_admins', 'total_students', 'days', 'course'));
+
+            }
+
+        } else {
+            return $this->external_error_page();
+        }
+
+    }
+
+    // This Function Handle The Process Of Generating New Course
+    public function generate_certificates_confirm(Request $request, $identifier)
+    {
+
+        if ($this->check_authentication()) {
+
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
+
+            if (empty($course)) {
+                return $this->error_page('خطأ', 'الرجاا التأكد من معرف الدورة');
+            } else {
+
+                $reservations = Reservation::where('course_id', $course->id)->where('confirmation', 1)->get();
+                $students = array();
+
+                foreach ($reservations as $reservation) {
+                    array_push($students, $reservation->student->id);
+                }
+                $request->validate([
+                    'student' => 'required|array|size:' . count($students),
+                    'student.*' => 'required|integer|' . Rule::in($students),
+                    'generation' => 'required|array||size:' . count($students),
+                    'generation.*' => 'required|integer|max:1|min:0',
+                ]);
+
+                $counter = 0;
+
+                for ($i = 0; $i < count($students); $i++) {
+                    $certificate = Certificate::where('course_id', $course->id)->where('student_id', $request->student[$i])->get();
+
+                    if (count($certificate) == 1) {
+
+                        if ($request->generation[$i] == 0) {
+                            $certificate->delete();
+                            $counter++;
+                        }
+
+                    } else {
+
+                        if ($request->generation[$i] == 1) {
+                            $reservation = Reservation::where('course_id', $course->id)->where('student_id', $request->student[$i])->where('confirmation', 1)->first();
+                            Certificate::create([
+                                'date' => date('Y-m-d'),
+                                'student_id' => $request->student[$i],
+                                'course_id' => $course->id,
+                                'admin_id' => 0,
+                                'reservation_id' => $reservation->id,
+                                'viewed' => 0,
+                            ]);
+                            $counter++;
+                        }
+
+                    }
+
+                }
+
+                if ($counter == 0) {
+                    return redirect()->route('center.courses.certificates.generate', $identifier)->withErrors(['قم بإصدار او حذف بعض الشهادات لكي يتم حفظ البيانات الجديدة']);
+                } else {
+                    return redirect()->route('center.courses.certificates.generate', $identifier)->with('success', 'تم حفظ البيانات بنجاح');
+                }
+
+            }
+
+        } else {
+            return $this->external_error_page();
+        }
+
+    }
+
+    // This Function Show The Financial Report For All Courses
+    public function financial_report()
+    {
+
+        if ($this->check_authentication()) {
+
+            $courses = Course::where('center_id', Auth::user()->center->id)->get();
+
+            $months = array();
+            $details = array();
+
+            foreach ($courses as $course) {
+
+                $reservation_count = Reservation::where('course_id', $course->id)->where('confirmation', 1)->count();
+
+                // Getting The Courses Count
+                if (isset($details[substr($course->start_date, 0, 7)])) {
+                    $details[substr($course->start_date, 0, 7)][0] += 1;
+                } else {
+                    $details[substr($course->start_date, 0, 7)] = array(1);
+                }
+
+                // Getting The Student Count
+                if (isset($details[substr($course->start_date, 0, 7)][1])) {
+                    $details[substr($course->start_date, 0, 7)][1] += $reservation_count;
+                } else {
+                    array_push($details[substr($course->start_date, 0, 7)], $reservation_count);
+                }
+
+                // Getting The Total Expected Money Of All Courses
+                if (isset($details[substr($course->start_date, 0, 7)][2])) {
+                    $details[substr($course->start_date, 0, 7)][2] += ($course->price * $reservation_count);
+                } else {
+                    array_push($details[substr($course->start_date, 0, 7)], ($course->price * $reservation_count));
+                }
+
+                // Getting The Total Income Money Of All Courses
+                if (isset($details[substr($course->start_date, 0, 7)][3])) {
+                    $details[substr($course->start_date, 0, 7)][3] += ($course->price * $course->attendance);
+                } else {
+                    array_push($details[substr($course->start_date, 0, 7)], $course->price * $course->attendance);
+                }
+
+
+                if (!in_array(substr($course->start_date, 0, 7), $months)) {
+                    array_push($months, substr($course->start_date, 0, 7));
+                }
+
+            }
+
+            $total_courses = $this->get_center_courses();
+            $total_trainers = $this->get_center_trainers();
+            $total_admins = $this->get_center_admins();
+            $total_students = $this->get_center_students();
+
+            return view('center.show-financial-reports', compact('courses', 'details', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
+
+        } else {
+            return $this->external_error_page();
+        }
+
+    }
+
+    // This Function Returns The Financial Report For A Specific Mount
+    public function month_financial_report($date)
+    {
+
+        if ($this->check_authentication()) {
+
+            if (strlen($date) != 7) {
+                return $this->error_page('خطأ', 'الرجاء التأكد من صحة التاريخ');
+            } else {
+                preg_match('/(^20[0-9]{2}+-[0-9]{2})/', $date, $output_array);
+
+                if (empty($output_array)) {
+                    return $this->error_page('خطأ', 'الرجاء التأكد من صحة التاريخ');
+                } else {
+                    $courses = Course::where('center_id', Auth::user()->center->id)->where('start_date', 'like', '%' . $date . '%')->get();
+                    $total_courses = $this->get_center_courses();
+                    $total_trainers = $this->get_center_trainers();
+                    $total_admins = $this->get_center_admins();
+                    $total_students = $this->get_center_students();
+
+                    return view('center.show-month-report', compact('courses', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
+
+                }
+
+            }
+
+        } else {
+            return $this->external_error_page();
+        }
+
+    }
+
+    // This Function Returns All Course Schedule For Taking Attendance
+    public function course_schedule($identifier)
+    {
+        if ($this->check_authentication()) {
+
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
+
+            if (empty($course)) {
+                return $this->error_page("خطأ", "الرجاء التأكد من معرف الدورة");
+            } else {
+
+                $date1 = date_create($course->start_date);
+                $date2 = date_create($course->end_date);
+                $diff = date_diff($date1, $date2);
+                $days = $diff->format("%a");
+
+                $total_courses = $this->get_center_courses();
+                $total_trainers = $this->get_center_trainers();
+                $total_admins = $this->get_center_trainers();
+                $total_students = $this->get_center_students();
+
+                return view('center.show-course-schedule', compact('course', 'days', 'total_courses', 'total_trainers', 'total_admins', 'total_students'));
+            }
+
+        } else {
+            return $this->external_error_page();
+        }
+    }
+
+    // This Function Returns A View With All Students For A Specific Course For Taking Their Attendance
+    public function take_attendance($identifier, $date)
+    {
+        if ($this->check_authentication()) {
+
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
+            if (empty($course)) {
+                return $this->error_page('خطأ', 'الرجاا التأكد من معرف الدورة');
+            } else {
+
+                $date1 = date_create($course->start_date);
+                $date2 = date_create($course->end_date);
+                $diff = date_diff($date1, $date2);
+                $days = $diff->format("%a");
+
+                $attendances = Attendance::where('course_id', $course->id)->where('date', $date)->get();
+
+                $total_courses = $this->get_center_courses();
+                $total_trainers = $this->get_center_trainers();
+                $total_admins = $this->get_center_trainers();
+                $total_students = $this->get_center_students();
+                return view('center.take-attendance', compact('attendances', 'course', 'date', 'total_courses', 'total_trainers', 'total_admins', 'total_students', 'days'));
+
+            }
+        } else {
+            return $this->external_error_page();
+        }
+    }
+
+    // This Function Handle The Process Of Taking Attendance
+    public function take_attendance_confirm(Request $request, $identifier, $date)
+    {
+
+        if ( $this->check_authentication() ){
+            $course = Course::where('identifier', $identifier)->where('center_id', Auth::user()->center->id)->first();
+
+            if (empty($course)) {
+                return $this->error_page('خطأ', 'الرجاا التأكد من معرف الدورة');
+            } else {
+                $reservations = Reservation::where('course_id', $course->id)->where('confirmation', 1)->get();
+                $students = array();
+
+                foreach ($reservations as $reservation) {
+                    array_push($students, $reservation->student->id);
+                }
+
+                $request->validate([
+                    'attendance' => 'required|array|size:' . count($students),
+                    'attendance.*' => 'required|integer|max:1|min:0',
+                    'student' => 'required|array|size:' . count($students),
+                    'student.*' => 'required|integer|' . Rule::in($students),
+                ]);
+
+                $counter = 0;
+                $attendances = Attendance::where('course_id', $course->id)->where('date', $date)->get();
+
+                if (count($attendances) < 1) {
+
+                    for ($i = 0; $i < count($students); $i++) {
+                        $reservation = Reservation::where('course_id', $course->id)->where('student_id', $request->student[$i])->where('confirmation', 1)->first();
+
+
+                        Attendance::create([
+                            'date' => $date,
+                            'student_id' => $request->student[$i],
+                            'course_id' => $course->id,
+                            'admin_id' => 0,
+                            'reservation_id' => $reservation->id,
+                            'status' => $request->attendance[$i],
+                        ]);
+                        $counter++;
+                    }
+
+                } else {
+
+                    for ($i = 0; $i < count($students); $i++) {
+                        $attendance = Attendance::where('course_id', $course->id)->where('date', $date)->where('student_id', $request->student[$i])->first();
+                        if ($attendance->status != $request->attendance[$i]) {
+                            $attendance->status = $request->attendance[$i];
+                            $attendance->save();
+                            $counter++;
+                        }
+                    }
+                }
+
+
+                if ($counter == 0) {
+                    return redirect()->route('center.student.attendance.take', [$identifier, $date])->withErrors(['قم بتحضير او إلغاء تحضير بعض الطلاب لكي يتم حفظ البيانات الجديدة']);
+                } else {
+                    return redirect()->route('center.student.attendance.take', [$identifier, $date])->with('success', 'تم حفظ البيانات بنجاح');
+                }
+            }
+        }else{
+            return $this->external_error_page();
+        }
+    }
 
 }

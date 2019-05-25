@@ -1,6 +1,10 @@
-@extends('student.master-v-1-1')
+@extends('student.layouts.master-v-1-1')
 
-@section('title', 'تعديل مستخدم')
+@section('title', 'تعديل البيانات الشخصية')
+
+@section('style-file')
+    <link rel="stylesheet" href="{{ asset('css/student/edit-account.css') }}">
+@endsection
 
 @section('content')
     <div class="wrap">
@@ -19,20 +23,16 @@
                         <div class="profile-social-media-accounts">
                             <ul class="nav profile-social-media p-0 rtl">
                                 <li>
-                                    <a class="social social-twitter" href=href="http://twitter.com/breakoutksa"
-                                       style="background-image: url('https://lammt.com/resource/img/icon_tw.png'); background-size: 100%;"></a>
+                                    <a class="social social-twitter" href=href="http://twitter.com/breakoutksa"></a>
                                 </li>
                                 <li>
-                                    <a class="social social-twitter" href=href="http://twitter.com/breakoutksa"
-                                       style="background-image: url('https://lammt.com/resource/img/icon_fb.png'); background-size: 100%;"></a>
+                                    <a class="social social-facebook" href=href="http://twitter.com/breakoutksa"></a>
                                 </li>
                                 <li>
-                                    <a class="social social-twitter" href=href="http://twitter.com/breakoutksa"
-                                       style="background-image: url('https://lammt.com/resource/img/icon_snap.png'); background-size: 100%;"></a>
+                                    <a class="social social-snapchat" href=href="http://twitter.com/breakoutksa"></a>
                                 </li>
                                 <li>
-                                    <a class="social social-twitter" href=href="http://twitter.com/breakoutksa"
-                                       style="background-image: url('https://lammt.com/resource/img/icon_instagram.png'); background-size: 100%;"></a>
+                                    <a class="social social-instagram" href=href="http://twitter.com/breakoutksa"></a>
                                 </li>
                             </ul>
                         </div>
@@ -74,22 +74,20 @@
 
                             <div class="row">
                                 <div class="col-lg-12 text-lg-left order-first order-lg-first text-center">
-                                    @if($user->student->image == 'default.png')
-                                        <img src="{{ asset('img/student/'.$user->student->image) }}"
-                                             class="img-thumbnail"
-                                             style="height: 30%; width: 100%;">
+                                    @if($user->student->image == 'default.jpg')
+                                        <img src="{{ asset('img/main/'.$user->student->image) }}"
+                                             class="img-thumbnail h-30 w-100">
                                     @else
                                         <img src="/storage/account-images/{{ $user->student->image }}"
-                                             class="img-thumbnail" style="height: 30%; width: 100%;">
+                                             class="img-thumbnail h-30 w-100">
                                     @endif
                                 </div>
 
                                 <div class="col-lg-12">
                                     <div class="form-group text-center p-0 mt-2">
                                         <label for="account-profile">الصورة شخصية</label>
-                                        <input type="file" class="form-control-file mt-2" name="profile-image"
+                                        <input type="file" class="form-control-file mt-2 m-auto w-200px" name="profile-image"
                                                id="account-profile"
-                                               style="margin: auto; width: 200px;"
                                                accept="image/png, image/jpg, image/jpeg">
                                     </div>
 
@@ -400,30 +398,6 @@
                                     </div>
 
                                 </div>
-
-                                {{--<div class="form-group row mt-4">--}}
-                                    {{--<div class="col-lg-8">--}}
-                                        {{--<select class="form-control {{ $errors->has('gender') ? ' is-invalid' : '' }} form-control-sm"--}}
-                                                {{--name="gender">--}}
-                                            {{--@if($user->student->gender_id == 1)--}}
-                                                {{--<option value="1" selected> ذكر</option>--}}
-                                                {{--<option value="2">أنثى</option>--}}
-                                            {{--@else--}}
-                                                {{--<option value="1"> ذكر</option>--}}
-                                                {{--<option value="2" selected>أنثى</option>--}}
-                                            {{--@endif--}}
-                                        {{--</select>--}}
-                                        {{--@if ($errors->has('gender'))--}}
-                                            {{--<span class="invalid-feedback text-center" role="alert">--}}
-                                                {{--<strong>{{ $errors->first('gender') }}</strong>--}}
-                                            {{--</span>--}}
-                                        {{--@endif--}}
-                                    {{--</div>--}}
-                                    {{--<div class="col-lg-4 text-right rtl order-lg-last order-md-last order-sm-first order-first">--}}
-                                        {{--<label class="col-form-label required-field">الجنس</label>--}}
-                                    {{--</div>--}}
-                                {{--</div>--}}
-
 
                                 <div class="form-group row mb-0">
                                     <div class="col-lg-12">

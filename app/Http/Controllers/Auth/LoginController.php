@@ -41,7 +41,9 @@ class LoginController extends Controller
     protected function logout()
     {
         $role = Auth::user()->role_id;
+
         Auth::logout();
+
         if ($role < 5) {
             return redirect()->route('center.login');
         } elseif ($role == 5) {
@@ -57,18 +59,18 @@ class LoginController extends Controller
     protected function redirectTo()
     {
         $role = Auth::user()->role_id;
-
-
+        
         if ( $role == 1 ){
-            redirect()->route('administrator.index', Auth::user()->username);
+            return route('administrator.index', Auth::user()->username);
         }elseif ($role == 2){
-            redirect()->route('center.index', Auth::user()->username);
+            return route('center.index', Auth::user()->username);
         }elseif ($role == 3){
-            redirect()->route('admin.index', Auth::user()->username);
+            return route('admin.index', Auth::user()->username);
         }elseif ($role == 4){
-            dd("Trainer");
+            Auth::logout();
+            return route('center.login');
         }else{
-            redirect()->route('account.index');
+            return route('account.index');
         }
     }
 }

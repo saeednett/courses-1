@@ -1,6 +1,15 @@
-@extends('student.master-v-1-1')
+@extends('student.layouts.master-v-1-1')
 
 @section('title', 'تواصل معنا')
+
+@section('guest-links')
+    <a class="dropdown-item" href="{{ route('account.login') }}">تسجيل الدخول</a>
+    <a class="dropdown-item" href="{{ route('account.register') }}">تسجيل مستخدم جديد</a>
+@endsection
+
+@section('style-file')
+    <link rel="stylesheet" href="{{ asset('css/student/contact-us.css') }}">
+@endsection
 
 @section('content')
     <div class="wrap">
@@ -19,20 +28,16 @@
                         <div class="profile-social-media-accounts">
                             <ul class="nav profile-social-media p-0 rtl">
                                 <li>
-                                    <a class="social social-twitter" href=href="http://twitter.com/breakoutksa"
-                                       style="background-image: url('https://lammt.com/resource/img/icon_tw.png'); background-size: 100%;"></a>
+                                    <a class="social social-twitter" href=href="http://twitter.com/breakoutksa"></a>
                                 </li>
                                 <li>
-                                    <a class="social social-twitter" href=href="http://twitter.com/breakoutksa"
-                                       style="background-image: url('https://lammt.com/resource/img/icon_fb.png'); background-size: 100%;"></a>
+                                    <a class="social social-facebook" href=href="http://twitter.com/breakoutksa"></a>
                                 </li>
                                 <li>
-                                    <a class="social social-twitter" href=href="http://twitter.com/breakoutksa"
-                                       style="background-image: url('https://lammt.com/resource/img/icon_snap.png'); background-size: 100%;"></a>
+                                    <a class="social social-snapchat" href=href="http://twitter.com/breakoutksa"></a>
                                 </li>
                                 <li>
-                                    <a class="social social-twitter" href=href="http://twitter.com/breakoutksa"
-                                       style="background-image: url('https://lammt.com/resource/img/icon_instagram.png'); background-size: 100%;"></a>
+                                    <a class="social social-twitter" href=href="http://twitter.com/breakoutksa"></a>
                                 </li>
                             </ul>
                         </div>
@@ -71,8 +76,7 @@
 
                             <div class="row justify-content-center">
                                 <div class="col-lg-4">
-                                    <img src="{{ asset('img/student/logo.png') }}"
-                                         style="height: 30%; width: 100%;">
+                                    <img src="{{ asset('img/main/logo.png') }}" class="h-30 w-100">
                                 </div>
                             </div>
 
@@ -142,7 +146,7 @@
                                 <div class="form-group row mt-4">
                                     <div class="col-lg-12 text-right rtl">
                                         <label class="col-form-label required-field">النص</label>
-                                        <textarea style="resize: none;" class="form-control {{ $errors->has('message') ? ' is-invalid' : '' }} text-center"
+                                        <textarea class="form-control no-resize {{ $errors->has('message') ? ' is-invalid' : '' }} text-center"
                                                name="message" cols="6" rows="8" required autocomplete="off">{{ old('message') }}</textarea>
                                         @if ($errors->has('message'))
                                             <span class="invalid-feedback text-center" role="alert">

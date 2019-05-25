@@ -1,4 +1,4 @@
-@extends('center.master-v-1-1')
+@extends('center.layouts.master-v-1-1')
 
 @section('title', "إضافة مسؤول دورات")
 @section('main-title', "إضافة مسؤول دورات")
@@ -77,15 +77,15 @@
                                     <input type="text"
                                            class="form-control {{ $errors->has('phone') ? ' is-invalid' : '' }} custom-input num-only text-center ltr"
                                            name="phone" id="phone" value="{{ old('phone') }}"
-                                           placeholder="رقم هاتف المسؤول" minlength="9" maxlength="13"
+                                           placeholder="رقم هاتف المسؤول" minlength="9" maxlength="9"
                                            autocomplete="off" required>
                                     @if ($errors->has('phone'))
                                         <span class="invalid-feedback" role="alert">
                                             <strong>{{ $errors->first('phone') }}</strong>
                                         </span>
                                     @else
-                                        <small class="text-muted text-center center-block">الرجاء الإبتداء برمز الدولة..
-                                            966+
+                                        <small class="text-muted text-center center-block mt-2">
+                                            مثال: ********5
                                         </small>
                                     @endif
                                 </div>

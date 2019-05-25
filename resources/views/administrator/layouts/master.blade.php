@@ -85,7 +85,7 @@
             <!-- Main navigation -->
             <ul id="side-nav" class="main-menu navbar-collapse collapse">
 
-                <li class="has-sub"><a href="index.html"><i class="icon-book-open"></i><span
+                <li class="has-sub"><a href="#"><i class="icon-book-open"></i><span
                                 class="title">الدورات</span></a>
                     <ul class="nav collapse">
                         <li><a href="{{ route('admin.courses.show') }}"><span class="title">تفعيل الدورات العامة</span></a>
@@ -95,7 +95,7 @@
                     </ul>
                 </li>
 
-                <li class="has-sub"><a href="collapsed-sidebar.html"><i class="icon-users"></i><span
+                <li class="has-sub"><a href="#"><i class="icon-users"></i><span
                                 class="title">الطلاب</span></a>
                     <ul class="nav">
                         <li><a href="{{ route('administrator.students.show') }}"><span
@@ -105,7 +105,7 @@
                     </ul>
                 </li>
 
-                <li class="has-sub"><a href="collapsed-sidebar.html"><i class="icon-users"></i><span
+                <li class="has-sub"><a href="#"><i class="icon-users"></i><span
                                 class="title">الإعلانات</span></a>
                     <ul class="nav">
                         <li><a href="{{ route('administrator.advertising.banner.create') }}"><span class="title">إضافة إعلان</span></a>
@@ -115,7 +115,7 @@
                     </ul>
                 </li>
 
-                <li class="has-sub"><a href="collapsed-sidebar.html"><i class="icon-book"></i><span
+                <li class="has-sub"><a href="#"><i class="icon-book"></i><span
                                 class="title">الشهادات</span></a>
                     <ul class="nav">
                         <li><a href="{{ route('admin.courses.certificate.create') }}"><span
@@ -123,15 +123,15 @@
                     </ul>
                 </li>
 
-                <li class="has-sub"><a href="basic-tables.html"><i class="icon-paypal"></i><span
+                <li class="has-sub"><a href="#"><i class="icon-paypal"></i><span
                                 class="title">التقارير العامة</span></a>
-                    <ul class="nav collapse">
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">الجهات</span></a></li>
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">المسؤولين</span></a>
-                        </li>
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">المدربين</span></a></li>
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">الطلاب</span></a></li>
-                    </ul>
+{{--                    <ul class="nav collapse">--}}
+{{--                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">الجهات</span></a></li>--}}
+{{--                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">المسؤولين</span></a>--}}
+{{--                        </li>--}}
+{{--                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">المدربين</span></a></li>--}}
+{{--                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">الطلاب</span></a></li>--}}
+{{--                    </ul>--}}
                 </li>
 
                 <li class="has-sub"><a href="#"><i class="icon-mail"></i><span
@@ -142,7 +142,7 @@
                     </ul>
                 </li>
 
-                <li class="has-sub"><a href="form-basic.html"><i class="icon-user"></i><span
+                <li class="has-sub"><a href="#"><i class="icon-user"></i><span
                                 class="title">الملف الاشخصي</span></a>
                     <ul class="nav collapse">
                         <li><a href="{{ route('admin.reset.password') }}"><span class="title">كلمة المرور</span></a>
@@ -153,12 +153,11 @@
                     </ul>
                 </li>
 
-                <li class="has-sub"><a href="basic-tables.html"><i class="icon-lock"></i><span class="title">إستعادة كلمة المرور</span></a>
+                <li class="has-sub"><a href="#"><i class="icon-lock"></i><span class="title">إستعادة كلمة المرور</span></a>
                     <ul class="nav collapse">
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">الجهات</span></a></li>
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">المسؤولين</span></a>
-                        </li>
-                        <li><a href="{{ route('admin.financial.report') }}"><span class="title">الطلاب</span></a></li>
+                        <li><a href="{{ route('administrators.students.reset.email.show') }}"><span class="title">الطلاب</span></a></li>
+                        <li><a href="{{ route('administrator.centers.reset.email.show') }}"><span class="title">الجهات</span></a></li>
+                        <li><a href="{{ route('administrator.admins.reset.email.show') }}"><span class="title">المسؤولين</span></a></li>
                     </ul>
                 </li>
             </ul>
@@ -213,104 +212,6 @@
                 <!-- /user info -->
 
             </div>
-            {{--<div class="col-sm-6 col-xs-5">--}}
-            {{--<div class="pull-right">--}}
-            {{--<!-- User alerts -->--}}
-            {{--<ul class="user-info pull-left">--}}
-
-            {{--<!-- Notifications -->--}}
-            {{--<li class="notifications dropdown">--}}
-            {{--<a data-close-others="true" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-attention"></i><span class="badge badge-info">6</span></a>--}}
-            {{--<ul class="dropdown-menu pull-right">--}}
-            {{--<li class="first">--}}
-            {{--<div class="small"><a class="pull-right danger" href="#">Mark all Read</a> You have <strong>3</strong> new notifications.</div>--}}
-            {{--</li>--}}
-            {{--<li>--}}
-            {{--<ul class="dropdown-list">--}}
-            {{--<li class="unread notification-success"><a href="#"><i class="icon-user-add pull-right"></i><span class="block-line strong">New user registered</span><span class="block-line small">30 seconds ago</span></a></li>--}}
-            {{--<li class="unread notification-secondary"><a href="#"><i class="icon-heart pull-right"></i><span class="block-line strong">Someone special liked this</span><span class="block-line small">60 seconds ago</span></a></li>--}}
-            {{--<li class="unread notification-primary"><a href="#"><i class="icon-user pull-right"></i><span class="block-line strong">Privacy settings have been changed</span><span class="block-line small">2 hours ago</span></a></li>--}}
-            {{--<li class="notification-danger"><a href="#"><i class="icon-cancel-circled pull-right"></i><span class="block-line strong">Someone special liked this</span><span class="block-line small">60 seconds ago</span></a></li>--}}
-            {{--<li class="notification-info"><a href="#"><i class="icon-info pull-right"></i><span class="block-line strong">Someone special liked this</span><span class="block-line small">60 seconds ago</span></a></li>--}}
-            {{--<li class="notification-warning"><a href="#"><i class="icon-rss pull-right"></i><span class="block-line strong">Someone special liked this</span><span class="block-line small">60 seconds ago</span></a></li>--}}
-            {{--</ul>--}}
-            {{--</li>--}}
-            {{--<li class="external-last"> <a href="#" class="danger">View all notifications</a> </li>--}}
-            {{--</ul>--}}
-            {{--</li>--}}
-            {{--<!-- /notifications -->--}}
-
-            {{--<!-- Messages -->--}}
-            {{--<li class="notifications dropdown">--}}
-            {{--<a data-close-others="true" data-hover="dropdown" data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-mail"></i><span class="badge badge-secondary">12</span></a>--}}
-            {{--<ul class="dropdown-menu pull-right">--}}
-            {{--<li class="first">--}}
-            {{--<div class="dropdown-content-header"><i class="fa fa-pencil-square-o pull-right"></i> Messages</div>--}}
-            {{--</li>--}}
-            {{--<li>--}}
-            {{--<ul class="media-list">--}}
-            {{--<li class="media">--}}
-            {{--<div class="media-left"><img alt="" class="img-circle img-sm" src="{{ asset('img/center/domnic-brown.png') }}"></div>--}}
-            {{--<div class="media-body">--}}
-            {{--<a class="media-heading" href="#">--}}
-            {{--<span class="text-semibold">Domnic Brown</span>--}}
-            {{--<span class="media-annotation pull-right">Tue</span>--}}
-            {{--</a>--}}
-            {{--<span class="text-muted">Your product sounds interesting I would love to check this ne...</span>--}}
-            {{--</div>--}}
-            {{--</li>--}}
-            {{--<li class="media">--}}
-            {{--<div class="media-left"><img alt="" class="img-circle img-sm" src="{{ asset('img/center/john-smith.png') }}"></div>--}}
-            {{--<div class="media-body">--}}
-            {{--<a class="media-heading" href="#">--}}
-            {{--<span class="text-semibold">John Smith</span>--}}
-            {{--<span class="media-annotation pull-right">12:30</span>--}}
-            {{--</a>--}}
-            {{--<span class="text-muted">Thank you for posting such a wonderful content. The writing was outstanding...</span>--}}
-            {{--</div>--}}
-            {{--</li>--}}
-            {{--<li class="media">--}}
-            {{--<div class="media-left"><img alt="" class="img-circle img-sm" src="{{ asset('img/center/stella-johnson.png') }}"></div>--}}
-            {{--<div class="media-body">--}}
-            {{--<a class="media-heading" href="#">--}}
-            {{--<span class="text-semibold">Stella Johnson</span>--}}
-            {{--<span class="media-annotation pull-right">2 days ago</span>--}}
-            {{--</a>--}}
-            {{--<span class="text-muted">Thank you for trusting us to be your source for top quality sporting goods...</span>--}}
-            {{--</div>--}}
-            {{--</li>--}}
-            {{--<li class="media">--}}
-            {{--<div class="media-left"><img alt="" class="img-circle img-sm" src="{{ asset('img/center/alex-dolgove.png') }}"></div>--}}
-            {{--<div class="media-body">--}}
-            {{--<a class="media-heading" href="#">--}}
-            {{--<span class="text-semibold">Alex Dolgove</span>--}}
-            {{--<span class="media-annotation pull-right">10:45</span>--}}
-            {{--</a>--}}
-            {{--<span class="text-muted">After our Friday meeting I was thinking about our business relationship and how fortunate...</span>--}}
-            {{--</div>--}}
-            {{--</li>--}}
-            {{--<li class="media">--}}
-            {{--<div class="media-left"><img alt="" class="img-circle img-sm" src="{{ asset('img/center/domnic-brown.png') }}"></div>--}}
-            {{--<div class="media-body">--}}
-            {{--<a class="media-heading" href="#">--}}
-            {{--<span class="text-semibold">Domnic Brown</span>--}}
-            {{--<span class="media-annotation pull-right">4:00</span>--}}
-            {{--</a>--}}
-            {{--<span class="text-muted">I would like to take this opportunity to thank you for your cooperation in recently completing...</span>--}}
-            {{--</div>--}}
-            {{--</li>--}}
-            {{--</ul>--}}
-            {{--</li>--}}
-            {{--<li class="external-last"> <a class="danger" href="#">All Messages</a> </li>--}}
-            {{--</ul>--}}
-            {{--</li>--}}
-            {{--<!-- /messages -->--}}
-
-            {{--</ul>--}}
-            {{--<!-- /user alerts -->--}}
-
-            {{--</div>--}}
-            {{--</div>--}}
         </div>
         <!-- /main header -->
 
@@ -333,8 +234,8 @@
         @yield('content')
         <!-- Footer -->
             <footer class="animatedParent animateOnce z-index-10">
-                <div class="footer-main animated fadeInUp slow">&copy; 2016 <strong>Mouldifi</strong> Admin Theme by <a
-                            target="_blank" href="#/">G-axon</a></div>
+                <div class="footer-main animated fadeInUp slow">&copy; 2019 <strong><a
+                                target="_blank" href="http://meccacode.com/">The Code Team </a></strong></div>
             </footer>
             <!-- /footer -->
 

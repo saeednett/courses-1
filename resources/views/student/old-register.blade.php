@@ -1,4 +1,4 @@
-@extends('student.master')
+@extends('student.layouts.master')
 
 @section('title', 'تسجيل مستخدم جديد')
 
