@@ -24,55 +24,77 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/routes/web.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="448">
-              <caret line="296" column="90" lean-forward="true" selection-start-line="296" selection-start-column="90" selection-end-line="296" selection-end-column="115" />
-              <folding>
-                <element signature="e#7#389#0#PHP" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/resources/views/administrator/layouts/master-statistics.blade.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="358">
-              <caret line="170" column="85" selection-start-line="170" selection-start-column="85" selection-end-line="170" selection-end-column="85" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/AdministratorController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="542">
-              <caret line="659" column="40" lean-forward="true" selection-start-line="659" selection-start-column="40" selection-end-line="659" selection-end-column="40" />
+            <state relative-caret-position="373">
+              <caret line="188" column="85" selection-start-line="188" selection-start-column="76" selection-end-line="188" selection-end-column="85" />
               <folding>
-                <element signature="e#40#54#0#PHP" expanded="true" />
-                <element signature="e#16055#16656#0#PHP" />
-                <element signature="e#16735#17340#0#PHP" />
-                <element signature="e#17419#17992#0#PHP" />
+                <element signature="e#566#741#0#PHP" />
+                <element signature="e#804#891#0#PHP" />
+                <element signature="e#954#1041#0#PHP" />
+                <element signature="e#1105#1194#0#PHP" />
+                <element signature="e#1258#1347#0#PHP" />
+                <element signature="e#1409#1494#0#PHP" />
+                <element signature="e#1569#1758#0#PHP" />
+                <element signature="e#1829#2520#0#PHP" />
+                <element signature="e#2536#2583#0#PHP" />
+                <element signature="e#2658#2788#0#PHP" />
+                <element signature="e#2867#4412#0#PHP" />
+                <element signature="e#4428#4476#0#PHP" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/public/js/administrator/activate-students.js">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CenterController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="38" selection-start-line="11" selection-start-column="32" selection-end-line="11" selection-end-column="38" />
+            <state relative-caret-position="236">
+              <caret line="576" column="103" selection-start-line="576" selection-start-column="94" selection-end-line="576" selection-end-column="103" />
+              <folding>
+                <element signature="e#40#54#0#PHP" expanded="true" />
+                <element signature="e#768#877#0#PHP" />
+                <element signature="e#926#1383#0#PHP" />
+                <element signature="e#1485#2382#0#PHP" />
+                <element signature="e#2454#2775#0#PHP" />
+                <element signature="e#2845#3156#0#PHP" />
+                <element signature="e#3227#3545#0#PHP" />
+                <element signature="e#3617#4617#0#PHP" />
+                <element signature="e#4712#4957#0#PHP" />
+                <element signature="e#5023#5211#0#PHP" />
+                <element signature="e#5267#6114#0#PHP" />
+                <element signature="e#6184#6425#0#PHP" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/StudentController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="264">
+              <caret line="354" column="59" selection-start-line="354" selection-start-column="50" selection-end-line="354" selection-end-column="59" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/Http/Controllers/AdminController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="236">
+              <caret line="1139" column="153" selection-start-line="1139" selection-start-column="144" selection-end-line="1139" selection-end-column="153" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/resources/views/administrator/show-admins.blade.php">
+        <entry file="file://$PROJECT_DIR$/database/seeds/DatabaseSeeder.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-56">
-              <caret line="38" column="53" selection-start-line="38" selection-start-column="53" selection-end-line="38" selection-end-column="53" />
+            <state relative-caret-position="495">
+              <caret line="33" column="21" lean-forward="true" selection-start-line="33" selection-start-column="21" selection-end-line="33" selection-end-column="21" />
+              <folding>
+                <element signature="e#7#38#0#PHP" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -319,7 +341,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -348,26 +369,13 @@
             <path>
               <item name="courses" type="b2602c69:ProjectViewProjectNode" />
               <item name="courses" type="462c0819:PsiDirectoryNode" />
-              <item name="app" type="462c0819:PsiDirectoryNode" />
-              <item name="Http" type="462c0819:PsiDirectoryNode" />
-              <item name="Controllers" type="462c0819:PsiDirectoryNode" />
-              <item name="Auth" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="courses" type="b2602c69:ProjectViewProjectNode" />
-              <item name="courses" type="462c0819:PsiDirectoryNode" />
-              <item name="config" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="courses" type="b2602c69:ProjectViewProjectNode" />
-              <item name="courses" type="462c0819:PsiDirectoryNode" />
               <item name="database" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="courses" type="b2602c69:ProjectViewProjectNode" />
               <item name="courses" type="462c0819:PsiDirectoryNode" />
               <item name="database" type="462c0819:PsiDirectoryNode" />
-              <item name="migrations" type="462c0819:PsiDirectoryNode" />
+              <item name="seeds" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="courses" type="b2602c69:ProjectViewProjectNode" />
@@ -385,7 +393,14 @@
               <item name="courses" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
               <item name="css" type="462c0819:PsiDirectoryNode" />
-              <item name="administrator" type="462c0819:PsiDirectoryNode" />
+              <item name="center" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="courses" type="b2602c69:ProjectViewProjectNode" />
+              <item name="courses" type="462c0819:PsiDirectoryNode" />
+              <item name="public" type="462c0819:PsiDirectoryNode" />
+              <item name="css" type="462c0819:PsiDirectoryNode" />
+              <item name="student" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="courses" type="b2602c69:ProjectViewProjectNode" />
@@ -398,20 +413,7 @@
               <item name="courses" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
               <item name="js" type="462c0819:PsiDirectoryNode" />
-              <item name="administrator" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="courses" type="b2602c69:ProjectViewProjectNode" />
-              <item name="courses" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="js" type="462c0819:PsiDirectoryNode" />
-              <item name="main" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="courses" type="b2602c69:ProjectViewProjectNode" />
-              <item name="courses" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="storage" type="462c0819:PsiDirectoryNode" />
+              <item name="center" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="courses" type="b2602c69:ProjectViewProjectNode" />
@@ -422,23 +424,51 @@
               <item name="courses" type="b2602c69:ProjectViewProjectNode" />
               <item name="courses" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
+              <item name="lang" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="courses" type="b2602c69:ProjectViewProjectNode" />
               <item name="courses" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
               <item name="views" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="courses" type="b2602c69:ProjectViewProjectNode" />
+              <item name="courses" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+              <item name="views" type="462c0819:PsiDirectoryNode" />
               <item name="administrator" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="courses" type="b2602c69:ProjectViewProjectNode" />
+              <item name="courses" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+              <item name="views" type="462c0819:PsiDirectoryNode" />
+              <item name="center" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="courses" type="b2602c69:ProjectViewProjectNode" />
+              <item name="courses" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+              <item name="views" type="462c0819:PsiDirectoryNode" />
+              <item name="center" type="462c0819:PsiDirectoryNode" />
+              <item name="layouts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="courses" type="b2602c69:ProjectViewProjectNode" />
+              <item name="courses" type="462c0819:PsiDirectoryNode" />
+              <item name="routes" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
@@ -542,7 +572,7 @@
     <frame x="0" y="23" width="1440" height="877" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.28397712" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.3304721" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="npm" order="2" side_tool="true" />
       <window_info id="Favorites" order="3" side_tool="true" />
@@ -630,10 +660,20 @@
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/CenterController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="236">
-          <caret line="284" column="38" selection-start-line="284" selection-start-column="38" selection-end-line="284" selection-end-column="105" />
+          <caret line="576" column="103" selection-start-line="576" selection-start-column="94" selection-end-line="576" selection-end-column="103" />
           <folding>
             <element signature="e#40#54#0#PHP" expanded="true" />
-            <element signature="e#13583#14885#0#PHP" />
+            <element signature="e#768#877#0#PHP" />
+            <element signature="e#926#1383#0#PHP" />
+            <element signature="e#1485#2382#0#PHP" />
+            <element signature="e#2454#2775#0#PHP" />
+            <element signature="e#2845#3156#0#PHP" />
+            <element signature="e#3227#3545#0#PHP" />
+            <element signature="e#3617#4617#0#PHP" />
+            <element signature="e#4712#4957#0#PHP" />
+            <element signature="e#5023#5211#0#PHP" />
+            <element signature="e#5267#6114#0#PHP" />
+            <element signature="e#6184#6425#0#PHP" />
           </folding>
         </state>
       </provider>
@@ -641,10 +681,7 @@
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/AdminController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="236">
-          <caret line="569" column="68" selection-start-line="569" selection-start-column="67" selection-end-line="569" selection-end-column="68" />
-          <folding>
-            <element signature="e#40#59#0#PHP" expanded="true" />
-          </folding>
+          <caret line="1139" column="153" selection-start-line="1139" selection-start-column="144" selection-end-line="1139" selection-end-column="153" />
         </state>
       </provider>
     </entry>
@@ -947,13 +984,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/Http/Controllers/AdministratorController.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="542">
-          <caret line="659" column="40" lean-forward="true" selection-start-line="659" selection-start-column="40" selection-end-line="659" selection-end-column="40" />
+        <state relative-caret-position="373">
+          <caret line="188" column="85" selection-start-line="188" selection-start-column="76" selection-end-line="188" selection-end-column="85" />
           <folding>
-            <element signature="e#40#54#0#PHP" expanded="true" />
-            <element signature="e#16055#16656#0#PHP" />
-            <element signature="e#16735#17340#0#PHP" />
-            <element signature="e#17419#17992#0#PHP" />
+            <element signature="e#566#741#0#PHP" />
+            <element signature="e#804#891#0#PHP" />
+            <element signature="e#954#1041#0#PHP" />
+            <element signature="e#1105#1194#0#PHP" />
+            <element signature="e#1258#1347#0#PHP" />
+            <element signature="e#1409#1494#0#PHP" />
+            <element signature="e#1569#1758#0#PHP" />
+            <element signature="e#1829#2520#0#PHP" />
+            <element signature="e#2536#2583#0#PHP" />
+            <element signature="e#2658#2788#0#PHP" />
+            <element signature="e#2867#4412#0#PHP" />
+            <element signature="e#4428#4476#0#PHP" />
           </folding>
         </state>
       </provider>
