@@ -93,8 +93,14 @@
                                                        value="{{ $reservation->student->id }}">
                                             </td>
                                             <td class="course-date pt-17 ltr">{{ date( 'Y-m-d' ,strtotime($reservation->course->start_date)) }}</td>
-                                            <td class="account-owner pt-17">{{ $reservation->payment->account_owner }}</td>
-                                            <td class="account-number pt-17">{{ $reservation->payment->account_number }}</td>
+
+                                            @if(!is_null($reservation->payment))
+                                                <td class="account-owner pt-17">{{ $reservation->payment->account_owner }}</td>
+                                                <td class="account-number pt-17">{{ $reservation->payment->account_number }}</td>
+                                            @else
+                                                <td class="account-owner text-danger pt-17">لايوجد</td>
+                                                <td class="account-number text-danger pt-17">لايوجد</td>
+                                            @endif
                                             @if($reservation->coupon_id > 0)
                                                 <td class="course-discount pt-17 text-success">{{ $reservation->coupon->discount }}</td>
                                                 <?php

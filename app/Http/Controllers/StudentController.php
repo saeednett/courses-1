@@ -519,7 +519,7 @@ class StudentController extends Controller
 
                     // Checking If Course Already Reserved
                     $reserve = Reservation::where('course_id', $course->id)->where('student_id', Auth::user()->student->id)->first();
-                    if (empty($reserve)) {
+                    if (!empty($reserve)) {
                         return redirect()->route('account.ticket')->withErrors(['تم حجز الدورة مسبقا قم بحذف الحجز القديم لكي تتمكن من حجزها مجددا']);
                     }else{
 

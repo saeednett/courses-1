@@ -216,7 +216,7 @@ Route::group(['prefix' => 'Center', 'middleware' => 'auth-center'], function () 
 
 /*  Admin Routes Part */
 
-Route::group(['prefix' => 'Admin', 'middleware' => 'auth-center', 'namespace' => 'API'], function () {
+Route::group(['prefix' => 'Admin', 'middleware' => 'auth-center'], function () {
 
     // The Index Page Of The Admin
     Route::get('/{admin}', 'AdminController@index')->name('admin.index');

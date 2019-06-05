@@ -50,11 +50,11 @@
                                             </td>
 
                                             <td>
-                                                <a href="#">منح الشهادات</a>
+                                                <a href="{{ route('admin.courses.certificate.create') }}">منح الشهادات</a>
                                             </td>
                                         @else
                                             <td colspan="2">
-                                                <a href="#">تحضير الطلاب</a>
+                                                <a href="{{ route('admin.courses.take.attendance') }}">تحضير الطلاب</a>
                                             </td>
                                         @endif
                                     </tr>
@@ -62,7 +62,7 @@
                             @else
                                 <tr class="gradeX">
                                     <td class="text-danger" colspan="5">
-                                        <h3 style="margin-top: 15px">لاتوجد دورات مسجلة في النظام</h3>
+                                        <h3 class="mt-15">لاتوجد دورات مسجلة في النظام</h3>
                                     </td>
                                 </tr>
                             @endif

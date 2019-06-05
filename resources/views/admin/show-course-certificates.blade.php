@@ -98,46 +98,46 @@
                             <tbody class="text-center">
                             @if(count($certificates) > 0)
                                 @foreach($certificates as $certificate)
-                                    <tr class="gradeX">
-                                        <td>
-                                            {{ $certificate->student->first_name." ".$certificate->student->second_name." ".$certificate->student->third_name }}
-                                        </td>
-                                        <td style="direction: ltr;">{{ $certificate->student->user->phone }}</td>
-                                        <td style="direction: ltr;">{{ $certificate->student->user->email }}</td>
-                                        <td>{{ $certificate->student->city->name }}</td>
-                                        <td>{{ $certificate->student->gender->name }}</td>
-                                        <td>{{ $certificate->date  }}</td>
-                                        <td>{{ $certificate->admin->name  }}</td>
-                                        @if($days == count($certificate->reservation->attendance))
-                                            <td class="bg-success text-success">{{ count($certificate->reservation->attendance) }}</td>
-                                        @else
-                                            <td class="bg-danger text-danger">{{ count($certificate->reservation->attendance) }}</td>
-                                        @endif
-                                    </tr>
+
+                                    <?php $counter = 0; ?>
+                                    @if($certificate->admin == \Illuminate\Support\Facades\Auth::user()->admin->id)
+                                        <tr class="gradeX">
+                                            <td>
+                                                {{ $certificate->student->first_name." ".$certificate->student->second_name." ".$certificate->student->third_name }}
+                                            </td>
+                                            <td style="direction: ltr;">{{ $certificate->student->user->phone }}</td>
+                                            <td style="direction: ltr;">{{ $certificate->student->user->email }}</td>
+                                            <td>{{ $certificate->student->city->name }}</td>
+                                            <td>{{ $certificate->student->gender->name }}</td>
+                                            <td>{{ $certificate->date }}</td>
+                                            <td>{{ $certificate->admin->name }}</td>
+                                            @if($days == count($certificate->reservation->attendance))
+                                                <td class="bg-success text-success">{{ count($certificate->reservation->attendance) }}</td>
+                                            @else
+                                                <td class="bg-danger text-danger">{{ count($certificate->reservation->attendance) }}</td>
+                                            @endif
+                                        </tr>
+                                        <?php $counter++; ?>
+                                    @endif
 
                                 @endforeach
+
+                                @if($counter == 0)
+                                    <tr class="gradeX">
+                                        <td class="text-danger" colspan="8">
+                                            <h3 class="mt-15">لم يتم إصدار اي شهادة لهذه الدورة بإستخدام هذا الحساب</h3>
+                                        </td>
+                                    </tr>
+                                @endif
+
                             @else
                                 <tr class="gradeX">
                                     <td class="text-danger" colspan="8">
-                                        <h3 style="margin-top: 15px">لم يتم إصدار اي شهادة لهذه الدورة</h3>
+                                        <h3 class="mt-15">لم يتم إصدار اي شهادة لهذه الدورة</h3>
                                     </td>
                                 </tr>
                             @endif
                             </tbody>
-                            @if(count($certificates) > 0)
-                                <tfoot>
-                                <tr>
-                                    <th class="text-center">اسم الطالب</th>
-                                    <th class="text-center">رقم الهاتف</th>
-                                    <th class="text-center">البريد الإلكتروني</th>
-                                    <th class="text-center">المدينة</th>
-                                    <th class="text-center">الجنس</th>
-                                    <th class="text-center">التاريخ</th>
-                                    <th class="text-center">المصدر</th>
-                                    <th class="text-center">أيام الحضور</th>
-                                </tr>
-                                </tfoot>
-                            @endif
                         </table>
                     </div>
                 </div>

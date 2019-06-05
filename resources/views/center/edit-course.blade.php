@@ -398,11 +398,17 @@
                                                 <label class='required-field' for='coupon'>كوبونات الخصم</label>
                                                 <select class='form-control select2-placeholer {{ $errors->has('coupon') ? 'is-invalid' : '' }}'
                                                         name='coupon' id='coupon'>
-                                                    @if(count($course->coupon) > 0)
-                                                        <option value='0'> لا يوجد كوبونات خصم</option>
-                                                        <option value='1' selected>يوجد كوبونات خصم</option>
+
+                                                    @if(!is_null($course->coupon))
+                                                        @if(!is_null($course->coupon))
+                                                            <option value='0'> لا يوجد كوبونات خصم</option>
+                                                            <option value='1' selected>يوجد كوبونات خصم</option>
+                                                        @else
+                                                            <option value='0' selected> لا يوجد كوبونات خصم</option>
+                                                            <option value='1'>يوجد كوبونات خصم</option>
+                                                        @endif
                                                     @else
-                                                        <option value='0' selected> لا يوجد كوبونات خصم</option>
+                                                        <option value='0'> لا يوجد كوبونات خصم</option>
                                                         <option value='1'>يوجد كوبونات خصم</option>
                                                     @endif
                                                 </select>
@@ -410,7 +416,7 @@
                                         </div>
                                     </div>
 
-                                    @if(count($course->coupon) > 0)
+                                    @if(!is_null($course->coupon))
                                         <div class='row'>
                                             <div class='col-lg-2 col-lg-offset-5'>
                                                 <label></label>

@@ -38,10 +38,8 @@ class AdminController extends Controller
 
             $course = CourseAdmin::where('admin_id', Auth::user()->admin->id)->where('course_id', $courses_data[$i]->id)->where('role_id', 2)->first();
 
-            if (empty($course)) {
-
+            if (!empty($course)) {
                 array_push($course_attender, $course->course_id);
-
             }
 
         }
@@ -62,10 +60,8 @@ class AdminController extends Controller
 
             $course = CourseAdmin::where('admin_id', Auth::user()->admin->id)->where('course_id', $courses_data[$i]->id)->where('role_id', 1)->first();
 
-            if (empty($course)) {
-
+            if (!empty($course)) {
                 array_push($course_admin, $course->course_id);
-
             }
 
         }

@@ -1764,15 +1764,20 @@ class CenterController extends Controller
             $courses = Course::select('id')->where('center_id', Auth::user()->center->id)->get();
 
             if (count($courses) < 1) {
-                return redirect()->route('center.course.admin.assign')->withErrors(['ليست لديك دورات حتى تقوم بتعيين مسؤولينن لها']);
+                return redirect()->route('center.course.admin.assign')->withErrors(['ليس لديك دورات حتى تقوم بتعيين مسؤولينن لها']);
             } else {
+
+                $admins = Admin::where('center_id', Auth::user()->center->id)->get();
+
+                if ( count($admins) < 1 ){
+                    return redirect()->route('center.course.admin.assign')->withErrors(['ليس لديك مسؤولين حتى تقوم بتعيينهم']);
+                }
+
                 $course_data = array();
 
                 foreach ($courses as $course) {
                     array_push($course_data, $course->id);
                 }
-
-                $admins = Admin::where('center_id', Auth::user()->center->id)->get();
 
                 $admin_data = array();
 
@@ -1781,11 +1786,16 @@ class CenterController extends Controller
                 }
 
                 $request->validate([
-                    'course' => 'required|integer|exists:courses,id|' . Rule::in($course_data),
-                    'admin' => 'required|integer|exists:admins,id' . Rule::in($admin_data),
+                    'course' => 'required|integer|' . Rule::in($course_data),
+                    'admin' => 'required|integer|' . Rule::in($admin_data),
                     'role' => 'required|integer|max:2|min:1',
                 ]);
 
+                $check_admin = CourseAdmin::where('admin_id', $request->admin)->where('course_id', $request->course)->where('role_id', $request->role)->first();
+
+                if ( !empty($check_admin) ){
+                    return redirect()->route('center.course.admin.assign')->withErrors(['تم تعيين المسؤول بهذه الصلاحيات لهذه الدورة مسبقا']);
+                }
 
                 CourseAdmin::create([
                     'course_id' => $request->course,

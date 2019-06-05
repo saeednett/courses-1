@@ -72,7 +72,7 @@
                             </tr>
                             </thead>
                             <tbody class="text-center">
-                            @if(count($halalah) > 0)
+                            @if(!empty($halalah))
 
                                 <tr class="gradeX">
                                     <td>منصة هللة</td>
@@ -118,17 +118,6 @@
                                 </tr>
                             @endif
                             </tbody>
-                            @if(count($halalah) < 0)
-                                <tfoot>
-                                <tr>
-                                    <th class="text-center">الموقع</th>
-                                    <th class="text-center">اسم المستخدم</th>
-                                    <th class="text-center">صورة الباركود</th>
-                                    <th class="text-center">الحالة</th>
-                                    <th class="text-center">خيارات</th>
-                                </tr>
-                                </tfoot>
-                            @endif
                         </table>
                     </div>
                 </div>

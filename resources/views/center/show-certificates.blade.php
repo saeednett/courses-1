@@ -86,7 +86,13 @@
                                         <td class="student-city">{{ $certificate->student->city->name }}</td>
                                         <td class="student-gender">{{ $certificate->student->gender->name }}</td>
                                         <td class="issue-date">{{ $certificate->date  }}</td>
-                                        <td class="admin-name">{{ $certificate->admin->name  }}</td>
+
+                                        @if($certificate->admin != 0)
+                                            <td class="admin-name">{{ $certificate->admin->name  }}</td>
+                                        @else
+                                            <td class="admin-name">Center Account</td>
+                                        @endif
+
 
                                         @if($days == count($certificate->reservation->attendance))
                                             <td class="student-attendance bg-success text-success">{{ count($certificate->reservation->attendance) }}</td>

@@ -62,7 +62,12 @@
                                         <td>{{ $certificate->student->first_name." ".$certificate->student->second_name." ".$certificate->student->third_name." ".$certificate->student->forth_name }}</td>
                                         <td class="ltr">{{ $days }}</td>
                                         <td class="ltr">{{ date("Y-m-d", strtotime($certificate->date)) }}</td>
-                                        <td>{{ $certificate->admin->name }}</td>
+
+                                        @if($certificate->admin == 0)
+                                            <td>حساب الجهة</td>
+                                        @else
+                                            <td>{{ $certificate->admin->name }}</td>
+                                        @endif
 
                                         <td>
                                             <a href="#">عرض الشهادة</a>
