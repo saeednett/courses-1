@@ -29,15 +29,19 @@ Route::group([
     Route::post('/Register', 'StudentAPIController@register');
     Route::get('/{center}/{course}/CourseDetails', 'StudentAPIController@show_course');
     Route::get('/{center}/CenterDetails', 'StudentAPIController@show_center');
+    Route::get('/Centers', 'StudentAPIController@centers');
 
 
     Route::group([
         'middleware' => 'auth:api'
     ], function() {
+        Route::post('/logout', 'StudentAPIController@logout');
         Route::post('/{course}/ReserveCourse', 'StudentAPIController@reserve_course');
         Route::post('/{course}/CancelCourseReservation', 'StudentAPIController@cancel_course_reservation');
         Route::get('/ProfileEdit', 'StudentAPIController@edit');
+        Route::get('/ProfileUpdate', 'StudentAPIController@update');
         Route::get('/Tickets', 'StudentAPIController@tickets');
+        Route::get('/Certificates', 'StudentAPIController@certificates');
         Route::post('/Me', 'StudentAPIController@me');
         Route::post('/ProfileUpdate', 'StudentAPIController@update');
         Route::post('/password/ResetPassword', 'StudentAPIController@reset_password');

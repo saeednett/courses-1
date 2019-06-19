@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="{{ asset('css/student/master.css') }}">
     <link rel="stylesheet" href="{{ asset('css/student/main.css') }}">
 
-
     @yield('style-file')
 
 </head>

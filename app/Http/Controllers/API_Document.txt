@@ -1,0 +1,529 @@
+This Document Explain How To Use The API And The Use Of The Url
+
+First As Normal User | Student
+
+## http://127.0.0.1:8000/api/Account => GET
+this url returns the whole courses that are available, validated, confirmed and visible
+you will get a json result contain => Banners, Courses and each course with the trainers
+For Example:
+{
+    "status": [
+        "Success"
+    ],
+    "errors": [
+        null
+    ],
+    "response": [
+        {
+            "banners": [
+                null
+            ],
+            "courses": [
+                {
+                    "title": "الأخلاق العملية الإسلامية",
+                    "identifier": "3adbtDZE7i",
+                    "address": "الشوقية خلف مطعم البيك",
+                    "location": "https://www.google.com",
+                    "price": 200,
+                    "type": "payed",
+                    "start_date": "2019-06-30",
+                    "end_date": "2019-07-31",
+                    "start_time": "19:00:00",
+                    "hours": 20,
+                    "end_reservation": "2019-06-30",
+                    "gender": 1,
+                    "category_id": 1,
+                    "category": "تدريب المدربين",
+                    "center_id": 1,
+                    "center": "وقف الخيرات",
+                    "city": "جدة",
+                    "city_id": 12,
+                    "description": "سوف نتطرق لأهم وابرز الصفات والأخلاق الإسلامية للشاب المسلم في محيط عمله",
+                    "total_trainers": 1,
+                    "poster-1": "/storage/course-images/8MfEcZxqrFjs6LYaVeYbTgt6RyYE2izfFxHysrJI.png",
+                    "poster-2": "/storage/course-images/DEhr99nwhRuqOUWZlrGOS8coRsEkDDEacqVP9Mpu.png",
+                    "trainers": [
+                        {
+                            "trainer-name": "محمد يحيى ابكر",
+                            "trainer-title": " المهندس/ة",
+                            "trainer-image": "/storage/trainer-images/ydLBVvxF4w3quXtw2vl3K7fHcNw7pKM0epkpOoK3.png"
+                        }
+                    ]
+                },
+                {
+                    "title": "برمجة المواقع الإلكترونية",
+                    "identifier": "emhBf9Z5me",
+                    "address": "خلف وزارة الدفاع سابقا",
+                    "location": "https://www.hotmail.com",
+                    "price": 0,
+                    "type": "free",
+                    "start_date": "2019-06-29",
+                    "end_date": "2019-07-11",
+                    "start_time": "18:20:00",
+                    "hours": 20,
+                    "end_reservation": "2019-06-29",
+                    "gender": 3,
+                    "category_id": 5,
+                    "category": "الحاسب وتقنية المعلومات",
+                    "center_id": 1,
+                    "center": "وقف الخيرات",
+                    "city": "الطائف",
+                    "city_id": 3,
+                    "description": "سوف تتعلم اساسيات البرمجة للمواقع الاإلكترونية بإستخدتم اشهر التقنيات الحديثة",
+                    "total_trainers": 1,
+                    "poster-1": "/storage/course-images/6S6wMc2AYJ00fMDOGcE3kkAQDC7GH1pDxr71srxE.png",
+                    "poster-2": "/storage/course-images/MXRz3XhIJ9z1SXGVVXvAGsqTm3pLkmIjIMyvVcja.png",
+                    "trainers": [
+                        {
+                            "trainer-name": "محمد يحيى ابكر",
+                            "trainer-title": " المهندس/ة",
+                            "trainer-image": "/storage/trainer-images/ydLBVvxF4w3quXtw2vl3K7fHcNw7pKM0epkpOoK3.png"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Login => POST
+this url is used to sign in so you should include a json request with username and password
+     - Username
+     - Password
+and if the process was successful you will get a response with your token or an error message
+For Example:
+{
+    "status": [
+        "Failed"
+    ],
+    "errors": [
+        "الرجاء التأكد من اسم المستخدم | كلمة المرور"
+    ],
+    "response": [
+        null
+    ]
+}
+
+{
+    "status": [
+        "Success"
+    ],
+    "errors": [
+        null
+    ],
+    "response": [
+        {
+            "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9Mb2dpbiIs
+            ImlhdCI6MTU2MDk0NTkwMywiZXhwIjoxNTYwOTQ5NTAzLCJuYmYiOjE1NjA5NDU5MDMsImp0aSI6IklYMzdieU9UQ3ZWUXZLMXoiLCJzdWI
+            iOjQsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEifQ.LLOtQvqVv2z5Bi_jtC3k0mAqLZv2vQbAm4
+            CDrvy_aiY",
+            "message": "تم تسجيل الدخول بنجاح"
+        }
+    ]
+}
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Account/logout => POST
+this url is used to logout of your account and if you are authenticated you will be logged out successfully
+and receiving a json response with successful message or an error if you are not authenticated.
+For Example:
+{
+    "status": [
+        "Success"
+    ],
+    "errors": [
+        null
+    ],
+    "response": [
+        "تم تسجيل الخروج بنجاح"
+    ]
+}
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Account/Me => GET
+this url is used to show the information of the user | student without being able to edit it
+For Example:
+{
+    "status": [
+        "Success"
+    ],
+    "errors": [
+        null
+    ],
+    "response": [
+        {
+            "user": {
+                "first_name": "سعود",
+                "second_name": "سعيد",
+                "third_name": null,
+                "last_name": null,
+                "year": "0",
+                "month": "0",
+                "day": "0",
+                "username": "saud",
+                "email": "saud@hotmail.com",
+                "phone": "+966564482940",
+                "country": "المملكة العربية السعودية",
+                "city": "تبوك",
+                "gender": "ذكز",
+                "reservations": 0,
+                "certificate": 0,
+                "profile-image": "/storage/account-images/default.jpg"
+            }
+        }
+    ]
+}
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Account/ProfileEdit => GET
+this url is used to return the information that can be edited by the user | student
+For Example:
+{
+    "status": [
+        "Success"
+    ],
+    "errors": [
+        null
+    ],
+    "response": [
+        {
+            "user": {
+                "username": "saud",
+                "email": "saud@hotmail.com",
+                "phone": "+966564482940",
+                "first_name": "سعود",
+                "second_name": "سعيد",
+                "third_name": null,
+                "last_name": null,
+                "year": "0",
+                "month": "0",
+                "day": "0",
+                "profile-image": "/storage/account-images/default.jpg",
+                "city_id": 1,
+                "city": "تبوك",
+                "country_id": 1,
+                "country": "المملكة العربية السعودية"
+            }
+        }
+    ]
+}
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Account/ProfileUpdate => POST
+this url is used to receive the new data of the user that will be edited
+and will return a success or an error message
+For Example:
+{
+    "status": [
+        "Success"
+    ],
+    "errors": [
+        null
+    ],
+    "response": [
+        "تم تعديل البيانات بنجاح"
+    ]
+}
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Account/Register =? POST
+this url is used to register as new user | student
+the required parameters are:
+    'first_name' => 'required|string|max:20|min:3',
+    'second_name' => 'required|string|max:20|min:3',
+    'email' => 'required|email|max:100|unique:users,email',
+    'username' => 'required|string|max:20|min:5|unique:users,username',
+    'phone' => 'required|max:9|min:9|unique:users,phone|starts_with:5',
+    'gender' => 'required|exists:genders,id',
+    'country' => 'required|integer|exists:countries,id',
+    'city' => 'required|integer|' . Rule::in($cities),
+    'password' => 'required|string|max:32|min:6|confirmed'
+
+then if the process succeed you will get a json response with a token
+
+For Example:
+{
+    "status": [
+        "Success"
+    ],
+    "errors": [
+        null
+    ],
+    "response": [
+        "token": 'The Token',
+    ]
+}
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Account/{center_username}/{course_identifier}/CourseDetails => GET
+this url is used to view the details of a specific course there is a required parameters which are
+    - Center Username
+    - Course Unique Identifier
+then you will get a json response with the whole details of the course
+For Example:
+{
+    "status": [
+        "Success"
+    ],
+    "errors": [
+        null
+    ],
+    "response": [
+        {
+            "course": [
+                {
+                    "title": "الأخلاق العملية الإسلامية",
+                    "identifier": "3adbtDZE7i",
+                    "address": "الشوقية خلف مطعم البيك",
+                    "location": "https://www.google.com",
+                    "price": 200,
+                    "type": "payed",
+                    "start_date": "2019-06-30",
+                    "end_date": "2019-07-31",
+                    "start_time": "19:00:00",
+                    "hours": 20,
+                    "end_reservation": "2019-06-30",
+                    "gender": 1,
+                    "category_id": "تدريب المدربين",
+                    "category": 1,
+                    "center_id": 1,
+                    "center": "وقف الخيرات",
+                    "city": "جدة",
+                    "city_id": 12,
+                    "description": "سوف نتطرق لأهم وابرز الصفات والأخلاق الإسلامية للشاب المسلم في محيط عمله",
+                    "total_trainers": 1,
+                    "poster-1": "8MfEcZxqrFjs6LYaVeYbTgt6RyYE2izfFxHysrJI.png",
+                    "poster-2": "DEhr99nwhRuqOUWZlrGOS8coRsEkDDEacqVP9Mpu.png"
+                }
+            ],
+            "trainers": [
+                {
+                    "id": 1,
+                    "name": "محمد يحيى ابكر",
+                    "title": " المهندس/ة",
+                    "image": "ydLBVvxF4w3quXtw2vl3K7fHcNw7pKM0epkpOoK3.png"
+                }
+            ]
+        }
+    ]
+}
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Account/{center_username}/CenterDetails => GET
+this url is used to get an information about the center
+and the required parameter is the username of the center
+    - Center Username
+then you will get a json response with the whole details of the center
+For Example:
+{
+    "status": [
+        "Success"
+    ],
+    "errors": [
+        null
+    ],
+    "response": [
+        {
+            "center": {
+                "name": "وقف الخيرات",
+                "phone": "0589672836",
+                "email": "alkhirat@hotmail.com",
+                "website": null,
+                "city": "مكة المكرمة",
+                "about": "جمعية خيرية تهدف لتقديم الدعم المادي والمعنوي للشباب الحالم الطموح",
+                "verification_number": "2786970831",
+                "verification_authority": "الهيئة العامة للأوقاف",
+                "type": "profit",
+                "courses": 2,
+                "trainers": 1
+            },
+            "socialMedia": [
+                {
+                    "name": "Twitter",
+                    "account": "Twitter Account"
+                },
+                {
+                    "name": "Facebook",
+                    "account": "Facebook Account"
+                },
+                {
+                    "name": "Snapchat",
+                    "account": "Snapchat Account"
+                },
+                {
+                    "name": "Instagram",
+                    "account": "Instagram Account"
+                }
+            ],
+            "courses": [
+                {
+                    "title": "الأخلاق العملية الإسلامية",
+                    "identifier": "3adbtDZE7i",
+                    "price": 200,
+                    "type": "payed",
+                    "start_date": "2019-06-30",
+                    "end_date": "2019-07-31",
+                    "category": "تدريب المدربين",
+                    "center": "وقف الخيرات",
+                    "city": "جدة",
+                    "poster-1": "8MfEcZxqrFjs6LYaVeYbTgt6RyYE2izfFxHysrJI.png",
+                    "poster-2": "DEhr99nwhRuqOUWZlrGOS8coRsEkDDEacqVP9Mpu.png"
+                },
+                {
+                    "title": "برمجة المواقع الإلكترونية",
+                    "identifier": "emhBf9Z5me",
+                    "price": 0,
+                    "type": "free",
+                    "start_date": "2019-06-29",
+                    "end_date": "2019-07-11",
+                    "category": "الحاسب وتقنية المعلومات",
+                    "center": "وقف الخيرات",
+                    "city": "الطائف",
+                    "poster-1": "6S6wMc2AYJ00fMDOGcE3kkAQDC7GH1pDxr71srxE.png",
+                    "poster-2": "MXRz3XhIJ9z1SXGVVXvAGsqTm3pLkmIjIMyvVcja.png"
+                }
+            ]
+        }
+    ]
+}
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Account/Certificates => GET
+this url is used to get the all the certificates of the user | student and then you will get a json response
+with the certificates if there is any certificates
+For Example:
+{
+    "status": [
+        "Failed"
+    ],
+    "errors": [
+        "لم يتم إصداراي شهادة لهذا المستخدم"
+    ],
+    "response": [
+        null
+    ]
+}
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Account/{course_identifier}/ReserveCourse =>
+this url is used to reserve a course for the user | student and has one required parameter which is
+    - Course Unique Identifier
+you will get a success or a failure message
+For Example:
+{
+    "status": [
+        "Success"
+    ],
+    "errors": [
+        null
+    ],
+    "response": [
+        "تم حجز الدور بنجاح بإنتظار التأكيد من المركز"
+    ]
+}
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Account/{course_identifier}/CancelCourseReservation =>
+this url is used to cancel a course that has been reserved by the user there is one required parameter which is
+    - Course Unique Identifier
+you will get a success or a failure message
+NOTE: YOU CAN NOT CANCEL A RESERVATION ONCE IT CONFIRMED BY THE CENTER OR THE ADMIN
+For Example:
+{
+    "status": [
+        "Success"
+    ],
+    "errors": [
+        null
+    ],
+    "response": [
+        "تم إلغاء حجزك بنجاح"
+    ]
+}
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Account/password/ResetPassword => POST
+this url is used to reset user | student password and you will get a success or a failure message there are
+three parameters required which are
+     - Old Password
+     - New Password
+     - New Confirm Password
+For Example:
+{
+    "status": [
+        "Success"
+    ],
+    "errors": [
+        "تم تغير كلمة المرور بنجاح"
+    ],
+    "response": [
+        null
+    ]
+}
+
+{
+    "status": [
+        "Failed"
+    ],
+    "errors": [
+        "كلمة المرور القديمة غير صحيحة"
+    ],
+    "response": [
+        null
+    ]
+}
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Account/Centers => GET
+this url is used to show all centers exists in the database with the details of them you do not have to be authenticated
+{
+    "status": [
+        "Success"
+    ],
+    "errors": [
+        null
+    ],
+    "response": [
+        {
+            "centers": [
+                {
+                    "name": "وقف الخيرات",
+                    "phone": null,
+                    "email": null,
+                    "website": null,
+                    "city": "مكة المكرمة",
+                    "about": "جمعية خيرية تهدف لتقديم الدعم المادي والمعنوي للشباب الحالم الطموح",
+                    "verification_number": "2786970831",
+                    "verification_authority": "الهيئة العامة للأوقاف",
+                    "type": "profit",
+                    "courses": 2,
+                    "trainers": 1,
+                    "socialMedia": [
+                        {
+                            "name": "Twitter",
+                            "account": "Twitter Account"
+                        },
+                        {
+                            "name": "Facebook",
+                            "account": "Facebook Account"
+                        },
+                        {
+                            "name": "Snapchat",
+                            "account": "Snapchat Account"
+                        },
+                        {
+                            "name": "Instagram",
+                            "account": "Instagram Account"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+------------------------------------------------------------------------------------------------------------------------
+## http://127.0.0.1:8000/api/Account/Tickets
+this url is used to retrieve all the tickets belongs to the user | student and you will receive a success or a failure
+message
+
+For Example:
+{
+    "status": [
+        "Failed"
+    ],
+    "errors": [
+        "لاتوجد تذاكر محجوزة"
+    ],
+    "response": [
+        null
+    ]
+}
